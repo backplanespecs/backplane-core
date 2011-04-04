@@ -1,0 +1,34 @@
+Backplane related specifications. 
+
+== Before you begin... ==
+
+Please make sure to update dates in the XML source (search for '<date') when
+making substantial (i.e. non-cosmetic) changes to the specs.
+
+== How to compile up to date versions of TXT, HTML, PDF ==
+
+To compile HTML, TXT and PDF variants of the specifications
+one needs to install software packages mentioned below and run
+make.
+
+Example:
+
+% make clean && make
+
+== Dependencies ==
+
+TXT, HTML and PDF builds require presence of
+tclsh8.4 (http://www.tcl.tk/).
+If you would like to use another version of TCL
+you should change path to tclsh in the accompanying Makefile.
+Please note that on a Mac tclsh8.4 is installed by default,
+so you do not need to perform any special actions.
+
+PDF build requires presence of:
+- apache fop (version 0.95 or later) - http://xmlgraphics.apache.org/fop/
+- xsltproc from libxslt - http://xmlsoft.org/XSLT/.
+On a Mac installation of the packages can be accomplished with help of
+the following commands:
+
+% sudo port install fop
+% sudo port install libxslt
