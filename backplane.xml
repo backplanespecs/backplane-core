@@ -147,7 +147,7 @@
 
     <section anchor="backplane.server" title="Backplane Server"><!-- [[[ -->
       <section anchor="backplane.server.channels" title="Channels">
-        <t>Channels are created implicitly once a Backplane message get
+        <t>Channels are created implicitly once a Backplane message gets
           posted to a channel that doesn't yet exist. It is up to the
           posting party to come up with the
           <spanx style="emph">channel name</spanx>
