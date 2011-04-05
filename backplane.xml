@@ -121,6 +121,8 @@
             <t>non-persistent and expire after being inactive (no
               messages posted) for specific amount of time (e.g. 30
               minutes)</t>
+            <t>sensitive (ie, content that cannot be trusted to keep the
+              channel identifier secret MUST NOT be loaded)</t>
           </list>
         </t>
 
