@@ -49,7 +49,15 @@
       </address>
     </author>
 
-    <date day="25" month="November" year="2010" />
+    <author fullname="Carl Howells" initials="C." surname="Howells">
+      <organization>Janrain</organization>
+      <address>
+        <email>chowells@janrain.com</email>
+        <uri>http://www.janrain.com/</uri>
+      </address>
+    </author>
+
+    <date day="5" month="April" year="2011" />
 
     <abstract>
       <t>Backplane is a framework to facilitate interaction between
@@ -109,8 +117,7 @@
         <t>Channels are:
           <list style="symbols">
             <t>allocated within buses</t>
-            <t>referenced by unique (typically unguessable) identifiers
-              (URLs)</t>
+            <t>referenced by unique, unguessable identifiers (URLs)</t>
             <t>non-persistent and expire after being inactive (no
               messages posted) for specific amount of time (e.g. 30
               minutes)</t>
@@ -148,13 +155,7 @@
     <section anchor="backplane.server" title="Backplane Server"><!-- [[[ -->
       <section anchor="backplane.server.channels" title="Channels">
         <t>Channels are created implicitly once a Backplane message gets
-          posted to a channel that doesn't yet exist. It is up to the
-          posting party to come up with the
-          <spanx style="emph">channel name</spanx>
-          given the security constraints of the setting (e.g. in a
-          simple setups one can get away with predefined channel names;
-          in another scenario channel names will have to be unguessable,
-          etc).</t>
+          posted to a channel that doesn't yet exist.</t>
 
         <t>Channel name MUST only contain characters from the
           <xref target="RFC4648.section5">base64url</xref>
@@ -209,6 +210,29 @@
 
       <section anchor="backplane.server.api" title="API">
         <t>A Backplane server provides the following API.</t>
+
+        <section anchor="backplane.server.api.channel_name" title="Get a
+          New Channel Name">
+          <t><list style="hanging">
+              <t hangText="Endpoint">
+                <spanx style="verb">/v1/channel_name</spanx></t>
+              <t hangText="HTTP Method">GET</t>
+              <t hangText="Security">HTTPS only</t>
+              <t hangText="Parameters">None</t>
+              <t hangText="Returns">a new, securely-generated channel name</t>
+            </list>
+          </t>
+          <t>This call exists to help the javascript library provision
+          new channel names. Since javascript provides no method to
+          access true entropy, it needs server-side assistance.</t>
+          <t>The result value of this call should be 32 characters
+          indepedently chosen uniformly from the set
+          <spanx style="emph">0123456789abcdef</spanx>.</t>
+          <t>As an operational note, this API call should not be
+          implemented in a way that makes it capable of blocking on
+          gathering entropy, nor in a way capable of exhausting any
+          system entropy pool.</t>
+        </section>
 
         <section anchor="backplane.server.api.bus" title="Get All
           Messages In A Bus">
@@ -290,7 +314,6 @@
  *   Possible hash keys:
  *     serverBaseURL (required) - Base URL of Backplane Server
  *     busName (required) - Customer's backplane bus name
- *     channelName (optional) - custom specified channel name
  */
 Backplane.init(Params);
 
@@ -336,14 +359,9 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           <spanx style="emph">channel name</spanx> unless information about
           one for the specified <spanx style="emph">bus name</spanx>
           already exists in the <spanx style="verb">backplane-channel</spanx>
-          cookie. If client-side generation of the channel name is
-          considered non-secure in a particular setting, the
-          implementation may perform a request to obtain a channel
-          name from the server side and pass it as optional
-          <spanx style="verb">channelName</spanx> parameter.
-          Channel name stored in the <spanx style="verb">backplane-channel</spanx>
-          cookie takes precedence over the one passed via the
-          <spanx style="verb">channelName</spanx> parameter.</t>
+          cookie. Since client-side generation of the channel name is
+          non-secure, the library performs a request to obtain a channel
+          name from the backplane server.</t>
 
         <t>After the initialization the library stores the current
           channel name in the <spanx style="verb">backplane-channel</spanx>
@@ -364,7 +382,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
         </figure>
 
         <t>After the channel ID has been determined, the library
-          performs first reading of messages from a channel, discards
+          performs a first reading of messages from a channel, discards
           all of them (remembering only the identifier of the very
           last one) and starts polling the server for new messages
           since the latest message. This way the library is
