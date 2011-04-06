@@ -52,20 +52,49 @@
     <date day="25" month="November" year="2010" />
 
     <abstract>
-      <t>Backplane is a framework to facilitate interaction between
-        multiple independent client- and server-side parties in the
-        context of a browser session.</t>
+      <t>Backplane is a framework that facilitates message exchanges
+          and event notifications between third-party JavaScript
+          components within a web page.</t>
     </abstract>
 
   </front><!-- ]]] -->
 
   <middle><!-- [[[ -->
     <section anchor="introduction" title="Introduction"><!-- [[[ -->
-      <t>In essence Backplane is a message distribution system where
-        messages are delivered reliably, in order and in nearly
-        real-time fashion. The framework may be used in different
-        scenarios which build on top of the transport-level semantics
-        described in this document.</t>
+      <t>Web pages have evolved from being loaded from a single resource
+          to being able to reference third-party, external components
+          that get loaded, run and rendered by the web browser within
+          the same web page.</t>
+
+      <t>These components can be active and continue run after the
+          initial web page load and are generally decoupled - not under
+          the control of a single entity.</t>
+
+      <t>Interactions between the end user, the web page, and its
+          features provided through such components can greatly benefit
+          all parties involved can exchange information with each other,
+          and can do it it a standardized way.</t>
+
+      <t>The Backplane framework facilitates such interactions by
+          providing an open standard API that is secure in the context
+          of the assumed trust relationships between the parties
+          involved. Messages are delivered reliably, in order and in
+          nearly real-time fashion. The framework may be used in
+          different scenarios which build on top of the transport-level
+          semantics described in this document.</t>
+
+      <section anchor="terminology" title="Terminology">
+      </section>
+
+      <section anchor="trust" title="Trust">
+      </section>
+
+      <section anchor="" title="">
+      </section>
+
+      <section anchor="" title="">
+      </section>
+
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
