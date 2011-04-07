@@ -156,6 +156,23 @@
       
     </section>
 
+    <section anchor="overview" title="Overview"><!-- [[[ -->
+      <t>
+        An operational Backplane framework consists of the following
+        components:
+        <list style="symbols">
+          <t>A Backplane Server</t>
+          <t>A Backplane JavaScript Library</t>
+          <t>Widgets that act as Backplane Clients</t>
+          <t>Widgets' server-side counterparts that act as Backplane Clients.</t>
+        </list>
+      </t>
+
+      <t>A Backplane Server is an independent orchestrator of the
+        message interchange between Backplane Clients and may serve
+        multiple independent Buses.</t>
+    </section> <!-- ]]] -->
+
     <section anchor="trust" title="Trust">
       <t>The Backplane framework is intended to be used and operate under
         the following trust relationships. Any number of security issues
@@ -193,56 +210,40 @@
       </t>
     </section>
 
-    <section anchor="overview" title="Overview"><!-- [[[ -->
-      <t>A Backplane setting consists of the following components:
+    <section anchor="buses" title="Buses">
+      <t>A bus is essentially a namespace to allow multiple customers
+        to be served off a single server. A bus is referenced by a
+        short identifier (e.g. "customer.com", "organization.org").
+        Bus identifiers are known to all relevant parties
+        beforehand.</t>
+      <t>It is assumed that a relationship of trust exists between all
+        clients granted permission to post messages to a specific
+        bus.</t>
+    </section>
+
+    <section anchor="channels" title="Channels">
+      <t>Any message entering the Backplane is routed to a
+        <spanx style="emph">channel</spanx> and gets delivered to all
+        consumers of that channel.</t>
+
+      <t>Channels are:
         <list style="symbols">
-          <t>A Backplane server</t>
-          <t>A Client-side Backplane library (a Javascript library
-            executed by an end user's browser)</t>
-          <t>Backplane-enabled widgets</t>
-          <t>Backplane clients</t>
+          <t>allocated within buses</t>
+          <t>referenced by unique (typically unguessable) identifiers
+            (URLs)</t>
+          <t>non-persistent and expire after being inactive (no
+            messages posted) for specific amount of time (e.g. 30
+            minutes)</t>
         </list>
       </t>
 
-      <t>A Backplane server is an independent orchestrator of the
-        message interchange between the parties and may serve multiple
-        independent <spanx style="emph">buses</spanx>.</t>
-
-      <section anchor="overview.buses" title="Buses">
-        <t>A bus is essentially a namespace to allow multiple customers
-          to be served off a single server. A bus is referenced by a
-          short identifier (e.g. "customer.com", "organization.org").
-          Bus identifiers are known to all relevant parties
-          beforehand.</t>
-        <t>It is assumed that a relationship of trust exists between all
-          clients granted permission to post messages to a specific
-          bus.</t>
-      </section>
-
-      <section anchor="overview.channels" title="Channels">
-        <t>Any message entering the Backplane is routed to a
-          <spanx style="emph">channel</spanx> and gets delivered to all
-          consumers of that channel.</t>
-
-        <t>Channels are:
-          <list style="symbols">
-            <t>allocated within buses</t>
-            <t>referenced by unique (typically unguessable) identifiers
-              (URLs)</t>
-            <t>non-persistent and expire after being inactive (no
-              messages posted) for specific amount of time (e.g. 30
-              minutes)</t>
-          </list>
-        </t>
-
-        <figure>
-          <preamble>
-            Here is an example of a Backplane channel identifier:
-          </preamble>
-          <artwork type="code">http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
-        </figure>
-      </section>
-    </section> <!-- ]]] -->
+      <figure>
+        <preamble>
+          Here is an example of a Backplane channel identifier:
+        </preamble>
+        <artwork type="code">http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+      </figure>
+    </section>
 
     <section anchor="backplane.messages" title="Backplane Messages"><!-- [[[ -->
       <t>A Backplane message is a JSON object with the following
