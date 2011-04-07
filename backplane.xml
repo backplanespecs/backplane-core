@@ -67,13 +67,13 @@
           the same web page.</t>
 
       <t>These components can be active and continue run after the
-          initial web page load and are generally decoupled - not under
-          the control of a single entity.</t>
+          web page completed loading and are generally decoupled
+          - not under the control of a single entity.</t>
 
       <t>Interactions between the end user, the web page, and its
           features provided through such components can greatly benefit
-          all parties involved can exchange information with each other,
-          and can do it it a standardized way.</t>
+          when all parties involved can exchange information with each
+          other, and can do it it a standardized way.</t>
 
       <t>The Backplane framework facilitates such interactions by
           providing an open standard API that is secure in the context
@@ -82,19 +82,66 @@
           nearly real-time fashion. The framework may be used in
           different scenarios which build on top of the transport-level
           semantics described in this document.</t>
+    </section><!-- ]]] -->
 
-      <section anchor="terminology" title="Terminology">
-      </section>
 
-      <section anchor="trust" title="Trust">
-      </section>
+    <section anchor="Definitions" title="Definitions">
 
-      <section anchor="" title="">
-      </section>
+      <t>
+        <list style="hanging">
 
-      <section anchor="" title="">
-      </section>
+          <t hangText="Web Page">
+            Document obtained from a web resource and loaded by the
+            end user's web browser.
+          </t>
 
+          <t hangText="Widget">
+            Third-party JavaScript component referenced from the
+            Web Page that is loaded and run in the end user's browser.
+          </t>
+
+          <t hangText="Backplane Client">
+            Entity that uses the Backplane framework to exchange
+            information.
+          </t>
+
+          <t hangText="Backplane Message">
+            A JSON object representing the unit of communication
+            between Backplane Clients.
+          </t>
+
+          <t hangText="Backplane JavaScript API">
+            JavaScript API used by Widgets to initialize and
+            subscribe to Backplane Messages.
+          </t>
+
+          <t hangText="Backplane JavaScript Library">
+            Backplane JavaScript API implementation.
+          </t>
+
+          <t hangText="Backplane Server API">
+            Server API through which Backplane Clients send and
+            retrieve Backplane Messages.
+          </t>
+
+          <t hangText="Backplane Server">
+            Backplane Server API implementation.
+          </t>
+
+          <t hangText="Bus">
+            Identifier for a logical grouping of Backplane
+            Clients that need to interact with each other,
+            typically belonging to one organization.
+          </t>
+
+          <t hangText="Channel">
+            Identifier for Backplane Messages within a Bus
+            addressed to the Widgets loaded in a single session
+            and Web Page by the end user.
+          </t>
+
+        </list>
+      </t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -102,7 +149,9 @@
           "OPTIONAL" in this document are to be interpreted as described
           in <xref target="RFC2119">RFC 2119</xref>.</t>
       </section>
-    </section><!-- ]]] -->
+      
+    </section>
+
 
     <section anchor="overview" title="Overview"><!-- [[[ -->
       <t>A Backplane setting consists of the following components:
