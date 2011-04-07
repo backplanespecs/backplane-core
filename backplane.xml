@@ -226,14 +226,17 @@
           </t>
           <t>This call exists to help the javascript library provision
           new channel names. Since javascript provides no method to
-          access true entropy, it needs server-side assistance.</t>
+          generate unguessable values, it needs server-side
+          assistance.</t>
           <t>The result value of this call should be 32 characters
           indepedently chosen uniformly from the set
-          <spanx style="emph">0123456789abcdef</spanx>.</t>
+          <spanx style="emph">0123456789abcdef</spanx>. The content
+          returned must not be guessable given knowledge of the
+          algorithms in use or any details of the request being
+          made.</t>
           <t>As an operational note, this API call should not be
-          implemented in a way that makes it capable of blocking on
-          gathering entropy, nor in a way capable of exhausting any
-          system entropy pool.</t>
+          implemented in a way that makes it capable of blocking or
+          exhausting any system resources.</t>
         </section>
 
         <section anchor="backplane.server.api.bus" title="Get All
