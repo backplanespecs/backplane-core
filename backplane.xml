@@ -213,11 +213,11 @@
       <section anchor="backplane.server.api" title="API">
         <t>A Backplane server provides the following API.</t>
 
-        <section anchor="backplane.server.api.channel_name" title="Get a
+        <section anchor="backplane.server.api.new_channel" title="Get a
           New Channel Name">
           <t><list style="hanging">
               <t hangText="Endpoint">
-                <spanx style="verb">/v1/channel_name</spanx></t>
+                <spanx style="verb">/v1/new_channel</spanx></t>
               <t hangText="HTTP Method">GET</t>
               <t hangText="Security">HTTPS only</t>
               <t hangText="Parameters">None</t>
