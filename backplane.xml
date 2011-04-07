@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="./lib/xslt/rfc2629.xslt" ?>
 <!DOCTYPE rfc SYSTEM "./lib/xslt/rfc2629.dtd" [
+  <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
   <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
@@ -546,21 +547,8 @@ Backplane.getChannelID();
       
       &RFC4627;
 
-      <reference anchor="RFC2119" target="http://tools.ietf.org/html/rfc2119">
-        <front>
-          <title abbrev="RFC Key Words">Key words for use in RFCs to Indicate Requirement Levels</title>
-          <author initials="S." surname="Bradner" fullname="Scott Bradner">
-            <organization>Harvard University</organization>
-            <address>
-              <email>sob@harvard.edu</email>
-            </address>
-          </author>
-          <date year="1997" month="March" />
-        </front>
-      </reference>
-    </references><!-- ]]] -->
+      &RFC2119;
 
-    <references title="Informative References"><!-- [[[ -->
       <reference
         anchor="draft-panzer-magicsig-00"
         target="http://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-magicsig-00.html#anchor3">
@@ -575,6 +563,7 @@ Backplane.getChannelID();
           <date year="2010" month="February" />
         </front>
       </reference>
+
       <reference
         anchor="RFC4648.section5"
         target="http://tools.ietf.org/html/rfc4648#section-5">
