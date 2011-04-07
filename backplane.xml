@@ -156,6 +156,43 @@
       
     </section>
 
+    <section anchor="trust" title="Trust">
+      <t>The Backplane framework is intended to be used and operate under
+        the following trust relationships. Any number of security issues
+        can arrise if any of these assumptions do not hold.</t>
+      <t>
+        <list>
+          <t>
+            The end user trusts the Web Page owner (and indirectly all
+            Widget owners) that the Web Page will not attack or exploit
+            their web browser.
+          </t>
+          <t>
+            The Web Page owner (and indirectly the end user) trusts all
+            Widget owners that the Widgets will not abuse the Backplane
+            framework by trying to impersonate other Widgets' behavior
+            in order to obtain and access information that is not
+            directed to them, such as end user account information
+            addressed to other Widgets.
+          </t>
+          <t>
+            The Web Page owner (and indirectly the end user), and
+            Widget owners trust the Backplane Server API and Backplane
+            JavaScript API implementations that they will comply with
+            this specification.
+          </t>
+          <t>
+            Backplane Clients generally do not have direct trust
+            relationships with other Backplane Clients. Therefore the
+            content of Backplane Messages that are received is not
+            trusted - they are considered hints about events that may
+            have occurred. For sensitive and reliable information
+            Backplane Clients must contact trusted server-side endpoints.
+          </t>
+        </list>
+      </t>
+    </section>
+
     <section anchor="overview" title="Overview"><!-- [[[ -->
       <t>A Backplane setting consists of the following components:
         <list style="symbols">
