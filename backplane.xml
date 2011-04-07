@@ -70,14 +70,14 @@
           that get loaded, run and rendered by the web browser within
           the same web page.</t>
 
-      <t>These components can be active and continue run after the
+      <t>These components can be active and continue to run after the
           web page completed loading and are generally decoupled
           - not under the control of a single entity.</t>
 
       <t>Interactions between the end user, the web page, and its
           features provided through such components can greatly benefit
           when all parties involved can exchange information with each
-          other, and can do it it a standardized way.</t>
+          other, and can do it in a standardized way.</t>
 
       <t>The Backplane framework facilitates such interactions by
           providing an open standard API that is secure in the context
@@ -89,7 +89,7 @@
     </section><!-- ]]] -->
 
 
-    <section anchor="Definitions" title="Definitions">
+    <section anchor="definitions" title="Definitions">
 
       <t>
         <list style="hanging">
@@ -155,7 +155,6 @@
       </section>
       
     </section>
-
 
     <section anchor="overview" title="Overview"><!-- [[[ -->
       <t>A Backplane setting consists of the following components:
