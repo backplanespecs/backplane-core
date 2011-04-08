@@ -132,6 +132,11 @@
             Backplane Server API implementation.
           </t>
 
+          <t hangText="Backplane Frame">
+            A Backplane Message and metadata assigned to it by the
+            Backplane Server.
+          </t>
+
           <t hangText="Bus">
             Identifier for a logical grouping of Backplane
             Clients that need to interact with each other,
