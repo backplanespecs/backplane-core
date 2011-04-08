@@ -16,37 +16,8 @@
   <front><!-- [[[ -->
     <title abbrev="Backplane">Backplane</title>
 
-    <author fullname="Vlad Skvortsov" initials="V." surname="Skvortsov">
+    <author>
       <organization>Echo</organization>
-      <address>
-        <email>vss@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
-    </author>
-
-    <author fullname="Chris Saad" initials="C." surname="Saad">
-      <organization>Echo</organization>
-      <address>
-        <email>chris@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
-    </author>
-
-    <author fullname="Yuri Lukyanov" initials="Y." surname="Lukyanov">
-      <organization>Echo</organization>
-      <address>
-        <email>snaky@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
-    </author>
-
-    <author fullname="Alexander Zhuravlev" initials="A."
-      surname="Zhuravlev">
-      <organization>Echo</organization>
-      <address>
-        <email>zaa@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
     </author>
 
     <date day="25" month="November" year="2010" />

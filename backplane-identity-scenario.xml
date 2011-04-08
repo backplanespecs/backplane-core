@@ -16,28 +16,8 @@
   <front><!-- [[[ -->
     <title abbrev="BackplaneIdentityScenario">Backplane Identity Scenario</title>
 
-    <author fullname="Vlad Skvortsov" initials="V." surname="Skvortsov">
+    <author>
       <organization>Echo</organization>
-      <address>
-        <email>vss@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
-    </author>
-
-    <author fullname="Yuri Lukyanov" initials="Y." surname="Lukyanov">
-      <organization>Echo</organization>
-      <address>
-        <email>snaky@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
-    </author>
-
-    <author fullname="Alexander Zhuravlev" initials="A." surname="Zhuravlev">
-      <organization>Echo</organization>
-      <address>
-        <email>zaa@aboutecho.com</email>
-        <uri>http://aboutecho.com</uri>
-      </address>
     </author>
 
     <date day="1" month="November" year="2010" />
@@ -148,6 +128,8 @@
               has gained by authenticating</t>
           </list>
         </t>
+        <t>Note that 'identity/login' messages are incremental, communicating
+        addition of the specified identities to the current user session.</t>
       </section>
 
       <section anchor="message.type.identity.logout" title="identity/logout">
@@ -168,74 +150,29 @@
         </t>
       </section>
 
-      <section anchor="message.type.session.ready" title="session/ready">
-        <t>This message is transmitted whenever Echo platform
-          successfully creates a session for the user (and optionally
-          creates a user record if one did not exist before) using the
-          payload information from the identity/login message mentioned
-          above or when an users logs out.</t>
+      <section anchor="message.type.identity.ack" title="identity/ack">
+        <t>This message MAY be transmitted by a Backplane-enabled party
+          to notify others that it has processed a recent login or logout
+          event (communicated via 'identity/login' or 'identity/logout'
+          messages respectively).</t>
 
-        <t>The payload of the "session/ready" message is a JSON object which
-          contains the following field:
-          <list style="hanging">
-            <t hangText="session">a JSON object with user identity
-              information stored in the session</t>
-          </list>
-        </t>
+        <t>The structure of the message payload is sender-specific.
+          Recipients are expected to check the 'source' field of the
+          message and parse the payload accordingly. It is beyond this
+          document to map sender identifiers to the payload structure.</t>
 
-        <figure>
-          <preamble>A session stores information about a user's account in a
-            format similar to the one mentioned above (transmitted in the
-            identity/login messages), however it also has Echo platform specific
-            information. Here is an example of such a record:</preamble>
-          <artwork type="example">
-{
-    "poco": {
-        "startIndex": 0,
-        "itemsPerPage": 1,
-        "totalResults": 1,
-        "entry": {
-            "id": "0d2a33a98fb227778f8f200aebf7f64d",
-            "accounts": [
-                {
-                    "loggedIn": "false",
-                    "identityUrl": "http://google.com/profiles/johndoe",
-                    "username": "John"
-                },
-                {
-                    "loggedIn": "true",
-                    "identityUrl": "http://twitter.com/johndoe",
-                    "emails": [
-                       {
-                          "value": "johndoe@email.com",
-                          "primary": "true"
-                       }
-                    ],
-                    "username": "John"
-                }
-            ]
-        }
-    },
-    "echo" : {
-      "roles" : ["administrator"],
-      "markers" : ["m1", "m2", "m3"],
-      "state" : "ModeratorBanned"
-    }
-}
-        </artwork></figure>
+        <t>To give an example, a server might send the 'identity/ack'
+          message to notify related widgets that a user has logged in (the
+          server has processed 'identity/login' message sent by another
+          party). The corresponding session information could be
+          piggybacked into the message payload or the widgets might
+          respond to the 'identity/ack' message by issuing a separate
+          request to fetch it. The widgets will ignore all broadcast
+          'identity/ack' messages except for the one containing the known
+          sender id.</t>
 
-        <t>As you can see, the record has data in PoCo format in a
-          separate field with name "poco", and Echo platform specific
-          information is transmitted in the field "echo".  The "echo"
-          field stores information about state of the user in the Echo
-          platform – the user's roles, markers, and an identity
-          specific information in the "accounts" field.  For example,
-          the field "loggedIn" stores information about whether an user
-          successfully logged with the specified identity or not.  The
-          "identityUrl" field stores normalized identity URL (recovered
-          from SGN form to a profile URL or a plain URL for the OpenID
-          identities).</t>
       </section>
+
     </section><!-- ]]] -->
 
     <section anchor="use.cases" title="Use Cases"><!-- [[[ -->
@@ -387,7 +324,8 @@
             <t>Once the login workflow is complete, idcon.com creates an
               'identity/login' message and posts it to the Backplane channel
               (this is a secure server-to-server call).</t>
-            <t>Echo bus consumer receives the 'identity/login' message from the bus and:
+            <t>Echo bus consumer receives the 'identity/login' message 
+              from the bus and:
               <list style="symbols">
                 <t>uses the 'context' field to look up a customer by the
                   URL's domain name;</t>
@@ -395,18 +333,27 @@
                   customer's namespace;</t>
                 <t>creates or retrieves a session for the user account and
                   associates it with the channel id;</t>
-                <t>pushes session/ready backplane message to the channel ID
+                <t>pushes identity/ack backplane message to the channel ID
                   (http://backplane.customer.com/v1/bus/customer.com/channel/&lt;CHANNEL_NAME&gt;)
+                  with information about the session
                 </t>
               </list>
             </t>
-            <t>Backplane library receives the 'identity/login' message and
+            <t>Backplane library receives the 'identity/login' 
+              and waits for the 'identity/ack' message </t>
+            <t>Backplane library receives the 'identity/ack' message,
+              gets the information about the sender from the 'source'
+              field. And using particular rules for the specified sender
+              get session identifier from the 'payload' field</t>
+            <t>Backplane library retrieves information about session
+              using session identifier 
+              with the help of any proprietary protocol </t> 
+            <t>Backplane library
               notifies all interested widgets (ESC, IM, LSW).</t>
             <t>LSW trusts the message without verification and updates its
               display (now shows "Logged in as ...").'</t>
-            <t>Backplane library receives the 'session/ready' message with
-              user account information and passes it to ESC (as part of
-              subscribers notification process).</t>
+            <t> Backplane library 
+              passes it to ESC (as part of subscribers notification process).</t>
             <t>ESC updates visual representation of the echo stream using
               new information about the user.</t>
           </list>
@@ -454,18 +401,24 @@
                 <t>retrieves the session for the user account and marks
                   corresponding identity (identities) as "logged out".
                 </t>
+                <t>pushes identity/ack backplane message to the channel ID
+                  (http://backplane.customer.com/v1/bus/customer.com/channel/&lt;CHANNEL_NAME&gt;)
+                </t>
               </list>
             </t>
             <t>Backplane library receives the 'identity/logout' message
-              and notifies all interested widgets (ESC, IM, LSW).</t>
+              and waits for the 'identity/ack' message </t>
+            <t>Backplane library receives the 'identity/ack' message,
+              gets the information about the sender from the 'source'
+              field. And using particular rules for the specified sender
+              get session identifier from the 'payload' field</t>
+            <t>Backplane library retrieves information about session
+              using session identifier 
+              with the help of any proprietary protocol </t> 
+            <t>Backplane library
+              notifies all interested widgets (ESC, IM, LSW).</t>
             <t>LSW trusts the message without verification and updates
               its display.</t>
-            <t>ESC sends another request to
-              http://echoapi.customer.com/v1/users/whoami (passing the
-              channel id along).</t>
-            <t>Echo server looks up the session object by the channel id
-              and communicates the user account information to ESC using
-              a proprietary protocol.</t>
           </list>
         </t>
       </section><!-- ]]] -->

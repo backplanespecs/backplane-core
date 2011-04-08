@@ -1,0 +1,739 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en"><head><title>Echo: Backplane</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Backplane">
+<meta name="generator" content="xml2rfc v1.35 (http://xml.resource.org/)">
+<style type='text/css'><!--
+        body {
+                font-family: verdana, charcoal, helvetica, arial, sans-serif;
+                font-size: small; color: #000; background-color: #FFF;
+                margin: 2em;
+        }
+        h1, h2, h3, h4, h5, h6 {
+                font-family: helvetica, monaco, "MS Sans Serif", arial, sans-serif;
+                font-weight: bold; font-style: normal;
+        }
+        h1 { color: #900; background-color: transparent; text-align: right; }
+        h3 { color: #333; background-color: transparent; }
+
+        td.RFCbug {
+                font-size: x-small; text-decoration: none;
+                width: 30px; height: 30px; padding-top: 2px;
+                text-align: justify; vertical-align: middle;
+                background-color: #000;
+        }
+        td.RFCbug span.RFC {
+                font-family: monaco, charcoal, geneva, "MS Sans Serif", helvetica, verdana, sans-serif;
+                font-weight: bold; color: #666;
+        }
+        td.RFCbug span.hotText {
+                font-family: charcoal, monaco, geneva, "MS Sans Serif", helvetica, verdana, sans-serif;
+                font-weight: normal; text-align: center; color: #FFF;
+        }
+
+        table.TOCbug { width: 30px; height: 15px; }
+        td.TOCbug {
+                text-align: center; width: 30px; height: 15px;
+                color: #FFF; background-color: #900;
+        }
+        td.TOCbug a {
+                font-family: monaco, charcoal, geneva, "MS Sans Serif", helvetica, sans-serif;
+                font-weight: bold; font-size: x-small; text-decoration: none;
+                color: #FFF; background-color: transparent;
+        }
+
+        td.header {
+                font-family: arial, helvetica, sans-serif; font-size: x-small;
+                vertical-align: top; width: 33%;
+                color: #FFF; background-color: #666;
+        }
+        td.author { font-weight: bold; font-size: x-small; margin-left: 4em; }
+        td.author-text { font-size: x-small; }
+
+        /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+        a.info {
+                /* This is the key. */
+                position: relative;
+                z-index: 24;
+                text-decoration: none;
+        }
+        a.info:hover {
+                z-index: 25;
+                color: #FFF; background-color: #900;
+        }
+        a.info span { display: none; }
+        a.info:hover span.info {
+                /* The span will display just on :hover state. */
+                display: block;
+                position: absolute;
+                font-size: smaller;
+                top: 2em; left: -5em; width: 15em;
+                padding: 2px; border: 1px solid #333;
+                color: #900; background-color: #EEE;
+                text-align: left;
+        }
+
+        a { font-weight: bold; }
+        a:link    { color: #900; background-color: transparent; }
+        a:visited { color: #633; background-color: transparent; }
+        a:active  { color: #633; background-color: transparent; }
+
+        p { margin-left: 2em; margin-right: 2em; }
+        p.copyright { font-size: x-small; }
+        p.toc { font-size: small; font-weight: bold; margin-left: 3em; }
+        table.toc { margin: 0 0 0 3em; padding: 0; border: 0; vertical-align: text-top; }
+        td.toc { font-size: small; font-weight: bold; vertical-align: text-top; }
+
+        ol.text { margin-left: 2em; margin-right: 2em; }
+        ul.text { margin-left: 2em; margin-right: 2em; }
+        li      { margin-left: 3em; }
+
+        /* RFC-2629 <spanx>s and <artwork>s. */
+        em     { font-style: italic; }
+        strong { font-weight: bold; }
+        dfn    { font-weight: bold; font-style: normal; }
+        cite   { font-weight: normal; font-style: normal; }
+        tt     { color: #036; }
+        tt, pre, pre dfn, pre em, pre cite, pre span {
+                font-family: "Courier New", Courier, monospace; font-size: small;
+        }
+        pre {
+                text-align: left; padding: 4px;
+                color: #000; background-color: #CCC;
+        }
+        pre dfn  { color: #900; }
+        pre em   { color: #66F; background-color: #FFC; font-weight: normal; }
+        pre .key { color: #33C; font-weight: bold; }
+        pre .id  { color: #900; }
+        pre .str { color: #000; background-color: #CFF; }
+        pre .val { color: #066; }
+        pre .rep { color: #909; }
+        pre .oth { color: #000; background-color: #FCF; }
+        pre .err { background-color: #FCC; }
+
+        /* RFC-2629 <texttable>s. */
+        table.all, table.full, table.headers, table.none {
+                font-size: small; text-align: center; border-width: 2px;
+                vertical-align: top; border-collapse: collapse;
+        }
+        table.all, table.full { border-style: solid; border-color: black; }
+        table.headers, table.none { border-style: none; }
+        th {
+                font-weight: bold; border-color: black;
+                border-width: 2px 2px 3px 2px;
+        }
+        table.all th, table.full th { border-style: solid; }
+        table.headers th { border-style: none none solid none; }
+        table.none th { border-style: none; }
+        table.all td {
+                border-style: solid; border-color: #333;
+                border-width: 1px 2px;
+        }
+        table.full td, table.headers td, table.none td { border-style: none; }
+
+        hr { height: 1px; }
+        hr.insert {
+                width: 80%; border-style: none; border-width: 0;
+                color: #CCC; background-color: #CCC;
+        }
+--></style>
+</head>
+<body>
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<table summary="layout" width="66%" border="0" cellpadding="0" cellspacing="0"><tr><td><table summary="layout" width="100%" border="0" cellpadding="2" cellspacing="1">
+<tr><td class="header">Echo</td><td class="header">Echo</td></tr>
+<tr><td class="header">&nbsp;</td><td class="header">November 25, 2010</td></tr>
+</table></td></tr></table>
+<h1><br />Backplane</h1>
+
+<h3>Abstract</h3>
+
+<p>Backplane is a framework to facilitate interaction between
+        multiple independent client- and server-side parties in the
+        context of a browser session.
+</p><a name="toc"></a><br /><hr />
+<h3>Table of Contents</h3>
+<p class="toc">
+<a href="#introduction">1.</a>&nbsp;
+Introduction<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#anchor1">1.1.</a>&nbsp;
+Requirements Language<br />
+<a href="#overview">2.</a>&nbsp;
+Overview<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#overview.buses">2.1.</a>&nbsp;
+Buses<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#overview.channels">2.2.</a>&nbsp;
+Channels<br />
+<a href="#backplane.messages">3.</a>&nbsp;
+Backplane Messages<br />
+<a href="#backplane.server">4.</a>&nbsp;
+Backplane Server<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.channels">4.1.</a>&nbsp;
+Channels<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.conventions">4.2.</a>&nbsp;
+Message Retrieval Conventions<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.frames">4.3.</a>&nbsp;
+Message Frames<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.api">4.4.</a>&nbsp;
+API<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.api.bus">4.4.1.</a>&nbsp;
+Get All
+          Messages In A Bus<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.api.channel.get">4.4.2.</a>&nbsp;
+Get Channel Messages<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#backplane.server.api.channel.post">4.4.3.</a>&nbsp;
+Post Messages To A Channel<br />
+<a href="#client.side.library">5.</a>&nbsp;
+Client-side Backplane library API<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#client.side.library.init">5.1.</a>&nbsp;
+Initialization<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#client.side.library.subscription">5.2.</a>&nbsp;
+Subscription Management<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#client.side.library.hints">5.3.</a>&nbsp;
+Hints<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#client.side.library.example">5.4.</a>&nbsp;
+Usage Example<br />
+<a href="#rfc.references1">6.</a>&nbsp;
+References<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#rfc.references1">6.1.</a>&nbsp;
+Normative References<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#rfc.references2">6.2.</a>&nbsp;
+Informative References<br />
+<a href="#rfc.authors">&#167;</a>&nbsp;
+Author's Address<br />
+</p>
+<br clear="all" />
+
+<a name="introduction"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.1"></a><h3>1.&nbsp;
+Introduction</h3>
+
+<p>In essence Backplane is a message distribution system where
+        messages are delivered reliably, in order and in nearly
+        real-time fashion. The framework may be used in different
+        scenarios which build on top of the transport-level semantics
+        described in this document.
+</p>
+<a name="anchor1"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.1.1"></a><h3>1.1.&nbsp;
+Requirements Language</h3>
+
+<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+          NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described
+          in <a class='info' href='#RFC2119'>RFC 2119<span> (</span><span class='info'>Bradner, S., &ldquo;Key words for use in RFCs to Indicate Requirement Levels,&rdquo; March&nbsp;1997.</span><span>)</span></a> [RFC2119].
+</p>
+<a name="overview"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.2"></a><h3>2.&nbsp;
+Overview</h3>
+
+<p>A Backplane setting consists of the following components:
+        </p>
+<ul class="text">
+<li>A Backplane server
+</li>
+<li>A Client-side Backplane library (a Javascript library
+            executed by an end user's browser)
+</li>
+<li>Backplane-enabled widgets
+</li>
+<li>Backplane clients
+</li>
+</ul><p>
+      
+</p>
+<p>A Backplane server is an independent orchestrator of the
+        message interchange between the parties and may serve multiple
+        independent <em>buses</em>.
+</p>
+<a name="overview.buses"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.2.1"></a><h3>2.1.&nbsp;
+Buses</h3>
+
+<p>A bus is essentially a namespace to allow multiple customers
+          to be served off a single server. A bus is referenced by a
+          short identifier (e.g. "customer.com", "organization.org").
+          Bus identifiers are known to all relevant parties
+          beforehand.
+</p>
+<p>It is assumed that a relationship of trust exists between all
+          clients granted permission to post messages to a specific
+          bus.
+</p>
+<a name="overview.channels"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.2.2"></a><h3>2.2.&nbsp;
+Channels</h3>
+
+<p>Any message entering the Backplane is routed to a
+          <em>channel</em> and gets delivered to all
+          consumers of that channel.
+</p>
+<p>Channels are:
+          </p>
+<ul class="text">
+<li>allocated within buses
+</li>
+<li>referenced by unique (typically unguessable) identifiers
+              (URLs)
+</li>
+<li>non-persistent and expire after being inactive (no
+              messages posted) for specific amount of time (e.g. 30
+              minutes)
+</li>
+</ul><p>
+        
+</p>
+<p>
+            Here is an example of a Backplane channel identifier:
+          
+</p><div style='display: table; width: 0; margin-left: 3em; margin-right: auto'><pre>http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</pre></div>
+<a name="backplane.messages"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.3"></a><h3>3.&nbsp;
+Backplane Messages</h3>
+
+<p>A Backplane message is a JSON object with the following
+        predefined fields:
+        </p>
+<blockquote class="text"><dl>
+<dt>source</dt>
+<dd>the source of the message, MUST be a URL
+            ("http://client.com")
+</dd>
+<dt>type</dt>
+<dd>message type, string
+</dd>
+<dt>payload</dt>
+<dd>arbitrary object carrying data specific to the
+            particular message type
+</dd>
+</dl></blockquote><p>
+      
+</p>
+<p>A Backplane message MAY be wrapped in a
+        <a class='info' href='#draft-panzer-magicsig-00'>Magic Envelope<span> (</span><span class='info'>Panzer, J. and B. Laurie, &ldquo;Magic Signatures,&rdquo; February&nbsp;2010.</span><span>)</span></a> [draft&#8209;panzer&#8209;magicsig&#8209;00].
+        Consumers MUST be able to process (unwrap) such messages (note
+        that unwrapping a magic envelope is not the same thing as signature
+        verification).
+</p>
+<a name="backplane.server"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4"></a><h3>4.&nbsp;
+Backplane Server</h3>
+
+<a name="backplane.server.channels"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.1"></a><h3>4.1.&nbsp;
+Channels</h3>
+
+<p>Channels are created implicitly once a Backplane message get
+          posted to a channel that doesn't yet exist. It is up to the
+          posting party to come up with the
+          <em>channel name</em>
+          given the security constraints of the setting (e.g. in a
+          simple setups one can get away with predefined channel names;
+          in another scenario channel names will have to be unguessable,
+          etc).
+</p>
+<p>Channel name MUST only contain characters from the
+          <a class='info' href='#RFC4648.section5'>base64url<span> (</span><span class='info'>Josefsson, S., &ldquo;The Base16, Base32, and Base64 Data Encodings,&rdquo; October&nbsp;2006.</span><span>)</span></a> [RFC4648.section5]
+          character set.
+</p>
+<a name="backplane.server.conventions"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.2"></a><h3>4.2.&nbsp;
+Message Retrieval Conventions</h3>
+
+<p>The server maintains a "window" of most recent messages for
+          each of the existing buses and channels. The exact amount of
+          messages that fit into the window depends on the server
+          implementation or policy.
+</p>
+<p>All API methods dealing with message retrieval observe the
+          principles outlined below. A retrieval request may contain an
+          optional 'since' parameter, referring to a message previously
+          seen by the caller.
+</p>
+<p>If the 'since' parameter is...
+          </p>
+<blockquote class="text">
+<p>...omitted, the whole window worth of messages is returned.
+</p>
+<p>...present and refers to a message...
+              </p>
+<blockquote class="text">
+<p>...currently residing in the window, the server
+                  returns all messages that are more recent than the
+                  referenced one.
+</p>
+<p>...which is no longer in the window, the whole window
+                  worth of messages is returned.
+</p>
+</blockquote>
+            
+
+</blockquote><p>
+        
+</p>
+<p>In order to avoid omissions, a client needs to invoke the
+          method often enough (specific recommendations will be based on
+          the server implementation or policy).
+</p>
+<a name="backplane.server.frames"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.3"></a><h3>4.3.&nbsp;
+Message Frames</h3>
+
+<p>Whenever a Backplane server needs to communicate
+          metainformation along with a message, the Backplane message is
+          wrapped into a "frame". The Backplane frame is a JSON object
+          with the following fields:
+          </p>
+<blockquote class="text"><dl>
+<dt>message</dt>
+<dd>the Backplane message
+</dd>
+<dt>channel_name</dt>
+<dd>Name of the channel in a bus the message was
+              posted to (can be used to construct Channel ID of the message)
+</dd>
+<dt>id (string)</dt>
+<dd>an arbitrary identifier assigned by the server to
+              this message for the purpose of later referencing
+</dd>
+</dl></blockquote><p>
+        
+</p>
+<a name="backplane.server.api"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.4"></a><h3>4.4.&nbsp;
+API</h3>
+
+<p>A Backplane server provides the following API.
+</p>
+<a name="backplane.server.api.bus"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.4.1"></a><h3>4.4.1.&nbsp;
+Get All
+          Messages In A Bus</h3>
+
+<p></p>
+<blockquote class="text"><dl>
+<dt>Endpoint</dt>
+<dd><tt>/v1/bus/&lt;BUS_NAME&gt;</tt>
+</dd>
+<dt>HTTP Method</dt>
+<dd>GET
+</dd>
+<dt>Security</dt>
+<dd>
+                HTTPS with basic HTTP authentication
+</dd>
+<dt>Parameters</dt>
+<dd>
+                since (optional): message identifier (see
+                <a class='info' href='#backplane.server.conventions'>Message Retrieval Conventions<span> (</span><span class='info'>Message Retrieval Conventions</span><span>)</span></a>
+                above)
+              
+</dd>
+<dt>Returns</dt>
+<dd>a list of Backplane frames
+</dd>
+</dl></blockquote><p>
+          
+</p>
+<p>This method is used by Backplane clients to receive all
+            messages distributed on the specific bus &lt;BUS_NAME&gt;.
+</p>
+<a name="backplane.server.api.channel.get"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.4.2"></a><h3>4.4.2.&nbsp;
+Get Channel Messages</h3>
+
+<p></p>
+<blockquote class="text"><dl>
+<dt>Endpoint</dt>
+<dd>
+                <tt>/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</tt>
+</dd>
+<dt>HTTP Method</dt>
+<dd>GET
+</dd>
+<dt>Security</dt>
+<dd>none
+</dd>
+<dt>Parameters</dt>
+<dd>
+                since (optional): message identifier (see
+                <a class='info' href='#backplane.server.conventions'>Message Retrieval Conventions<span> (</span><span class='info'>Message Retrieval Conventions</span><span>)</span></a>
+                above)
+              
+</dd>
+<dt>Returns</dt>
+<dd>a list of Backplane frames
+</dd>
+</dl></blockquote><p>
+          
+</p>
+<p>This method is used by Backplane-enabled widgets to receive
+            messages broadcast to a specific channel.
+</p>
+<a name="backplane.server.api.channel.post"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.4.4.3"></a><h3>4.4.3.&nbsp;
+Post Messages To A Channel</h3>
+
+<p></p>
+<blockquote class="text"><dl>
+<dt>Endpoint</dt>
+<dd>
+                <tt>/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</tt>
+</dd>
+<dt>HTTP Method</dt>
+<dd>POST
+</dd>
+<dt>HTTP Request Body</dt>
+<dd>a list (JSON array) of
+                Backplane messages to post to the channel
+</dd>
+<dt>Security</dt>
+<dd>
+                HTTPS with basic HTTP authentication
+</dd>
+</dl></blockquote><p>
+          
+</p>
+<p>This method injects a message (or multiple messages) to the
+            channel. If channel &lt;CHANNEL_NAME&gt; doesn't exist, it
+            is created.
+</p>
+<a name="client.side.library"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.5"></a><h3>5.&nbsp;
+Client-side Backplane library API</h3>
+
+<p>A Backplane Javascript library runs in an end user's browser
+        and mediates communication between Backplane-enabled widgets on
+        the page and the Backplane server.
+</p>
+<p>Only one instance of the Backplane library on a given page is
+        possible. The library has to be the first to load on the page to
+        make it possible for other scripts to use its subscription
+        functionality.
+</p>
+<p>The library provides the following API (all methods are
+          static):
+</p><div style='display: table; width: 0; margin-left: 3em; margin-right: auto'><pre>
+/**
+ * Initializes the backplane library
+ *
+ * @param {Object} Params - hash with configuration parameters.
+ *   Possible hash keys:
+ *     serverBaseURL (required) - Base URL of Backplane Server
+ *     busName (required) - Customer's backplane bus name
+ *     channelName (optional) - custom specified channel name
+ */
+Backplane.init(Params);
+
+/**
+ * Subscribes to messages from Backplane server
+ *
+ * @param {Function} Callback - Callback function which accepts backplane messages.
+ * @returns Subscription ID which can be used later for unsubscribing.
+ */
+Backplane.subscribe(Callback);
+
+/**
+ * Removes specified subscription
+ *
+ * @param {Integer} Subscription ID
+ */
+Backplane.unsubscribe(SubscriptionID);
+
+/**
+ * Returns channel ID (like http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
+ *
+ * @returns Backplane channel ID
+ */
+Backplane.getChannelID();
+
+/**
+ * Notifies backplane library about the fact that subscribers are going
+ * to receive backplane messages within specified time interval.
+ *
+ * @param {Integer} TimeInterval - Time interval in seconds
+ * @param {Array} MessageTypes (optional) - a list of expected message types
+ */
+Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
+</pre></div>
+<a name="client.side.library.init"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.5.1"></a><h3>5.1.&nbsp;
+Initialization</h3>
+
+<p>Backplane is initialized using the
+          <tt>Backplane.init</tt> method.
+</p>
+<p>During initialization the library generates a random 
+          <em>channel name</em> unless information about
+          one for the specified <em>bus name</em>
+          already exists in the <tt>backplane-channel</tt>
+          cookie. If client-side generation of the channel name is
+          considered non-secure in a particular setting, the
+          implementation may perform a request to obtain a channel
+          name from the server side and pass it as optional
+          <tt>channelName</tt> parameter.
+          Channel name stored in the <tt>backplane-channel</tt>
+          cookie takes precedence over the one passed via the
+          <tt>channelName</tt> parameter.
+</p>
+<p>After the initialization the library stores the current
+          channel name in the <tt>backplane-channel</tt>
+          cookie set against complete domain name of currently opened
+          page. The cookie is set for 5 years in advance and keeps
+          information about association of bus names to channel names
+          (to support possibility to use the library with several
+          different bus names on the same domain). The information
+          about the association is stored in a serialized form.
+</p>
+<p>Here is an example of cookie that stores
+            association of bus names <tt>example.com</tt>
+            and <tt>example.org</tt> to the corresponding
+            channel names <tt>123</tt> and
+            <tt>456</tt>:
+</p><div style='display: table; width: 0; margin-left: 3em; margin-right: auto'><pre>backplane-channel=example.com:123|example.org:456</pre></div>
+<p>After the channel ID has been determined, the library
+          performs first reading of messages from a channel, discards
+          all of them (remembering only the identifier of the very
+          last one) and starts polling the server for new messages
+          since the latest message. This way the library is
+          guaranteed to push to subscribers only those messages which
+          arrived after the library had been fully initialized.
+</p>
+<a name="client.side.library.subscription"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.5.2"></a><h3>5.2.&nbsp;
+Subscription Management</h3>
+
+<p>The library provides a method for widgets to set up
+          notification callbacks: <tt>Backplane.subscribe</tt>.
+          The method returns subscription id which can be later used for
+          unsubscribing using the <tt>Backplane.unsubscribe</tt>
+          method.
+</p>
+<p>After the initialization the library starts polling the
+          server for new events. All incoming events are delivered to
+          the widgets that have registered callbacks with the
+          library.
+</p>
+<a name="client.side.library.hints"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.5.3"></a><h3>5.3.&nbsp;
+Hints</h3>
+
+<p>For performance reasons the Backplane library polls the
+          server quite infrequently (once a minute or so). Since
+          Backplane events usually take their origin on the client
+          side (e.g. the user clicking a button), widgets on the page
+          are in a position to hint the library that a Backplane
+          message may be soon delivered. Upon the receipt of such
+          hint (via <tt>expectMessagesWithin</tt>
+          method), the library temporarily changes the polling
+          frequency (to once a second or so) and gradually increases
+          it back to the default polling interval.
+</p>
+<p>The <tt>expectMessagesWithin</tt> method can
+          accept an optional list of expected message types. 
+          </p>
+<blockquote class="text">
+<p>If the library accepts <em>any</em> message
+              from the passed message types list, it gradually returns to the slower
+              polling frequency mode;
+</p>
+<p>If messages with only one type are expected, the second
+              argument may be specified as a string;
+</p>
+<p>Each call of the method adds passed message types to the
+              list of expected message types. In other words, if 
+              a user calls the method with a message type "type1" and then
+              performs one more call with a message type "type2", the
+              library will run in the fast polling mode until it
+              received messages of <em>all</em>
+              the types or until the libray reached the maximum allotted 
+              waiting time interval.
+</p>
+</blockquote><p>
+        
+</p>
+<a name="client.side.library.example"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.5.4"></a><h3>5.4.&nbsp;
+Usage Example</h3>
+<div style='display: table; width: 0; margin-left: 3em; margin-right: auto'><pre>
+Backplane.init({
+    serverBaseURL: "http://backplane.customer.com/v1",
+    busName: "customer.com"
+});
+
+var escSubscription = Backplane.subscribe(function(backplaneMessage) {
+    alert(backplaneMessage.payload);
+});
+
+// We can ask the library to perform more frequent polling
+// if a widget, for example, expects a message from Backplane pretty soon
+// using the expectMessagesWithin method which accepts
+// time interval of possible message arrival in seconds
+Backplane.expectMessagesWithin(10);
+
+// The method can accept an option list with expected message types.
+// The library stops fast polling when it receives a message of
+// either type.
+Backplane.expectMessagesWithin(10, ["type1", "type2"]);
+
+// Subsequent calls extend the list of expected message types.
+// The library stops fast polling only after it has received
+// a message of type1 or type2 AND a message of type3 or type4.
+Backplane.expectMessagesWithin(10, ["type3", "type4"]);
+
+Backplane.unsubscribe(escSubscription);
+
+// If a widget needs Backplane channel ID it can get it using the
+// getChannelID method
+Backplane.getChannelID();
+</pre></div>
+<a name="rfc.references"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<a name="rfc.section.6"></a><h3>6.&nbsp;
+References</h3>
+
+<a name="rfc.references1"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<h3>6.1.&nbsp;Normative References</h3>
+<table width="99%" border="0">
+<tr><td class="author-text" valign="top"><a name="RFC2119">[RFC2119]</a></td>
+<td class="author-text"><a href="mailto:sob@harvard.edu">Bradner, S.</a>, &ldquo;<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>,&rdquo; March&nbsp;1997.</td></tr>
+</table>
+
+<a name="rfc.references2"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<h3>6.2.&nbsp;Informative References</h3>
+<table width="99%" border="0">
+<tr><td class="author-text" valign="top"><a name="RFC4648.section5">[RFC4648.section5]</a></td>
+<td class="author-text">Josefsson, S., &ldquo;<a href="http://tools.ietf.org/html/rfc4648#section-5">The Base16, Base32, and Base64 Data Encodings</a>,&rdquo; October&nbsp;2006.</td></tr>
+<tr><td class="author-text" valign="top"><a name="draft-panzer-magicsig-00">[draft-panzer-magicsig-00]</a></td>
+<td class="author-text">Panzer, J. and B. Laurie, &ldquo;<a href="http://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-magicsig-00.html#anchor3">Magic Signatures</a>,&rdquo; February&nbsp;2010.</td></tr>
+</table>
+
+<a name="rfc.authors"></a><br /><hr />
+<table summary="layout" cellpadding="0" cellspacing="2" class="TOCbug" align="right"><tr><td class="TOCbug"><a href="#toc">&nbsp;TOC&nbsp;</a></td></tr></table>
+<h3>Author's Address</h3>
+<table width="99%" border="0" cellpadding="0" cellspacing="0">
+<tr><td class="author-text">&nbsp;</td>
+<td class="author-text">Echo</td></tr>
+</table>
+</body></html>
