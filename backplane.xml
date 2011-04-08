@@ -118,7 +118,7 @@
 
     <section anchor="backplane.server" title="Backplane Server"><!-- [[[ -->
       <section anchor="backplane.server.channels" title="Channels">
-        <t>Channels are created implicitly once a Backplane message get
+        <t>Channels are created implicitly once a Backplane message gets
           posted to a channel that doesn't yet exist. It is up to the
           posting party to come up with the
           <spanx style="emph">channel name</spanx>
@@ -256,7 +256,7 @@
         <artwork type="code">
 /**
  * Initializes the backplane library
- * 
+ *
  * @param {Object} Params - hash with configuration parameters.
  *   Possible hash keys:
  *     serverBaseURL (required) - Base URL of Backplane Server
@@ -282,7 +282,7 @@ Backplane.unsubscribe(SubscriptionID);
 
 /**
  * Returns channel ID (like http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
- * 
+ *
  * @returns Backplane channel ID
  */
 Backplane.getChannelID();
@@ -290,7 +290,7 @@ Backplane.getChannelID();
 /**
  * Notifies backplane library about the fact that subscribers are going
  * to receive backplane messages within specified time interval.
- * 
+ *
  * @param {Integer} TimeInterval - Time interval in seconds
  * @param {Array} MessageTypes (optional) - a list of expected message types
  */
@@ -303,7 +303,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
         <t>Backplane is initialized using the
           <spanx style="verb">Backplane.init</spanx> method.</t>
 
-        <t>During initialization the library generates a random 
+        <t>During initialization the library generates a random
           <spanx style="emph">channel name</spanx> unless information about
           one for the specified <spanx style="emph">bus name</spanx>
           already exists in the <spanx style="verb">backplane-channel</spanx>
@@ -372,7 +372,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           it back to the default polling interval.</t>
 
         <t>The <spanx style="verb">expectMessagesWithin</spanx> method can
-          accept an optional list of expected message types. 
+          accept an optional list of expected message types.
           <list>
             <t>If the library accepts <spanx style="emph">any</spanx> message
               from the passed message types list, it gradually returns to the slower
@@ -380,12 +380,12 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
             <t>If messages with only one type are expected, the second
               argument may be specified as a string;</t>
             <t>Each call of the method adds passed message types to the
-              list of expected message types. In other words, if 
+              list of expected message types. In other words, if
               a user calls the method with a message type "type1" and then
               performs one more call with a message type "type2", the
               library will run in the fast polling mode until it
               received messages of <spanx style="emph">all</spanx>
-              the types or until the libray reached the maximum allotted 
+              the types or until the libray reached the maximum allotted
               waiting time interval.</t>
           </list>
         </t>
@@ -431,47 +431,47 @@ Backplane.getChannelID();
 
   <back><!-- [[[ -->
     <references title="Normative References"><!-- [[[ -->
-      <reference anchor="RFC2119" target="http://tools.ietf.org/html/rfc2119"> 
-        <front> 
-          <title abbrev="RFC Key Words">Key words for use in RFCs to Indicate Requirement Levels</title> 
-          <author initials="S." surname="Bradner" fullname="Scott Bradner"> 
-            <organization>Harvard University</organization> 
-            <address> 
+      <reference anchor="RFC2119" target="http://tools.ietf.org/html/rfc2119">
+        <front>
+          <title abbrev="RFC Key Words">Key words for use in RFCs to Indicate Requirement Levels</title>
+          <author initials="S." surname="Bradner" fullname="Scott Bradner">
+            <organization>Harvard University</organization>
+            <address>
               <email>sob@harvard.edu</email>
             </address>
-          </author> 
-          <date year="1997" month="March" /> 
-        </front> 
-      </reference> 
+          </author>
+          <date year="1997" month="March" />
+        </front>
+      </reference>
     </references><!-- ]]] -->
 
     <references title="Informative References"><!-- [[[ -->
       <reference
         anchor="draft-panzer-magicsig-00"
-        target="http://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-magicsig-00.html#anchor3"> 
-        <front> 
-          <title>Magic Signatures</title> 
-          <author initials="J." surname="Panzer" fullname="J. Panzer"> 
-            <organization>Google Inc.</organization> 
-          </author> 
-          <author initials="B." surname="Laurie" fullname="B. Laurie"> 
-            <organization>Google Inc.</organization> 
-          </author> 
-          <date year="2010" month="February" /> 
-        </front> 
-      </reference> 
+        target="http://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-magicsig-00.html#anchor3">
+        <front>
+          <title>Magic Signatures</title>
+          <author initials="J." surname="Panzer" fullname="J. Panzer">
+            <organization>Google Inc.</organization>
+          </author>
+          <author initials="B." surname="Laurie" fullname="B. Laurie">
+            <organization>Google Inc.</organization>
+          </author>
+          <date year="2010" month="February" />
+        </front>
+      </reference>
       <reference
         anchor="RFC4648.section5"
-        target="http://tools.ietf.org/html/rfc4648#section-5"> 
-        <front> 
-          <title>The Base16, Base32, and Base64 Data Encodings</title> 
+        target="http://tools.ietf.org/html/rfc4648#section-5">
+        <front>
+          <title>The Base16, Base32, and Base64 Data Encodings</title>
           <author initials="S." surname="Josefsson"
-            fullname="S. Josefsson"> 
-            <organization>SJD</organization> 
-          </author> 
-          <date year="2006" month="October" /> 
-        </front> 
-      </reference> 
+            fullname="S. Josefsson">
+            <organization>SJD</organization>
+          </author>
+          <date year="2006" month="October" />
+        </front>
+      </reference>
     </references><!-- ]]] -->
   </back><!-- ]]] -->
 </rfc>
