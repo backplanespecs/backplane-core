@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="./lib/xslt/rfc2629.xslt" ?>
-<!DOCTYPE rfc SYSTEM "./lib/xslt/rfc2629.dtd">
+<!DOCTYPE rfc SYSTEM "./lib/xslt/rfc2629.dtd" [
+  <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+  <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
+  <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
+]>
 <?rfc toc="yes"?>
 <?rfc tocompact="yes"?>
 <?rfc tocdepth="3"?>
@@ -23,20 +27,101 @@
     <date day="25" month="November" year="2010" />
 
     <abstract>
-      <t>Backplane is a framework to facilitate interaction between
-        multiple independent client- and server-side parties in the
-        context of a browser session.</t>
+      <t>Backplane is a framework that facilitates message exchanges
+          and event notifications between third-party JavaScript
+          components within a web page.</t>
     </abstract>
 
   </front><!-- ]]] -->
 
   <middle><!-- [[[ -->
     <section anchor="introduction" title="Introduction"><!-- [[[ -->
-      <t>In essence Backplane is a message distribution system where
-        messages are delivered reliably, in order and in nearly
-        real-time fashion. The framework may be used in different
-        scenarios which build on top of the transport-level semantics
-        described in this document.</t>
+      <t>Web pages have evolved from being loaded from a single resource
+          to being able to reference third-party, external components
+          that get loaded, run and rendered by the web browser within
+          the same web page.</t>
+
+      <t>These components can be active and continue to run after the
+          web page completed loading and are generally decoupled
+          - not under the control of a single entity.</t>
+
+      <t>Interactions between the end user, the web page, and its
+          features provided through such components can greatly benefit
+          when all parties involved can exchange information with each
+          other, and can do it in a standardized way.</t>
+
+      <t>The Backplane framework facilitates such interactions by
+          providing an open standard API that is secure in the context
+          of the assumed trust relationships between the parties
+          involved. Messages are delivered reliably, in order and in
+          nearly real-time fashion. The framework may be used in
+          different scenarios which build on top of the transport-level
+          semantics described in this document.</t>
+    </section><!-- ]]] -->
+
+
+    <section anchor="definitions" title="Definitions">
+
+      <t>
+        <list style="hanging">
+
+          <t hangText="Web Page">
+            Document obtained from a web resource and loaded by the
+            end user's web browser.
+          </t>
+
+          <t hangText="Widget">
+            Third-party JavaScript component referenced from the
+            Web Page that is loaded and run in the end user's browser.
+          </t>
+
+          <t hangText="Backplane Client">
+            Entity that uses the Backplane framework to exchange
+            information.
+          </t>
+
+          <t hangText="Backplane Message">
+            A JSON object representing the unit of communication
+            between Backplane Clients.
+          </t>
+
+          <t hangText="Backplane JavaScript API">
+            JavaScript API used by Widgets to initialize and
+            subscribe to Backplane Messages.
+          </t>
+
+          <t hangText="Backplane JavaScript Library">
+            Backplane JavaScript API implementation.
+          </t>
+
+          <t hangText="Backplane Server API">
+            Server API through which Backplane Clients send and
+            retrieve Backplane Messages.
+          </t>
+
+          <t hangText="Backplane Server">
+            Backplane Server API implementation.
+          </t>
+
+          <t hangText="Backplane Frame">
+            A Backplane Message and metadata assigned to it by the
+            Backplane Server.
+          </t>
+
+          <t hangText="Bus">
+            Identifier for a logical grouping of Backplane
+            Clients that need to interact with each other,
+            typically belonging to one organization.
+          </t>
+
+          <t hangText="Channel">
+            Identifier for Backplane Messages within a Bus
+            addressed to the Widgets loaded in a single session
+            and Web Page by the end user.
+          </t>
+
+        </list>
+      </t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -44,58 +129,97 @@
           "OPTIONAL" in this document are to be interpreted as described
           in <xref target="RFC2119">RFC 2119</xref>.</t>
       </section>
-    </section><!-- ]]] -->
+      
+    </section>
 
     <section anchor="overview" title="Overview"><!-- [[[ -->
-      <t>A Backplane setting consists of the following components:
+      <t>
+        An operational Backplane framework consists of the following
+        components:
         <list style="symbols">
-          <t>A Backplane server</t>
-          <t>A Client-side Backplane library (a Javascript library
-            executed by an end user's browser)</t>
-          <t>Backplane-enabled widgets</t>
-          <t>Backplane clients</t>
+          <t>A Backplane Server</t>
+          <t>A Backplane JavaScript Library</t>
+          <t>Widgets that act as Backplane Clients</t>
+          <t>Widgets' server-side counterparts that act as Backplane Clients.</t>
         </list>
       </t>
 
-      <t>A Backplane server is an independent orchestrator of the
-        message interchange between the parties and may serve multiple
-        independent <spanx style="emph">buses</spanx>.</t>
-
-      <section anchor="overview.buses" title="Buses">
-        <t>A bus is essentially a namespace to allow multiple customers
-          to be served off a single server. A bus is referenced by a
-          short identifier (e.g. "customer.com", "organization.org").
-          Bus identifiers are known to all relevant parties
-          beforehand.</t>
-        <t>It is assumed that a relationship of trust exists between all
-          clients granted permission to post messages to a specific
-          bus.</t>
-      </section>
-
-      <section anchor="overview.channels" title="Channels">
-        <t>Any message entering the Backplane is routed to a
-          <spanx style="emph">channel</spanx> and gets delivered to all
-          consumers of that channel.</t>
-
-        <t>Channels are:
-          <list style="symbols">
-            <t>allocated within buses</t>
-            <t>referenced by unique (typically unguessable) identifiers
-              (URLs)</t>
-            <t>non-persistent and expire after being inactive (no
-              messages posted) for specific amount of time (e.g. 30
-              minutes)</t>
-          </list>
-        </t>
-
-        <figure>
-          <preamble>
-            Here is an example of a Backplane channel identifier:
-          </preamble>
-          <artwork type="code">http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
-        </figure>
-      </section>
+      <t>A Backplane Server is an independent orchestrator of the
+        message interchange between Backplane Clients and may serve
+        multiple independent Buses.</t>
     </section> <!-- ]]] -->
+
+    <section anchor="trust" title="Trust">
+      <t>The Backplane framework is intended to be used and operate under
+        the following trust relationships. Any number of security issues
+        can arrise if any of these assumptions do not hold.</t>
+      <t>
+        <list>
+          <t>
+            The end user trusts the Web Page owner (and indirectly all
+            Widget owners) that the Web Page will not attack or exploit
+            their web browser.
+          </t>
+          <t>
+            The Web Page owner (and indirectly the end user) trusts all
+            Widget owners that the Widgets will not abuse the Backplane
+            framework by trying to impersonate other Widgets' behavior
+            in order to obtain and access information that is not
+            directed to them, such as end user account information
+            addressed to other Widgets.
+          </t>
+          <t>
+            The Web Page owner (and indirectly the end user), and
+            Widget owners trust the Backplane Server API and Backplane
+            JavaScript API implementations that they will comply with
+            this specification.
+          </t>
+          <t>
+            Backplane Clients generally do not have direct trust
+            relationships with other Backplane Clients. Therefore the
+            content of Backplane Messages that are received is not
+            trusted - they are considered hints about events that may
+            have occurred. For sensitive and reliable information
+            Backplane Clients must contact trusted server-side endpoints.
+          </t>
+        </list>
+      </t>
+    </section>
+
+    <section anchor="buses" title="Buses">
+      <t>A bus is essentially a namespace to allow multiple customers
+        to be served off a single server. A bus is referenced by a
+        short identifier (e.g. "customer.com", "organization.org").
+        Bus identifiers are known to all relevant parties
+        beforehand.</t>
+      <t>It is assumed that a relationship of trust exists between all
+        clients granted permission to post messages to a specific
+        bus.</t>
+    </section>
+
+    <section anchor="channels" title="Channels">
+      <t>Any message entering the Backplane is routed to a
+        <spanx style="emph">channel</spanx> and gets delivered to all
+        consumers of that channel.</t>
+
+      <t>Channels are:
+        <list style="symbols">
+          <t>allocated within buses</t>
+          <t>referenced by unique (typically unguessable) identifiers
+            (URLs)</t>
+          <t>non-persistent and expire after being inactive (no
+            messages posted) for specific amount of time (e.g. 30
+            minutes)</t>
+        </list>
+      </t>
+
+      <figure>
+        <preamble>
+          Here is an example of a Backplane channel identifier:
+        </preamble>
+        <artwork type="code">http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+      </figure>
+    </section>
 
     <section anchor="backplane.messages" title="Backplane Messages"><!-- [[[ -->
       <t>A Backplane message is a JSON object with the following
@@ -431,21 +555,13 @@ Backplane.getChannelID();
 
   <back><!-- [[[ -->
     <references title="Normative References"><!-- [[[ -->
-      <reference anchor="RFC2119" target="http://tools.ietf.org/html/rfc2119">
-        <front>
-          <title abbrev="RFC Key Words">Key words for use in RFCs to Indicate Requirement Levels</title>
-          <author initials="S." surname="Bradner" fullname="Scott Bradner">
-            <organization>Harvard University</organization>
-            <address>
-              <email>sob@harvard.edu</email>
-            </address>
-          </author>
-          <date year="1997" month="March" />
-        </front>
-      </reference>
-    </references><!-- ]]] -->
 
-    <references title="Informative References"><!-- [[[ -->
+      &RFC2616;
+      
+      &RFC4627;
+
+      &RFC2119;
+
       <reference
         anchor="draft-panzer-magicsig-00"
         target="http://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-magicsig-00.html#anchor3">
@@ -460,6 +576,7 @@ Backplane.getChannelID();
           <date year="2010" month="February" />
         </front>
       </reference>
+
       <reference
         anchor="RFC4648.section5"
         target="http://tools.ietf.org/html/rfc4648#section-5">
