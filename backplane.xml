@@ -213,22 +213,22 @@
       <section anchor="backplane.server.api" title="API">
         <t>A Backplane server provides the following API.</t>
 
-        <section anchor="backplane.server.api.new_channel" title="Get a
+        <section anchor="backplane.server.api.new_channel" title="Get A
           New Channel Name">
           <t><list style="hanging">
               <t hangText="Endpoint">
-                <spanx style="verb">/v1/new_channel</spanx></t>
-              <t hangText="HTTP Method">GET</t>
-              <t hangText="Security">HTTPS only</t>
+                <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel</spanx></t>
+              <t hangText="HTTP Method">POST</t>
+              <t hangText="Security">None</t>
               <t hangText="Parameters">None</t>
-              <t hangText="Returns">a new, securely-generated channel name</t>
+              <t hangText="Returns">a new, securely-generated channel name in 'Location' header</t>
             </list>
           </t>
           <t>This call exists to help the javascript library provision
           new channel names. Since javascript provides no method to
           generate unguessable values, it needs server-side
           assistance.</t>
-          <t>The result value of this call should be 32 characters
+          <t>The result value of this call should be at least 32 characters
           indepedently chosen uniformly from the set
           <spanx style="emph">0123456789abcdef</spanx>. The content
           returned must not be guessable given knowledge of the
