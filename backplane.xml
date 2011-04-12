@@ -401,81 +401,100 @@
     <section anchor="backplane.server.api" title="Backplane Server API"><!-- [[[ -->
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
-        <t>The server maintains a "window" of most recent messages for
-          each of the existing buses and channels. The exact amount of
-          messages that fit into the window depends on the server
-          implementation or policy.</t>
+        <t>
+          A Backplane Server maintains a "window" of most recent
+          messages for each of the existing buses and channels. The
+          exact amount of messages that fit into the window depends
+          on the server implementation or policy.
+        </t>
 
-        <t>All API methods dealing with message retrieval observe the
-          principles outlined below. A retrieval request may contain an
-          optional 'since' parameter, referring to a message previously
-          seen by the caller.</t>
+        <t>
+          All Backplane Server API methods dealing with Backplane
+          Message retrieval observe the principles outlined below. A
+          retrieval request may contain an optional 'since' parameter,
+          referring to a message previously seen by the caller.
+        </t>
 
-        <t>If the 'since' parameter is...
+        <t>
+          If the 'since' parameter is...
           <list>
-            <t>...omitted, the whole window worth of messages is returned.</t>
-            <t>...present and refers to a message...
+            <t>...omitted, the whole window worth of Backplane Messages
+              is returned.</t>
+            <t>...present and refers to a Backplane Message...
               <list>
-                <t>...currently residing in the window, the server
-                  returns all messages that are more recent than the
-                  referenced one.</t>
+                <t>...currently residing in the window, the Backplane
+                  Server returns all Backplane Messages that are more
+                  recent than the referenced one.</t>
                 <t>...which is no longer in the window, the whole window
-                  worth of messages is returned.</t>
+                  worth of Backplane Messages is returned.</t>
               </list>
             </t>
           </list>
         </t>
 
-        <t>In order to avoid omissions, a client needs to invoke the
-          method often enough (specific recommendations will be based on
-          the server implementation or policy).</t>
+        <t>In order to avoid omissions, a Backplane Client needs to
+          invoke the method often enough (specific recommendations
+          will be based on the server implementation or policy).</t>
+
       </section>
 
-      <t>A Backplane server provides the following API.</t>
+      <t>A Backplane Server provides the following API.</t>
 
       <section anchor="backplane.server.api.new_channel" title="Get a
         New Channel Name">
-        <t><list style="hanging">
+        <t>
+          <list style="hanging">
             <t hangText="Endpoint">
               <spanx style="verb">/v1/new_channel</spanx></t>
             <t hangText="HTTP Method">GET</t>
-            <t hangText="Security">HTTPS only</t>
+            <t hangText="Security">HTTPS only,
+              <xref target="access.level.regular">Regular Access Level</xref></t>
             <t hangText="Parameters">None</t>
-            <t hangText="Returns">a new, securely-generated channel name</t>
+            <t hangText="Returns">a new, securely-generated Channel Name</t>
           </list>
         </t>
-        <t>This call exists to help the javascript library provision
-        new channel names. Since javascript provides no method to
-        generate unguessable values, it needs server-side
-        assistance.</t>
-        <t>The result value of this call should be 32 characters
-        indepedently chosen uniformly from the set
-        <spanx style="emph">0123456789abcdef</spanx>. The content
-        returned must not be guessable given knowledge of the
-        algorithms in use or any details of the request being
-        made.</t>
-        <t>As an operational note, this API call should not be
-        implemented in a way that makes it capable of blocking or
-        exhausting any system resources.</t>
+        <t>
+          This call exists to help the Backplane JavaScript Library
+          provision new Channel Names. Since JavaScript provides no
+          method to generate unguessable values, it needs server-side
+          assistance.
+        </t>
+        <t>
+          The result value of this call should be 32 characters
+          indepedently chosen uniformly from the set
+          <spanx style="emph">0123456789abcdef</spanx>. The content
+          returned must not be guessable given knowledge of the
+          algorithms in use or any details of the request being
+          made.
+        </t>
+        <t>
+          As an operational note, this API call should not be
+          implemented in a way that makes it capable of blocking or
+          exhausting any system resources.
+        </t>
       </section>
 
       <section anchor="backplane.server.api.bus" title="Get All
         Messages In A Bus">
         <t><list style="hanging">
-            <t hangText="Endpoint"><spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;</spanx></t>
+            <t hangText="Endpoint">
+              <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
-            <t hangText="Security">
-              HTTPS with basic HTTP authentication</t>
+            <t hangText="Security">HTTPS with
+              <xref target="access.level.privileged">Privileged Access Level</xref></t>
             <t hangText="Parameters">
-              since (optional): message identifier (see
+              since (optional): Backplane Message identifier (see
               <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
               above)
             </t>
-            <t hangText="Returns">a list of Backplane frames</t>
+            <t hangText="Returns">a JSON object consisting of a list of
+              Backplane Frames</t>
           </list>
         </t>
-        <t>This method is used by Backplane clients to receive all
-          messages distributed on the specific bus &lt;BUS_NAME&gt;.</t>
+        <t>
+          This method is used by Backplane Clients to receive all
+          messages distributed on the specific Bus &lt;BUS_NAME&gt;.
+        </t>
       </section>
 
       <section anchor="backplane.server.api.channel.get"
@@ -484,17 +503,33 @@
             <t hangText="Endpoint">
               <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
-            <t hangText="Security">none</t>
+            <t hangText="Security">
+              <xref target="access.level.privileged">Privileged Access Level</xref>
+              with HTTPS, or
+              <xref target="access.level.regular">Regular Access Level</xref>
+              with either HTTP or HTTPS.
+            </t>
             <t hangText="Parameters">
-              since (optional): message identifier (see
+              since (optional): Backplane Message identifier (see
               <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
               above)
             </t>
-            <t hangText="Returns">a list of Backplane frames</t>
-          </list>
+            <t hangText="Returns">a JSON object consisting of a list of
+              Backplane Frames or Backplane Frame Headers, depending on
+              the access level used by the requester.</t>
+        </list>
         </t>
-        <t>This method is used by Backplane-enabled widgets to receive
-          messages broadcast to a specific channel.</t>
+        <t>
+          With <xref target="access.level.privileged">Privileged Access Level</xref>
+          this method is used by server-side components to receive Backplane
+          Frames that were posted to a specific Channel.
+        </t>
+        <t>
+          With <xref target="access.level.regular">Regular Access Level</xref>
+          this method is used by Widgets to receive Backplane Frame
+          Headers for Backplane Messages that were posted to a specific
+          Channel.
+        </t>
       </section>
 
       <section anchor="backplane.server.api.channel.post"
@@ -503,14 +538,15 @@
             <t hangText="Endpoint">
               <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">POST</t>
-            <t hangText="HTTP Request Body">a list (JSON array) of
-              Backplane messages to post to the channel</t>
-            <t hangText="Security">
-              HTTPS with basic HTTP authentication</t>
+            <t hangText="HTTP Request Body">a JSON object consisting of
+              a list of Backplane Messages to post to the channel</t>
+            <t hangText="Security">HTTPS,
+              <xref target="access.level.privileged">Privileged Access Level</xref></t>
           </list>
         </t>
-        <t>This method injects a message (or multiple messages) to the
-          channel. If channel &lt;CHANNEL_NAME&gt; doesn't exist, it
+        <t>
+          This method injects one or more Backplane Messages to the
+          Channel. If Channel &lt;CHANNEL_NAME&gt; doesn't exist, it
           is created.</t>
       </section>
 
@@ -518,18 +554,18 @@
 
     <section anchor="backplane.javascript.api" title="Backplane JavaScript API"><!-- [[[ -->
 
-      <t>A Backplane Javascript library runs in an end user's browser
-        and mediates communication between Backplane-enabled widgets on
-        the page and the Backplane server.</t>
+      <t>A Backplane JavaScript Library runs in an end user's browser
+        and mediates communication between Backplane-enabled Widgets on
+        the page and the Backplane Server.</t>
 
-      <t>Only one instance of the Backplane library on a given page is
-        possible. The library has to be the first to load on the page to
-        make it possible for other scripts to use its subscription
-        functionality.</t>
+      <t>Only one instance of the Backplane JavaScript Library on a
+        given page is possible. The library has to be the first to load
+        on the page to make it possible for other scripts to use its
+        subscription functionality.</t>
 
       <figure>
-        <preamble>The library provides the following API (all methods are
-          static):</preamble>
+        <preamble>The Backplane JavaScript Library provides the following
+          API (all methods are static): </preamble>
         <artwork type="code">
 /**
  * Initializes the backplane library
@@ -580,26 +616,26 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           <spanx style="verb">Backplane.init</spanx> method.</t>
 
         <t>During initialization the library generates a random
-          <spanx style="emph">channel name</spanx> unless information about
-          one for the specified <spanx style="emph">bus name</spanx>
-          already exists in the <spanx style="verb">backplane-channel</spanx>
-          cookie. Since client-side generation of the channel name is
-          non-secure, the library performs a request to obtain a channel
-          name from the backplane server.</t>
+          Channel Name unless information about one for the specified
+          <spanx style="emph">bus name</spanx> already exists in the
+          <spanx style="verb">backplane-channel</spanx> cookie. Since
+          client-side generation of the channel name is non-secure,
+          the library performs a request to obtain a channel name
+          from the Backplane Server.</t>
 
-        <t>After the initialization the library stores the current
-          channel name in the <spanx style="verb">backplane-channel</spanx>
-          cookie set against complete domain name of currently opened
-          page. The cookie is set for 5 years in advance and keeps
-          information about association of bus names to channel names
-          (to support possibility to use the library with several
-          different bus names on the same domain). The information
+        <t>After initialization the library stores the current Channel
+          Name in the <spanx style="verb">backplane-channel</spanx>
+          cookie set against the complete domain name of currently
+          opened page. The cookie is set for 5 years in advance and
+          keeps information about association of Bus names to Channel
+          Names (to support possibility to use the library with several
+          different Bus names on the same domain). The information
           about the association is stored in a serialized form.</t>
 
         <figure>
-          <preamble>Here is an example of cookie that stores
-            association of bus names <spanx style="verb">example.com</spanx>
-            and <spanx style="verb">example.org</spanx> to the corresponding
+          <preamble>Here is an example of cookie that stores association
+            of Bus names <spanx style="verb">example.com</spanx> and
+            <spanx style="verb">example.org</spanx> to the corresponding
             channel names <spanx style="verb">123</spanx> and
             <spanx style="verb">456</spanx>:</preamble>
           <artwork type="example">backplane-channel=example.com:123|example.org:456</artwork>
@@ -608,53 +644,54 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
         <t>After the channel ID has been determined, the library
           performs a first reading of messages from a channel, discards
           all of them (remembering only the identifier of the very
-          last one) and starts polling the server for new messages
-          since the latest message. This way the library is
-          guaranteed to push to subscribers only those messages which
-          arrived after the library had been fully initialized.</t>
+          last one) and starts polling the Backplane Server for new
+          messages since the latest Backplane Message. This way the
+          library is guaranteed to push to subscribers only those
+          Backplane Messages which arrived after the library had been
+          fully initialized.</t>
 
       </section>
 
       <section anchor="client.side.library.subscription"
           title="Subscription Management">
-        <t>The library provides a method for widgets to set up
+        <t>The library provides a method for Widgets to set up
           notification callbacks: <spanx style="verb">Backplane.subscribe</spanx>.
-          The method returns subscription id which can be later used for
-          unsubscribing using the <spanx style="verb">Backplane.unsubscribe</spanx>
+          The method returns a subscription id which can be later used
+          for unsubscribing using the <spanx style="verb">Backplane.unsubscribe</spanx>
           method.</t>
 
         <t>After the initialization the library starts polling the
-          server for new events. All incoming events are delivered to
-          the widgets that have registered callbacks with the
-          library.</t>
+          Backplane Server for new events. All incoming events are
+          delivered to the Widgets that have registered callbacks with
+          the library. </t>
 
       </section>
       <section anchor="client.side.library.hints"
           title="Hints">
-        <t>For performance reasons the Backplane library polls the
-          server quite infrequently (once a minute or so). Since
-          Backplane events usually take their origin on the client
-          side (e.g. the user clicking a button), widgets on the page
-          are in a position to hint the library that a Backplane
-          message may be soon delivered. Upon the receipt of such
-          hint (via <spanx style="verb">expectMessagesWithin</spanx>
-          method), the library temporarily changes the polling
-          frequency (to once a second or so) and gradually increases
-          it back to the default polling interval.</t>
+        <t>For performance reasons the Backplane JavaScript Library
+          polls the Backplane Server with a low frequency (e.g once a
+          minute). Since Backplane events usually are initiated on the
+          client side (e.g. the user clicking a button), Widgets on the
+          page are in a position to hint the library that a Backplane
+          message may be soon delivered. Upon the receipt of such hint
+          (via <spanx style="verb">expectMessagesWithin</spanx> method),
+          the library temporarily increases the polling frequency (e.g.
+          to once a second) and then gradually decreases it to the
+          default low value one.</t>
 
-        <t>The <spanx style="verb">expectMessagesWithin</spanx> method can
-          accept an optional list of expected message types.
+        <t>The <spanx style="verb">expectMessagesWithin</spanx> method
+          can accept an optional list of expected message types.
           <list>
-            <t>If the library accepts <spanx style="emph">any</spanx> message
-              from the passed message types list, it gradually returns to the slower
-              polling frequency mode;</t>
+            <t>If the library accepts <spanx style="emph">any</spanx>
+              message from the passed message types list, it gradually
+              returns to the lower polling frequency mode;</t>
             <t>If messages with only one type are expected, the second
               argument may be specified as a string;</t>
             <t>Each call of the method adds passed message types to the
               list of expected message types. In other words, if
-              a user calls the method with a message type "type1" and then
-              performs one more call with a message type "type2", the
-              library will run in the fast polling mode until it
+              a user calls the method with a message type "type1" and
+              then performs one more call with a message type "type2",
+              the library will run in the fast polling mode until it
               received messages of <spanx style="emph">all</spanx>
               the types or until the libray reached the maximum allotted
               waiting time interval.</t>
