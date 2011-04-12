@@ -74,13 +74,13 @@
         <list style="hanging">
 
           <t hangText="Web Page">
-            Document obtained from a web resource and loaded by the
-            end user's web browser.
+            Document obtained from a web resource and loaded by the end
+            user's web browser.
           </t>
 
           <t hangText="Widget">
-            Third-party JavaScript component referenced from the
-            Web Page that is loaded and run in the end user's browser.
+            Third-party JavaScript component referenced from the Web
+            Page that is loaded and run in the end user's browser.
           </t>
 
           <t hangText="Backplane Client">
@@ -89,13 +89,13 @@
           </t>
 
           <t hangText="Backplane Message">
-            A JSON object representing the unit of communication
-            between Backplane Clients.
+            A JSON object representing the unit of communication between
+            Backplane Clients.
           </t>
 
           <t hangText="Backplane JavaScript API">
-            JavaScript API used by Widgets to initialize and
-            subscribe to Backplane Messages.
+            JavaScript API used by Widgets to initialize and subscribe
+            to Backplane Messages.
           </t>
 
           <t hangText="Backplane JavaScript Library">
@@ -103,8 +103,8 @@
           </t>
 
           <t hangText="Backplane Server API">
-            Server API through which Backplane Clients send and
-            retrieve Backplane Messages.
+            Server API through which Backplane Clients send and retrieve
+            Backplane Messages.
           </t>
 
           <t hangText="Backplane Server">
@@ -117,15 +117,20 @@
           </t>
 
           <t hangText="Bus">
-            Identifier for a logical grouping of Backplane
-            Clients that need to interact with each other,
-            typically belonging to one organization.
+            Identifier for a logical grouping of Backplane Clients that
+            need to interact with each other, typically belonging to one
+            organization.
           </t>
 
           <t hangText="Channel">
-            Identifier for Backplane Messages within a Bus
-            addressed to the Widgets loaded in a single session
-            and Web Page by the end user.
+            Identifier for a subset of Backplane Messages on a Bus that
+            are addressed to the Backplane Clients interacting with the
+            end user through a single session and Web Page.
+          </t>
+
+          <t hangText="Channel Name">
+            The part of the Channel identifier that is unique within a
+            Bus.
           </t>
 
         </list>
@@ -158,7 +163,8 @@
     </section> <!-- ]]] -->
 
     <section anchor="trust" title="Trust">
-      <t>The Backplane framework is intended to be used and operate under
+      <t>
+        The Backplane framework is intended to be used and operate under
         the following trust relationships. Any number of security issues
         can arrise if any of these assumptions do not hold.</t>
       <t>
@@ -183,81 +189,137 @@
             this specification.
           </t>
           <t>
-            Backplane Clients generally do not have direct trust
-            relationships with other Backplane Clients. Therefore the
-            content of Backplane Messages that are received is not
-            trusted - they are considered hints about events that may
-            have occurred. For sensitive and reliable information
-            Backplane Clients must contact trusted server-side endpoints.
+            Backplane Clients trust the Bus owner and the authenticity
+            of Backplane Messages received through a Bus, i.e all
+            Backplane Clients that were granted permission to post on
+            the Bus by its owner.
           </t>
         </list>
       </t>
     </section>
 
     <section anchor="buses" title="Buses">
-      <t>A bus is essentially a namespace to allow multiple customers
-        to be served off a single server. A bus is referenced by a
-        short identifier (e.g. "customer.com", "organization.org").
-        Bus identifiers are known to all relevant parties
-        beforehand.</t>
-      <t>It is assumed that a relationship of trust exists between all
+      <t>
+        A Bus is an identifier for a logical grouping of Backplane
+        Clients that need to interact with each other, typically
+        belonging to one organization. The Bus identifier acts as a 
+        namespace for the Backplane Messages exchanged by the group.
+      </t>
+      <t>
+        Bus identifiers allow a Backplane Server to service multiple
+        customers and can consist of short strings referencing the Bus
+        owner's name (e.g. "customer.com", "organization.org").
+      </t>
+      <t>
+        Backplane Clients must know the identifiers for the Buses
+        through which they wish to exchange Backplane Messages.
+      </t>
+      <t>
+        It is assumed that a relationship of trust exists between all
         clients granted permission to post messages to a specific
-        bus.</t>
+        bus. See <xref target="trust">Trust</xref>.
+      </t>
+      <figure>
+        <preamble>
+          Example of a Bus identifier:
+        </preamble>
+        <artwork type="code">http://backplane.example.com/v1/bus/customer.com</artwork>
+      </figure>
     </section>
 
     <section anchor="channels" title="Channels">
-      <t>Any message entering the Backplane is routed to a
-        <spanx style="emph">channel</spanx> and gets delivered to all
-        consumers of that channel.</t>
+      <t>
+        A Channel is an identifier for a subset of Backplane Messages on
+        a Bus that are addressed to the Backplane Clients interacting
+        with the end user through a single session and Web Page.
+      </t>
+      <t>
+        A Channel is similar to a session identifier for the user but is
+        shared by all Backplane Clients. All Backplane Clients that know
+        a given Channel identifier can receive Backplane Messages posted
+        to that Channel.
+      </t>
 
       <t>Channels are:
         <list style="symbols">
-          <t>allocated within buses</t>
+          <t>allocated within Buses</t>
           <t>referenced by unique, unguessable identifiers (URLs)</t>
+          <t>created implicitly once a Backplane message gets
+            posted to a channel that doesn't yet exist</t>
           <t>non-persistent and expire after being inactive (no
             messages posted) for specific amount of time (e.g. 30
             minutes)</t>
-          <t>sensitive (ie, content that cannot be trusted to keep the
+          <t>sensitive (i.e. content that cannot be trusted to keep the
             channel identifier secret MUST NOT be loaded)</t>
         </list>
       </t>
 
+      <t>Channel names MUST only contain characters from the
+        <xref target="RFC4648.section5">base64url</xref>
+        character set.
+      </t>
+      
       <figure>
         <preamble>
-          Here is an example of a Backplane channel identifier:
+          Example of a Channel identifier:
         </preamble>
-        <artwork type="code">http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+        <artwork type="code">http://backplane.example.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
       </figure>
     </section>
 
-    <section anchor="backplane.messages" title="Backplane Messages"><!-- [[[ -->
-      <t>A Backplane message is a JSON object with the following
-        predefined fields:
+    <section anchor="backplane.messages" title="Backplane Messages">
+      <t>A Backplane message is a JSON object with the following fields:
         <list style="hanging">
-          <t hangText="source">the source of the message, MUST be a URL
-            ("http://client.com")</t>
-          <t hangText="type">message type, string</t>
-          <t hangText="payload">arbitrary object carrying data specific to the
-            particular message type</t>
+          <t hangText="source">
+            the source of the message, MUST be a URL
+            (e.g. "http://client.com/")
+          </t>
+          <t hangText="type">
+            message type, string
+          </t>
+          <t hangText="payload">
+            arbitrary object carrying data specific to the particular 
+            message type
+          </t>
         </list>
       </t>
 
-      <t>A Backplane message MAY be wrapped in a
+      <t>
+        A Backplane message MAY be wrapped in a
         <xref target="draft-panzer-magicsig-00">Magic Envelope</xref>.
-        Consumers MUST be able to process (unwrap) such messages (note
-        that unwrapping a magic envelope is not the same thing as signature
-        verification).</t>
-    </section><!-- ]]] -->
+        Backplane Clients MUST be able to process (unwrap) such messages
+        (note that unwrapping a magic envelope is not the same as
+        signature verification).
+      </t>
+    </section>
+
+
+    <section anchor="backplane.frames" title="Backplane Frames">
+      <t>
+        A Backplane frame is a JSON object with the following fields:
+        <list style="hanging">
+          <t hangText="message">
+            the Backplane Message
+          </t>
+          <t hangText="channel_name">
+            the Channel Name the message was posted to (can be used to
+            construct Channel identifier of the message)
+          </t>
+          <t hangText="id">
+            an arbitrary string identifier assigned by the server to
+            the message for the purpose of later referencing
+          </t>
+        </list>
+      </t>
+      <t>
+        For the purpose of managing and referencing Backplane Messages,
+        a Backplane Server wraps them with the meta information
+        described above into Backplane Frames.
+      </t>
+
+    </section>
 
     <section anchor="backplane.server" title="Backplane Server"><!-- [[[ -->
-      <section anchor="backplane.server.channels" title="Channels">
-        <t>Channels are created implicitly once a Backplane message gets
-          posted to a channel that doesn't yet exist.</t>
-
-        <t>Channel name MUST only contain characters from the
-          <xref target="RFC4648.section5">base64url</xref>
-          character set.</t>
-      </section>
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
         <t>The server maintains a "window" of most recent messages for
@@ -288,21 +350,6 @@
         <t>In order to avoid omissions, a client needs to invoke the
           method often enough (specific recommendations will be based on
           the server implementation or policy).</t>
-      </section>
-
-      <section anchor="backplane.server.frames" title="Message Frames">
-        <t>Whenever a Backplane server needs to communicate
-          metainformation along with a message, the Backplane message is
-          wrapped into a "frame". The Backplane frame is a JSON object
-          with the following fields:
-          <list style="hanging">
-            <t hangText="message">the Backplane message</t>
-            <t hangText="channel_name">Name of the channel in a bus the message was
-              posted to (can be used to construct Channel ID of the message)</t>
-            <t hangText="id (string)">an arbitrary identifier assigned by the server to
-              this message for the purpose of later referencing</t>
-          </list>
-        </t>
       </section>
 
       <section anchor="backplane.server.api" title="API">
