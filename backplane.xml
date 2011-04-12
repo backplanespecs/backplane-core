@@ -3,6 +3,7 @@
 <!DOCTYPE rfc SYSTEM "./lib/xslt/rfc2629.dtd" [
   <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
   <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
+  <!ENTITY RFC2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
 <?rfc toc="yes"?>
@@ -93,6 +94,10 @@
             Backplane Clients.
           </t>
 
+          <t hangText="Backplane Header">
+            A Backplane Message without the payload field.
+          </t>
+
           <t hangText="Backplane JavaScript API">
             JavaScript API used by Widgets to initialize and subscribe
             to Backplane Messages.
@@ -114,6 +119,10 @@
           <t hangText="Backplane Frame">
             A Backplane Message and metadata assigned to it by the
             Backplane Server.
+          </t>
+
+          <t hangText="Backplane Frame Header">
+            A Backplane Frame without the Backplane Message payload field.
           </t>
 
           <t hangText="Bus">
@@ -196,6 +205,76 @@
           </t>
         </list>
       </t>
+    </section>
+
+    <section anchor="access.levels" title="Access Levels">
+
+      <t>
+        Considering the significantly different security enforcement
+        capabilities of applications running in a web browser versus the
+        ones running on a web server, two access levels are defined for
+        Backplane Clients:
+      </t>
+
+      <section anchor="access.level.regular" title="Regular Access">
+        <t>
+          Regular access level is given to Backplane Clients running in
+          the web browser (Widgets and the Backplane JavaScript Library).
+        </t>
+        <t>
+          Regular access level is exercised without presenting any
+          authorization credentials aside from the Channel identifier.
+          Bus owners and Backplane Servers acting on their behalf MUST
+          NOT give authorization credentials for Privileged access level
+          to Backplane Clients running in the web browser.
+        </t>
+        <t>
+          Backplane Clients having Regular access level can retrieve
+          Backplane Frame Headers sent to Channels for which they know
+          the Channel identifier.
+        </t>
+      </section>
+
+      <section anchor="access.level.privileged" title="Privileged Access">
+        <t>
+          Privileged access level is given to Backplane Clients that
+          are not running in a web browser, typically the Widgets'
+          server-side components.
+        </t>
+        <t>
+          Privileged access level is exercised by presenting
+          authorization credentials obtained from the Bus owner for such
+          operations. The authorization credentials MUST be sent using
+          HTTP Basic Authentication with the corresponding Backplane
+          Server API requests. Backplane Servers MUST validate the
+          authorization credentials for all Backplane Server API
+          operations that require Privileged access level, summarized
+          below.
+          See <xref target="backplane.server.api">Backplane Server API</xref>.
+          The provisioning of Privileged access level credentials is
+          outside of the scope of this specification.
+        </t>
+        <t>
+          Backplane Clients having Privileged access level can perform
+          the following operations on a Bus for which they have obtained
+          authorization credentials from the Bus owner:
+          <list style="symbols">
+            <t>
+              retrieve Backplane Messages (which include payloads) that
+              were sent to a Channel for which they know the Channel
+              identifier
+            </t>
+            <t>
+              retrieve all Backplane Messages sent to the Bus
+            </t>
+            <t>
+              post Backplane Messages to a Channel for which they know
+              the Channel identifier
+            </t>
+          </list>
+        </t>
+      </section>
+
     </section>
 
     <section anchor="buses" title="Buses">
@@ -319,7 +398,7 @@
 
     </section>
 
-    <section anchor="backplane.server" title="Backplane Server"><!-- [[[ -->
+    <section anchor="backplane.server.api" title="Backplane Server API"><!-- [[[ -->
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
         <t>The server maintains a "window" of most recent messages for
@@ -352,94 +431,92 @@
           the server implementation or policy).</t>
       </section>
 
-      <section anchor="backplane.server.api" title="API">
-        <t>A Backplane server provides the following API.</t>
+      <t>A Backplane server provides the following API.</t>
 
-        <section anchor="backplane.server.api.new_channel" title="Get a
-          New Channel Name">
-          <t><list style="hanging">
-              <t hangText="Endpoint">
-                <spanx style="verb">/v1/new_channel</spanx></t>
-              <t hangText="HTTP Method">GET</t>
-              <t hangText="Security">HTTPS only</t>
-              <t hangText="Parameters">None</t>
-              <t hangText="Returns">a new, securely-generated channel name</t>
-            </list>
-          </t>
-          <t>This call exists to help the javascript library provision
-          new channel names. Since javascript provides no method to
-          generate unguessable values, it needs server-side
-          assistance.</t>
-          <t>The result value of this call should be 32 characters
-          indepedently chosen uniformly from the set
-          <spanx style="emph">0123456789abcdef</spanx>. The content
-          returned must not be guessable given knowledge of the
-          algorithms in use or any details of the request being
-          made.</t>
-          <t>As an operational note, this API call should not be
-          implemented in a way that makes it capable of blocking or
-          exhausting any system resources.</t>
-        </section>
-
-        <section anchor="backplane.server.api.bus" title="Get All
-          Messages In A Bus">
-          <t><list style="hanging">
-              <t hangText="Endpoint"><spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;</spanx></t>
-              <t hangText="HTTP Method">GET</t>
-              <t hangText="Security">
-                HTTPS with basic HTTP authentication</t>
-              <t hangText="Parameters">
-                since (optional): message identifier (see
-                <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
-                above)
-              </t>
-              <t hangText="Returns">a list of Backplane frames</t>
-            </list>
-          </t>
-          <t>This method is used by Backplane clients to receive all
-            messages distributed on the specific bus &lt;BUS_NAME&gt;.</t>
-        </section>
-
-        <section anchor="backplane.server.api.channel.get"
-          title="Get Channel Messages">
-          <t><list style="hanging">
-              <t hangText="Endpoint">
-                <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
-              <t hangText="HTTP Method">GET</t>
-              <t hangText="Security">none</t>
-              <t hangText="Parameters">
-                since (optional): message identifier (see
-                <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
-                above)
-              </t>
-              <t hangText="Returns">a list of Backplane frames</t>
-            </list>
-          </t>
-          <t>This method is used by Backplane-enabled widgets to receive
-            messages broadcast to a specific channel.</t>
-        </section>
-
-        <section anchor="backplane.server.api.channel.post"
-          title="Post Messages To A Channel">
-          <t><list style="hanging">
-              <t hangText="Endpoint">
-                <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
-              <t hangText="HTTP Method">POST</t>
-              <t hangText="HTTP Request Body">a list (JSON array) of
-                Backplane messages to post to the channel</t>
-              <t hangText="Security">
-                HTTPS with basic HTTP authentication</t>
-            </list>
-          </t>
-          <t>This method injects a message (or multiple messages) to the
-            channel. If channel &lt;CHANNEL_NAME&gt; doesn't exist, it
-            is created.</t>
-        </section>
-
+      <section anchor="backplane.server.api.new_channel" title="Get a
+        New Channel Name">
+        <t><list style="hanging">
+            <t hangText="Endpoint">
+              <spanx style="verb">/v1/new_channel</spanx></t>
+            <t hangText="HTTP Method">GET</t>
+            <t hangText="Security">HTTPS only</t>
+            <t hangText="Parameters">None</t>
+            <t hangText="Returns">a new, securely-generated channel name</t>
+          </list>
+        </t>
+        <t>This call exists to help the javascript library provision
+        new channel names. Since javascript provides no method to
+        generate unguessable values, it needs server-side
+        assistance.</t>
+        <t>The result value of this call should be 32 characters
+        indepedently chosen uniformly from the set
+        <spanx style="emph">0123456789abcdef</spanx>. The content
+        returned must not be guessable given knowledge of the
+        algorithms in use or any details of the request being
+        made.</t>
+        <t>As an operational note, this API call should not be
+        implemented in a way that makes it capable of blocking or
+        exhausting any system resources.</t>
       </section>
+
+      <section anchor="backplane.server.api.bus" title="Get All
+        Messages In A Bus">
+        <t><list style="hanging">
+            <t hangText="Endpoint"><spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;</spanx></t>
+            <t hangText="HTTP Method">GET</t>
+            <t hangText="Security">
+              HTTPS with basic HTTP authentication</t>
+            <t hangText="Parameters">
+              since (optional): message identifier (see
+              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
+              above)
+            </t>
+            <t hangText="Returns">a list of Backplane frames</t>
+          </list>
+        </t>
+        <t>This method is used by Backplane clients to receive all
+          messages distributed on the specific bus &lt;BUS_NAME&gt;.</t>
+      </section>
+
+      <section anchor="backplane.server.api.channel.get"
+        title="Get Channel Messages">
+        <t><list style="hanging">
+            <t hangText="Endpoint">
+              <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+            <t hangText="HTTP Method">GET</t>
+            <t hangText="Security">none</t>
+            <t hangText="Parameters">
+              since (optional): message identifier (see
+              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
+              above)
+            </t>
+            <t hangText="Returns">a list of Backplane frames</t>
+          </list>
+        </t>
+        <t>This method is used by Backplane-enabled widgets to receive
+          messages broadcast to a specific channel.</t>
+      </section>
+
+      <section anchor="backplane.server.api.channel.post"
+        title="Post Messages To A Channel">
+        <t><list style="hanging">
+            <t hangText="Endpoint">
+              <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+            <t hangText="HTTP Method">POST</t>
+            <t hangText="HTTP Request Body">a list (JSON array) of
+              Backplane messages to post to the channel</t>
+            <t hangText="Security">
+              HTTPS with basic HTTP authentication</t>
+          </list>
+        </t>
+        <t>This method injects a message (or multiple messages) to the
+          channel. If channel &lt;CHANNEL_NAME&gt; doesn't exist, it
+          is created.</t>
+      </section>
+
     </section><!-- ]]] -->
 
-    <section anchor="client.side.library" title="Client-side Backplane library API"><!-- [[[ -->
+    <section anchor="backplane.javascript.api" title="Backplane JavaScript API"><!-- [[[ -->
 
       <t>A Backplane Javascript library runs in an end user's browser
         and mediates communication between Backplane-enabled widgets on
@@ -627,7 +704,9 @@ Backplane.getChannelID();
     <references title="Normative References"><!-- [[[ -->
 
       &RFC2616;
-      
+
+      &RFC2617;
+
       &RFC4627;
 
       &RFC2119;
