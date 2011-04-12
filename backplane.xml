@@ -17,9 +17,9 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 <?rfc private="Echo"?>
-<rfc>
+<rfc docName="draft-jbufu-backplane2-01">
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane</title>
+    <title abbrev="Backplane">Backplane v2</title>
 
     <author>
       <organization>Echo</organization>
@@ -33,8 +33,18 @@
       </address>
     </author>
 
-    <date day="5" month="April" year="2011" />
+    <author fullname="Johnny Bufu" initials="J." surname="Bufu">
+      <organization>Janrain</organization>
+      <address>
+        <email>jbufu@janrain.com</email>
+        <uri>http://www.janrain.com/</uri>
+      </address>
+    </author>
 
+    <date day="12" month="April" year="2011" />
+
+    <keyword>Internet-Draft</keyword>
+    
     <abstract>
       <t>Backplane is a framework that facilitates message exchanges
           and event notifications between third-party JavaScript
@@ -302,7 +312,7 @@
         <preamble>
           Example of a Bus identifier:
         </preamble>
-        <artwork type="code">http://backplane.example.com/v1/bus/customer.com</artwork>
+        <artwork type="code">http://backplane.example.com/v2/bus/customer.com</artwork>
       </figure>
     </section>
 
@@ -342,7 +352,7 @@
         <preamble>
           Example of a Channel identifier:
         </preamble>
-        <artwork type="code">http://backplane.example.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+        <artwork type="code">http://backplane.example.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
       </figure>
     </section>
 
@@ -445,7 +455,7 @@
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1/new_channel</spanx></t>
+              <spanx style="verb">/v2/new_channel</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">HTTPS only,
               <xref target="access.level.regular">Regular Access Level</xref></t>
@@ -478,7 +488,7 @@
         Messages In A Bus">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;</spanx></t>
+              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">HTTPS with
               <xref target="access.level.privileged">Privileged Access Level</xref></t>
@@ -501,7 +511,7 @@
         title="Get Channel Messages">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">
               <xref target="access.level.privileged">Privileged Access Level</xref>
@@ -536,7 +546,7 @@
         title="Post Messages To A Channel">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">POST</t>
             <t hangText="HTTP Request Body">a JSON object consisting of
               a list of Backplane Messages to post to the channel</t>
@@ -593,7 +603,7 @@ Backplane.subscribe(Callback);
 Backplane.unsubscribe(SubscriptionID);
 
 /**
- * Returns channel ID (like http://backplane.customer.com/v1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
+ * Returns channel ID (like http://backplane.customer.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
  *
  * @returns Backplane channel ID
  */
@@ -703,7 +713,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           title="Usage Example">
         <figure><artwork type="code">
 Backplane.init({
-    serverBaseURL: "http://backplane.customer.com/v1",
+    serverBaseURL: "http://backplane.customer.com/v2",
     busName: "customer.com"
 });
 
