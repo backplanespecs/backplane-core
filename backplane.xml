@@ -17,9 +17,9 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 <?rfc private="Echo"?>
-<rfc docName="draft-jbufu-backplane2-01">
+<rfc>
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane v2</title>
+    <title abbrev="Backplane">Backplane v2 - draft 01</title>
 
     <author>
       <organization>Echo</organization>
