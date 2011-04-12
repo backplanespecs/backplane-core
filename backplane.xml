@@ -3,6 +3,7 @@
 <!DOCTYPE rfc SYSTEM "./lib/xslt/rfc2629.dtd" [
   <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
   <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
+  <!ENTITY RFC4086 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4086.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
 <?rfc toc="yes"?>
@@ -315,15 +316,17 @@
           new channel names. Since javascript provides no method to
           generate unguessable values, it needs server-side
           assistance.</t>
-          <t>The result value of this call should be 32 characters
-          indepedently chosen uniformly from the set
+          <t>The result value of this call MUST be 32 characters
+          indepedently chosen with uniform distribution from the set
           <spanx style="emph">0123456789abcdef</spanx>. The content
-          returned must not be guessable given knowledge of the
+          returned MUST NOT be guessable given knowledge of the
           algorithms in use or any details of the request being
           made.</t>
-          <t>As an operational note, this API call should not be
-          implemented in a way that makes it capable of blocking or
-          exhausting any system resources.</t>
+          <t>As operational notes, this API call SHOULD NOT be
+          implemented in a way that makes it capable of blocking. Use
+          of one of the mechanisms in section 7
+          of <xref target="RFC4086">RFC 4086</xref> is
+          RECOMMENDED.</t>
         </section>
 
         <section anchor="backplane.server.api.bus" title="Get All
@@ -574,6 +577,8 @@ Backplane.getChannelID();
       &RFC2616;
 
       &RFC4627;
+
+      &RFC4086;
 
       &RFC2119;
 
