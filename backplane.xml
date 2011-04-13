@@ -305,11 +305,11 @@
           New Channel Name">
           <t><list style="hanging">
               <t hangText="Endpoint">
-                <spanx style="verb">/v1/new_channel</spanx></t>
-              <t hangText="HTTP Method">GET</t>
-              <t hangText="Security">HTTPS only</t>
+                <spanx style="verb">/v1/&lt;BUS NAME&gt;/channel</spanx></t>
+              <t hangText="HTTP Method">POST</t>
+              <t hangText="Security">optional HTTPS</t>
               <t hangText="Parameters">None</t>
-              <t hangText="Returns">a new, securely-generated channel name</t>
+              <t hangText="Returns">a new, securely-generated channel id</t>
             </list>
           </t>
           <t>This call exists to help the javascript library provision
@@ -319,13 +319,16 @@
           mechanisms it suggests are available in javascript, so a
           server-side component must be available to help generate
           unguessable values.</t>
-          <t>The result value of this call MUST be at least 32
-          characters indepedently chosen with uniform distribution
-          from the
+          <t>The result value of this call is a channel id, using the
+          host and bus name from the request. The channel name MUST be
+          at least 32 characters indepedently chosen with uniform
+          distribution from the
           set <spanx style="emph">0123456789abcdef</spanx>. The
-          content returned MUST NOT be guessable given knowledge of
-          the algorithms in use or any details of the request being
-          made.</t>
+          channel name MUST NOT be guessable given knowledge of the
+          algorithms in use or any details of the request being
+          made. The result channel id should be returned in the
+          <spanx style="strong">Location:</spanx> header in the
+          response, as well as the response body.</t>
           <t>As operational notes, this API call SHOULD NOT be
           implemented in a way that makes it capable of blocking and
           use of one of the mechanisms in section 7
