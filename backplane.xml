@@ -313,9 +313,13 @@
             </list>
           </t>
           <t>This call exists to help the javascript library provision
-          new channel names. Since javascript provides no method to
-          generate unguessable values, it needs server-side
-          assistance.</t>
+          new channel names. Javascript provides no means for
+          generating unguessable values. <xref target="RFC4086">RFC
+          4086</xref> discusses the requirements and pitfalls of
+          generating unguessable values in great detail. None of the
+          mechanisms it discusses are available in javascript, so a
+          server-side component must be available to help generate
+          unguessable values.</t>
           <t>The result value of this call MUST be 32 characters
           indepedently chosen with uniform distribution from the set
           <spanx style="emph">0123456789abcdef</spanx>. The content
