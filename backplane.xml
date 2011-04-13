@@ -301,7 +301,7 @@
       <section anchor="backplane.server.api" title="API">
         <t>A Backplane server provides the following API.</t>
 
-        <section anchor="backplane.server.api.new_channel" title="Get a
+        <section anchor="backplane.server.api.new_channel" title="Get A
           New Channel Name">
           <t><list style="hanging">
               <t hangText="Endpoint">
