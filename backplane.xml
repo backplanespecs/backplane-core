@@ -209,6 +209,13 @@
             this specification.
           </t>
           <t>
+            The Web Page owner (and indirectly the end user) trusts
+            all content on the Web Page to not attack the widgets or
+            the Backplane framework. This must explicitly include all
+            javascript loaded for any purpose, including javascript
+            that is not part of any of the Widgets on the Web Page.
+          </t>
+          <t>
             Backplane Clients trust the Bus owner and the authenticity
             of Backplane Messages received through a Bus, i.e all
             Backplane Clients that were granted permission to post on
