@@ -186,7 +186,7 @@
       <t>
         The Backplane framework is intended to be used and operate under
         the following trust relationships. Any number of security issues
-        can arrise if any of these assumptions do not hold.</t>
+        can arise if any of these assumptions do not hold.</t>
       <t>
         <list>
           <t>
