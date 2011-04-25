@@ -72,10 +72,10 @@
       <t>The Backplane framework facilitates such interactions by
           providing an open standard API that is secure in the context
           of the assumed trust relationships between the parties
-          involved. Messages are delivered reliably, in order and in
-          nearly real-time fashion. The framework may be used in
-          different scenarios which build on top of the transport-level
-          semantics described in this document.</t>
+          involved. Messages are delivered reliably and in order. The
+          framework may be used in different scenarios which build on
+          top of the transport-level semantics described in this
+          document.</t>
     </section><!-- ]]] -->
 
 
@@ -306,7 +306,7 @@
       <t>
         It is assumed that a relationship of trust exists between all
         clients granted permission to post messages to a specific
-        bus. See <xref target="trust">Trust</xref>.
+        Bus. See <xref target="trust">Trust</xref>.
       </t>
       <figure>
         <preamble>
@@ -412,39 +412,46 @@
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
         <t>
-          A Backplane Server maintains a "window" of most recent
-          messages for each of the existing buses and channels. The
-          exact amount of messages that fit into the window depends
-          on the server implementation or policy.
+          Backplane Servers MUST maintain a window of most recent
+          messages for each of the existing Channels. The window
+          size MUST be at least 30 seconds.
+        </t>
+
+        <t>
+          It is RECOMMENDED that it is an operational priority for
+          Backplane Servers to make messages available for retrieval
+          as soon as possible after they are posted.
+        </t>
+
+        <t>
+          Backplane Clients that require reliable message delivery
+          MUST poll their Backplane Servers with an interval of 5
+          seconds or less in order to avoid omissions.
         </t>
 
         <t>
           All Backplane Server API methods dealing with Backplane
           Message retrieval observe the principles outlined below. A
           retrieval request may contain an optional 'since' parameter,
-          referring to a message previously seen by the caller.
+          referring to a Backplane Frame previously seen by the caller.
         </t>
 
         <t>
           If the 'since' parameter is...
           <list>
-            <t>...omitted, the whole window worth of Backplane Messages
+            <t>...omitted, the whole window worth of Backplane Frames
               is returned.</t>
-            <t>...present and refers to a Backplane Message...
+            <t>...present and refers to a Backplane Fessage...
               <list>
                 <t>...currently residing in the window, the Backplane
-                  Server returns all Backplane Messages that are more
+                  Server returns all Backplane Frames that are more
                   recent than the referenced one.</t>
                 <t>...which is no longer in the window, the whole window
-                  worth of Backplane Messages is returned.</t>
+                  worth of Backplane Frames is returned.</t>
               </list>
             </t>
           </list>
         </t>
-
-        <t>In order to avoid omissions, a Backplane Client needs to
-          invoke the method often enough (specific recommendations
-          will be based on the server implementation or policy).</t>
 
       </section>
 
