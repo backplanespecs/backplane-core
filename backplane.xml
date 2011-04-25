@@ -296,7 +296,7 @@
         "organization.org").
       </t>
       <t>
-        Bus identifiers are a URLs consisting of the Backplane Server's
+        Bus identifiers are URLs consisting of the Backplane Server's
         Bus endpoint and the Bus name. They are used by Backplane
         Clients for message retrieval and act as a namespace for the
         Backplane Messages exchanged by the group. Backplane Clients
