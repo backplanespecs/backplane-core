@@ -427,7 +427,8 @@
         <t>
           Backplane Servers MUST maintain a window of most recent
           messages for each of the existing Channels. The window
-          size MUST be at least 30 seconds.
+          size MUST be at least 1 minute. It is RECOMMENDED that
+          Backplane Servers maintain a window of at least 5 minutes.
         </t>
 
         <t>
@@ -438,7 +439,7 @@
 
         <t>
           Backplane Clients that require reliable message delivery
-          MUST poll their Backplane Servers with an interval of 5
+          MUST poll their Backplane Servers with an interval of 30
           seconds or less in order to avoid omissions.
         </t>
 
