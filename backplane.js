@@ -36,7 +36,6 @@ window.Backplane = window.Backplane || {
  *   Possible hash keys:
  *     serverBaseURL (required) - Base URL of Backplane Server
  *     busName (required) - Customer's backplane bus name
- *     channelName (optional) - Custom specified channel name
  */
 Backplane.init = function(config) {
         config = config || {};
@@ -44,13 +43,15 @@ Backplane.init = function(config) {
         this.initialized = true;
         this.timers = {};
         this.config = config;
-        this.channelByBus = this.getCookieChannels();
-        // save custom channel name, if passed.
-        this.config.customChannelName = config.channelName;
-        this.config.channelName = this.getChannelName();
         this.config.serverBaseURL = this.normalizeURL(config.serverBaseURL);
-        this.config.channelID = this.generateChannelID();
-        this.request();
+
+        this.channelByBus = this.getCookieChannels();
+
+        if (this.getChannelName()) {
+                this.finishInit(false);
+        } else {
+                document.write("<script language=\"javascript\" src=\"" + this.config.serverBaseURL + "/v1/" + this.config.busName + "/channel/new?callback=Backplane.finishInit\"><\/script>");
+        }
         return true;
 };
 
@@ -123,17 +124,24 @@ Backplane.expectMessagesWithin = function(interval, types) {
 /**
  * Internal functions
  */
+Backplane.finishInit = function (channelName) {
+        if (channelName) {
+                this.channelByBus[this.config.busName] = channelName;
+                this.setCookieChannels();
+        }
+
+        this.config.channelName = this.getChannelName();
+        this.config.channelID = this.generateChannelID();
+        this.request();
+};
+
 Backplane.generateChannelID = function() {
         return this.config.serverBaseURL + "/bus/" + this.config.busName + "/channel/" + this.config.channelName;
 };
 
 Backplane.getChannelName = function() {
         if (!this.initialized) return false;
-        if (this.config.customChannelName) return this.config.customChannelName;
-        if (!this.channelByBus[this.config.busName]) {
-                this.channelByBus[this.config.busName] = (new Date()).valueOf().toString() + Math.random().toString().substr(2, 5);
-                this.setCookieChannels();
-        }
+        if (!this.channelByBus[this.config.busName]) return false;
         return this.channelByBus[this.config.busName];
 };
 
