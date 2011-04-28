@@ -297,14 +297,15 @@
 
     <section anchor="padded.response" title="Padded Responses">
       <t>
-        For API requests made by the Javascript Library, the result is
-        formatted specially.
+        For API requests made by the Javascript Library, the response
+        is formatted specially.
       </t>
       <t>
-        The result begins with the value of
+        The response body begins with the value of
         the <spanx type="emph">callback</spanx> parameter from the
-        request.  It then has an opening parenthesis, the JSON-encoded
-        result value, and a closing parenthesis.
+        request.  That value is followed by a &quot;(&quot; (opening
+        parenthesis), then the JSON-encoded result value, then a
+        &quot;)&quot; (closing parenthesis).
       </t>
     </section>
 
