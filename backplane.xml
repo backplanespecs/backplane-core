@@ -545,22 +545,18 @@
               <xref target="access.level.regular">Regular Access Level</xref>
               with either HTTP or HTTPS.
             </t>
+            <t hangText="Parameters">
+              since (optional): Backplane Message identifier (see
+              <xref target="backplane.server.conventions">Message
+              Retrieval Conventions</xref> above)
+            </t>
             <t>
-              <list hangText="Parameters">
-                <t>
-                  since (optional): Backplane Message identifier (see
-                  <xref target="backplane.server.conventions">Message
-                    Retrieval Conventions</xref> above)
-                </t>
-                <t>
-                  callback (optional):
-                  the <xref target="padded.response">callback
-                  name</xref> to pad the response with.  The presence of
-                  this argument indicates that the call is being made by
-                  the Javascript Library, and should not return full
-                  messages.
-                </t>
-              </list>
+              callback (optional):
+              the <xref target="padded.response">callback
+              name</xref> to pad the response with.  The presence of
+              this argument indicates that the call is being made by
+              the Javascript Library, and should not return full
+              messages.
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
               Backplane Frames or Backplane Frame Headers, depending on
