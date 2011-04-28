@@ -178,6 +178,15 @@
       <t>A Backplane Server is an independent orchestrator of the
         message interchange between Backplane Clients and may serve
         multiple independent Buses.</t>
+
+      <t>A Backplane framework instance needs to be configured prior to use:
+        all Backplane Clients and the Server have to share the same Bus. 
+        Backplane Clients operating at the
+        <xref target="access.level.privileged">Privileged Access Level</xref>
+        need a password to authenticate themselves to the Server. It is
+        outside the scope of this document how such configuration is
+        performed.</t>
+
     </section> <!-- ]]] -->
 
     <section anchor="trust" title="Trust">
