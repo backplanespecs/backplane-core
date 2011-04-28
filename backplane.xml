@@ -545,10 +545,22 @@
               <xref target="access.level.regular">Regular Access Level</xref>
               with either HTTP or HTTPS.
             </t>
-            <t hangText="Parameters">
-              since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
-              above)
+            <t>
+              <list hangText="Parameters">
+                <t>
+                  since (optional): Backplane Message identifier (see
+                  <xref target="backplane.server.conventions">Message
+                    Retrieval Conventions</xref> above)
+                </t>
+                <t>
+                  callback (optional):
+                  the <xref target="padded.response">callback
+                  name</xref> to pad the response with.  The presence of
+                  this argument indicates that the call is being made by
+                  the Javascript Library, and should not return full
+                  messages.
+                </t>
+              </list>
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
               Backplane Frames or Backplane Frame Headers, depending on
@@ -556,15 +568,19 @@
         </list>
         </t>
         <t>
-          With <xref target="access.level.privileged">Privileged Access Level</xref>
-          this method is used by server-side components to receive Backplane
-          Frames that were posted to a specific Channel.
+          With <xref target="access.level.privileged">Privileged
+          Access Level</xref> this method is used by server-side
+          components to receive Backplane Frames that were posted to a
+          specific Channel.
         </t>
         <t>
-          With <xref target="access.level.regular">Regular Access Level</xref>
-          this method is used by Widgets to receive Backplane Frame
-          Headers for Backplane Messages that were posted to a specific
-          Channel.
+          With <xref target="access.level.regular">Regular Access
+          Level</xref> this method is used by Widgets to receive
+          Backplane Frame Headers for Backplane Messages that were
+          posted to a specific Channel.  In this access level, the
+          result MUST be padded as specified in
+          the <xref target="padded.response">padded response</xref>
+          section.
         </t>
       </section>
 
