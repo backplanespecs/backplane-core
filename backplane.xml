@@ -464,7 +464,7 @@
           <list>
             <t>...omitted, the whole window worth of Backplane Frames
               is returned.</t>
-            <t>...present and refers to a Backplane Fessage...
+            <t>...present and refers to a Backplane Frame...
               <list>
                 <t>...currently residing in the window, the Backplane
                   Server returns all Backplane Frames that are more
