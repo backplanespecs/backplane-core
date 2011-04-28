@@ -500,7 +500,7 @@
           set <spanx style="emph">0123456789abcdef</spanx>. The
           channel name MUST NOT be guessable given knowledge of the
           algorithms in use or any details of the request being made.
-          The result must be padded as specified in
+          The result MUST be padded as specified in
           the <xref target="padded.response">padded response</xref>
           section.</t>
         <t>As operational notes, this API call SHOULD NOT be
