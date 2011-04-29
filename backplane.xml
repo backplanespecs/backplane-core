@@ -22,8 +22,44 @@
   <front><!-- [[[ -->
     <title abbrev="Backplane">Backplane v2 - draft 01</title>
 
-    <author>
+    <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
+      <address>
+        <email>chris@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Vlad Skvortsov" initials="V." surname="Skvortsov">
+      <organization>Echo</organization>
+      <address>
+        <email>vss@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Yuri Lukyanov" initials="Y." surname="Lukyanov">
+      <organization>Echo</organization>
+      <address>
+        <email>snaky@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Alexander Zhuravlev" initials="A." surname="Zhuravlev">
+      <organization>Echo</organization>
+      <address>
+        <email>zaa@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Ivan Glushkov" initials="I." surname="Glushkov">
+      <organization>Echo</organization>
+      <address>
+        <email>gli@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
     </author>
 
     <author fullname="Carl Howells" initials="C." surname="Howells">
