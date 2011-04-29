@@ -4,6 +4,7 @@
   <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
   <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
   <!ENTITY RFC2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
+  <!ENTITY RFC4086 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4086.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
 <?rfc toc="yes"?>
@@ -44,7 +45,7 @@
     <date day="12" month="April" year="2011" />
 
     <keyword>Internet-Draft</keyword>
-    
+
     <abstract>
       <t>Backplane is a framework that facilitates message exchanges
           and event notifications between third-party JavaScript
@@ -160,7 +161,7 @@
           "OPTIONAL" in this document are to be interpreted as described
           in <xref target="RFC2119">RFC 2119</xref>.</t>
       </section>
-      
+
     </section>
 
     <section anchor="overview" title="Overview"><!-- [[[ -->
@@ -214,6 +215,13 @@
             Widget owners trust the Backplane Server API and Backplane
             JavaScript API implementations that they will comply with
             this specification.
+          </t>
+          <t>
+            The Web Page owner (and indirectly the end user) trusts
+            all content on the Web Page to not attack the widgets or
+            the Backplane framework. This must explicitly include all
+            javascript loaded for any purpose, including javascript
+            that is not part of any of the Widgets on the Web Page.
           </t>
           <t>
             Backplane Clients trust the Bus owner and the authenticity
@@ -295,6 +303,20 @@
 
     </section>
 
+    <section anchor="padded.response" title="Padded Responses">
+      <t>
+        For API requests made by the Javascript Library, the response
+        is formatted specially.
+      </t>
+      <t>
+        The response body begins with the value of
+        the <spanx type="emph">callback</spanx> parameter from the
+        request.  That value is followed by a &quot;(&quot; (opening
+        parenthesis), then the JSON-encoded result value, then a
+        &quot;)&quot; (closing parenthesis).
+      </t>
+    </section>
+
     <section anchor="buses" title="Buses">
       <t>
         A Bus is a logical grouping of Backplane Clients that need to
@@ -364,7 +386,7 @@
         <xref target="RFC4648.section5">base64url</xref>
         character set.
       </t>
-      
+
       <figure>
         <preamble>
           Example of a Channel identifier:
@@ -389,7 +411,7 @@
             message type, string
           </t>
           <t hangText="payload">
-            arbitrary object carrying data specific to the particular 
+            arbitrary object carrying data specific to the particular
             message type
           </t>
         </list>
@@ -480,38 +502,43 @@
 
       <t>A Backplane Server provides the following API.</t>
 
-      <section anchor="backplane.server.api.new_channel" title="Get a
+      <section anchor="backplane.server.api.new_channel" title="Get A
         New Channel Name">
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v2/new_channel</spanx></t>
+              <spanx style="verb">/v1/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
-            <t hangText="Security">HTTPS only,
+            <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
-            <t hangText="Parameters">None</t>
+            <t hangText="Parameters">
+              callback: the <xref target="padded.response">callback
+              name</xref> to pad the response with.
+            </t>
             <t hangText="Returns">a new, securely-generated Channel Name</t>
           </list>
         </t>
-        <t>
-          This call exists to help the Backplane JavaScript Library
-          provision new Channel Names. Since JavaScript provides no
-          method to generate unguessable values, it needs server-side
-          assistance.
-        </t>
-        <t>
-          The result value of this call should be 32 characters
-          indepedently chosen uniformly from the set
-          <spanx style="emph">0123456789abcdef</spanx>. The content
-          returned must not be guessable given knowledge of the
-          algorithms in use or any details of the request being
-          made.
-        </t>
-        <t>
-          As an operational note, this API call should not be
-          implemented in a way that makes it capable of blocking or
-          exhausting any system resources.
-        </t>
+        <t>This call exists to help the Javascript Library provision
+          new channel names. <xref target="RFC4086">RFC
+          4086</xref> discusses the requirements and pitfalls of
+          generating unguessable values in great detail. None of the
+          mechanisms it suggests are available in javascript, so a
+          server-side component must be available to help generate
+          unguessable values.</t>
+        <t>The result value of this call is a channel name. The
+          channel name MUST be at least 32 characters indepedently
+          chosen with uniform distribution from the
+          set <spanx style="emph">0123456789abcdef</spanx>. The
+          channel name MUST NOT be guessable given knowledge of the
+          algorithms in use or any details of the request being made.
+          The result MUST be padded as specified in
+          the <xref target="padded.response">padded response</xref>
+          section.</t>
+        <t>As operational notes, this API call SHOULD NOT be
+          implemented in a way that makes it capable of blocking and
+          use of one of the mechanisms in section 7
+          of <xref target="RFC4086">RFC 4086</xref> is
+          RECOMMENDED.</t>
       </section>
 
       <section anchor="backplane.server.api.bus" title="Get All
@@ -551,8 +578,14 @@
             </t>
             <t hangText="Parameters">
               since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
-              above)
+              <xref target="backplane.server.conventions">Message
+              Retrieval Conventions</xref> above)
+            </t>
+            <t>
+              callback (required if and only if the call uses Regular
+              Access Level):
+              the <xref target="padded.response">callback name</xref>
+              to pad the response with.
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
               Backplane Frames or Backplane Frame Headers, depending on
@@ -560,15 +593,19 @@
         </list>
         </t>
         <t>
-          With <xref target="access.level.privileged">Privileged Access Level</xref>
-          this method is used by server-side components to receive Backplane
-          Frames that were posted to a specific Channel.
+          With <xref target="access.level.privileged">Privileged
+          Access Level</xref> this method is used by server-side
+          components to receive Backplane Frames that were posted to a
+          specific Channel.
         </t>
         <t>
-          With <xref target="access.level.regular">Regular Access Level</xref>
-          this method is used by Widgets to receive Backplane Frame
-          Headers for Backplane Messages that were posted to a specific
-          Channel.
+          With <xref target="access.level.regular">Regular Access
+          Level</xref> this method is used by Widgets to receive
+          Backplane Frame Headers for Backplane Messages that were
+          posted to a specific Channel.  In this access level, the
+          result MUST be padded as specified in
+          the <xref target="padded.response">padded response</xref>
+          section.
         </t>
       </section>
 
@@ -785,6 +822,8 @@ Backplane.getChannelID();
       &RFC2617;
 
       &RFC4627;
+
+      &RFC4086;
 
       &RFC2119;
 
