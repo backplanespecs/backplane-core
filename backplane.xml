@@ -73,10 +73,10 @@
       <t>The Backplane framework facilitates such interactions by
           providing an open standard API that is secure in the context
           of the assumed trust relationships between the parties
-          involved. Messages are delivered reliably, in order and in
-          nearly real-time fashion. The framework may be used in
-          different scenarios which build on top of the transport-level
-          semantics described in this document.</t>
+          involved. Messages are delivered reliably and in order. The
+          framework may be used in different scenarios which build on
+          top of the transport-level semantics described in this
+          document.</t>
     </section><!-- ]]] -->
 
 
@@ -137,15 +137,14 @@
           </t>
 
           <t hangText="Bus">
-            Identifier for a logical grouping of Backplane Clients that
-            need to interact with each other, typically belonging to one
-            organization.
+            Logical grouping of Backplane Clients that need to interact
+            with each other, typically belonging to one organization.
           </t>
 
           <t hangText="Channel">
-            Identifier for a subset of Backplane Messages on a Bus that
-            are addressed to the Backplane Clients interacting with the
-            end user through a single session and Web Page.
+            Subset of Backplane Messages that belong to a Bus and are
+            addressed to the Backplane Clients interacting with the end
+            user through a single session and Web Page.
           </t>
 
           <t hangText="Channel Name">
@@ -320,42 +319,51 @@
 
     <section anchor="buses" title="Buses">
       <t>
-        A Bus is an identifier for a logical grouping of Backplane
-        Clients that need to interact with each other, typically
-        belonging to one organization. The Bus identifier acts as a
-        namespace for the Backplane Messages exchanged by the group.
+        A Bus is a logical grouping of Backplane Clients that need to
+        interact with each other, typically belonging to one
+        organization. Buses allow a Backplane Server to service
+        multiple customers. Bus names can consist of short strings
+        referencing the Bus owner's name (e.g. "customer.com",
+        "organization.org").
       </t>
       <t>
-        Bus identifiers allow a Backplane Server to service multiple
-        customers and can consist of short strings referencing the Bus
-        owner's name (e.g. "customer.com", "organization.org").
-      </t>
-      <t>
-        Backplane Clients must know the identifiers for the Buses
-        through which they wish to exchange Backplane Messages.
+        Bus identifiers are URLs consisting of the Backplane Server's
+        Bus endpoint and the Bus name. They are used by Backplane
+        Clients for message retrieval and act as a namespace for the
+        Backplane Messages exchanged by the group. Backplane Clients
+        must know the identifiers for the Buses through which they wish
+        to exchange Backplane Messages.
       </t>
       <t>
         It is assumed that a relationship of trust exists between all
         clients granted permission to post messages to a specific
-        bus. See <xref target="trust">Trust</xref>.
+        Bus. See <xref target="trust">Trust</xref>.
       </t>
       <figure>
         <preamble>
           Example of a Bus identifier:
         </preamble>
         <artwork type="code">http://backplane.example.com/v2/bus/customer.com</artwork>
+        <postamble>
+          In this example <spanx>http://backplane.example.com/v2/bus/</spanx>
+          is the Backplane Server Bus endpoint and <spanx>customer.com</spanx>
+          is the Bus name.
+        </postamble>
       </figure>
     </section>
 
     <section anchor="channels" title="Channels">
       <t>
-        A Channel is an identifier for a subset of Backplane Messages on
-        a Bus that are addressed to the Backplane Clients interacting
-        with the end user through a single session and Web Page.
+        A Channel is a subset of Backplane Messages that belong to a Bus
+        and are addressed to the Backplane Clients interacting with the
+        end user through a single session and Web Page. A Channel is
+        similar to a session identifier for the user but is shared by
+        multiple Backplane Clients.
       </t>
       <t>
-        A Channel is similar to a session identifier for the user but is
-        shared by all Backplane Clients. All Backplane Clients that know
+        Channel identifiers are URLs consisting of the Backplane Server's
+        Channel endpoint and the Channel Name and are used by Backplane
+        Clients for message retrieval. All Backplane Clients that know
         a given Channel identifier can receive Backplane Messages posted
         to that Channel.
       </t>
@@ -364,17 +372,17 @@
         <list style="symbols">
           <t>allocated within Buses</t>
           <t>referenced by unique, unguessable identifiers (URLs)</t>
-          <t>created implicitly once a Backplane message gets
+          <t>created implicitly once a Backplane Message gets
             posted to a channel that doesn't yet exist</t>
           <t>non-persistent and expire after being inactive (no
             messages posted) for specific amount of time (e.g. 30
             minutes)</t>
           <t>sensitive (i.e. content that cannot be trusted to keep the
-            channel identifier secret MUST NOT be loaded)</t>
+            Channel identifier secret MUST NOT be loaded)</t>
         </list>
       </t>
 
-      <t>Channel names MUST only contain characters from the
+      <t>Channel Names MUST only contain characters from the
         <xref target="RFC4648.section5">base64url</xref>
         character set.
       </t>
@@ -384,6 +392,11 @@
           Example of a Channel identifier:
         </preamble>
         <artwork type="code">http://backplane.example.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+        <postamble>
+          In this example <spanx>http://backplane.example.com/v2/bus/customer.com/channel/</spanx>
+          is the Backplane Server Channel endpoint and <spanx>8ec92f459fa70b0da1a40e8fe70a0bc8</spanx>
+          is the Channel Name.
+        </postamble>
       </figure>
     </section>
 
@@ -443,39 +456,47 @@
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
         <t>
-          A Backplane Server maintains a "window" of most recent
-          messages for each of the existing buses and channels. The
-          exact amount of messages that fit into the window depends
-          on the server implementation or policy.
+          Backplane Servers MUST maintain a window of most recent
+          messages for each of the existing Channels. The window
+          size MUST be at least 1 minute. It is RECOMMENDED that
+          Backplane Servers maintain a window of at least 5 minutes.
+        </t>
+
+        <t>
+          It is RECOMMENDED that it is an operational priority for
+          Backplane Servers to make messages available for retrieval
+          as soon as possible after they are posted.
+        </t>
+
+        <t>
+          Backplane Clients that require reliable message delivery
+          MUST poll their Backplane Servers with an interval of 30
+          seconds or less in order to avoid omissions.
         </t>
 
         <t>
           All Backplane Server API methods dealing with Backplane
           Message retrieval observe the principles outlined below. A
           retrieval request may contain an optional 'since' parameter,
-          referring to a message previously seen by the caller.
+          referring to a Backplane Frame previously seen by the caller.
         </t>
 
         <t>
           If the 'since' parameter is...
           <list>
-            <t>...omitted, the whole window worth of Backplane Messages
+            <t>...omitted, the whole window worth of Backplane Frames
               is returned.</t>
-            <t>...present and refers to a Backplane Message...
+            <t>...present and refers to a Backplane Fessage...
               <list>
                 <t>...currently residing in the window, the Backplane
-                  Server returns all Backplane Messages that are more
+                  Server returns all Backplane Frames that are more
                   recent than the referenced one.</t>
                 <t>...which is no longer in the window, the whole window
-                  worth of Backplane Messages is returned.</t>
+                  worth of Backplane Frames is returned.</t>
               </list>
             </t>
           </list>
         </t>
-
-        <t>In order to avoid omissions, a Backplane Client needs to
-          invoke the method often enough (specific recommendations
-          will be based on the server implementation or policy).</t>
 
       </section>
 
