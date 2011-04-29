@@ -256,7 +256,7 @@
             The Web Page owner (and indirectly the end user) trusts
             all content on the Web Page to not attack the widgets or
             the Backplane framework. This must explicitly include all
-            javascript loaded for any purpose, including javascript
+            JavaScript loaded for any purpose, including JavaScript
             that is not part of any of the Widgets on the Web Page.
           </t>
           <t>
@@ -557,11 +557,11 @@
             </t>
           </list>
         </t>
-        <t>This call exists to help the Javascript Library provision
+        <t>This call exists to help the JavaScript Library provision
           new channel names. <xref target="RFC4086">RFC
           4086</xref> discusses the requirements and pitfalls of
           generating unguessable values in great detail. None of the
-          mechanisms it suggests are available in javascript, so a
+          mechanisms it suggests are available in JavaScript, so a
           server-side component must be available to help generate
           unguessable values.</t>
         <t>The result value of this call is a channel name. The
@@ -865,15 +865,15 @@ Backplane.getChannelID();
         <t>
           The Channel Name acts as a session identifier shared among a
           group of trusted parties. Knowledge of a Channel Name offers
-          Reglar Access level to Backplane Server API.
+          Regular Access level to Backplane Server API.
         </t>
         <t>
           It is therefore important that the Channel Name is not
           compromised, by either:
           <list style="symbols">
             <t>
-              Trusting a party (Widget source) without due verification,
-              or
+              Trusting any third-party JavaScript source included in the
+              Web Page without due verification, or
             </t>
             <t>
               Disclosing Channel Names to untrusted parties.
