@@ -561,12 +561,10 @@
               Retrieval Conventions</xref> above)
             </t>
             <t>
-              callback (optional):
-              the <xref target="padded.response">callback
-              name</xref> to pad the response with.  The presence of
-              this argument indicates that the call is being made by
-              the Javascript Library, and should not return full
-              messages.
+              callback (required if and only if the call uses Regular
+              Access Level):
+              the <xref target="padded.response">callback name</xref>
+              to pad the response with.
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
               Backplane Frames or Backplane Frame Headers, depending on
