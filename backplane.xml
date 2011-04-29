@@ -20,7 +20,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane v2 - draft 01</title>
+    <title abbrev="Backplane">Backplane 2.0 - draft 03</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -543,7 +543,7 @@
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1/&lt;BUS NAME&gt;/channel/new</spanx></t>
+              <spanx style="verb">/v2/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
