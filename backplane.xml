@@ -551,7 +551,10 @@
               callback: the <xref target="padded.response">callback
               name</xref> to pad the response with.
             </t>
-            <t hangText="Returns">a new, securely-generated Channel Name</t>
+            <t hangText="Returns">a new, securely-generated Channel Name
+              in a HTTP <xref target="padded.response">padded response</xref>
+              body
+            </t>
           </list>
         </t>
         <t>This call exists to help the Javascript Library provision
@@ -575,6 +578,12 @@
           use of one of the mechanisms in section 7
           of <xref target="RFC4086">RFC 4086</xref> is
           RECOMMENDED.</t>
+        <figure>
+          <preamble>
+            Example HTTP padded response body with Channel Name:
+          </preamble>
+          <artwork type="code">(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
+        </figure>
       </section>
 
       <section anchor="backplane.server.api.bus" title="Get All
