@@ -1,0 +1,155 @@
+Proposed Backplane Protocol v.2
+
+TODO
+====
+ • supply bus then allocating a new channel
+
+Methods
+=======
+
+GET /bus/<BUS> (privileged access level only)
+---------------------------------------------
+
+Retrieve the current message chain from <BUS>.
+
+Parameters:
+ • callback (string, optional) — to package results as JSONP.
+
+Returns:
+ • next_chain_url (string) — URL of a message chain within the bus.
+
+Response example:
+{
+	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5"
+}
+
+GET /channel
+------------
+
+Allocate a new Backplane channel.
+
+Parameters:
+ • callback (string, optional) — to package results as JSONP.
+
+Returns:
+ • channel (string) — unguessable channel id.
+ • next_chain_url (string) — URL of a message chain within the channel.
+
+Response example:
+{
+	"channel": "67dc880cc265b0dbc755ea959b257118"
+	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5"
+}
+
+GET /chain/<CHAIN>
+------------------
+
+Retrieve the next chain of messages from a source.
+
+Parameters:
+ • block (integer, default 0) — if no messages are available for immediate
+	 retrieval, this parameter communicates how long (in seconds) the
+	 server should wait before returning an empty response.
+ • callback (string, optional) — to package results as JSONP.
+
+Returns:
+ • next_chain_url (string) — URL of a message chain following the
+	last message retrieved with this API call.
+ • messages[] — an array of messages within the chain in order as
+	they were originally received by the server. Each message
+	within the array is represented as a JSON object with the
+	same structure as returned by "GET /message/<MSG>" API
+	method.
+
+Response example:
+{
+	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5",
+	"messages": [
+		{
+			"channel": "67dc880cc265b0dbc755ea959b257118",
+			"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
+			"originURL": "https://bp.example.com/v2/client/echo",
+			"payload": {
+				"role": "administrator"
+			},
+			"type": "identity/ack"
+		}
+	]
+}
+
+GET /client/<CLIENT>
+--------------------
+
+Returns public information about <CLIENT>.
+
+Parameters:
+ • callback (string, optional) — to package results as JSONP.
+
+Returns:
+ • title (string) — client title.
+ • wellKnownTLD (string) — a well-known top-level domain that belongs to the
+	 client.
+
+Response example:
+{
+	"title": "Echo",
+	"wellKnownTLD": "aboutecho.com"
+}
+
+POST /message (privileged access only)
+--------------------------------------
+
+Publish a message to the Backplane. The message is posted to the bus
+associated with the client invoking the method.
+
+Parameters:
+ • channel (string) — the id of a Backplane channel to post the message to.
+ 	The channel has to belong to the bus associated with the client.
+ • payload (object, optional) — message payload. Only available to
+	privileged access clients.
+ • type (string) — message type (arbitrary string).
+
+Returns:
+ • Status code 201 ("Created") upon success. The "Location" header of the
+ response refers to the message resource URL.
+ • Status code XXX if the client has no permission to post to the channel.
+
+Request example:
+{
+	"channel": "67dc880cc265b0dbc755ea959b257118",
+	"payload": {
+		"role": "administrator"
+	},
+	"type": "identity/ack"
+}
+
+GET /message/<MSG>
+------------------
+
+Retrieve a message from the server.
+
+Parameters:
+ • callback (string, optional) — to package results as JSONP.
+
+Returns:
+ • Status code 200 ("OK") if the message is available. The body of the
+ response is a JSON object of the following structure:
+	 • channel (string) — the id of a Backplane channel the message was
+		posted do.
+	 • messageURL (string) — a URL of the message.
+	 • originURL (string) — the resource URL of a client which
+		originally posted the message.
+	 • payload (object, optional) — message payload. Only available to
+		privileged access clients.
+	 • type (string) — message type (arbitrary string).
+
+Response example:
+{
+	"channel": "67dc880cc265b0dbc755ea959b257118",
+	"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
+	"originURL": "https://bp.example.com/v2/client/echo",
+	"payload": {
+		"role": "administrator"
+	},
+	"type": "identity/ack"
+}
