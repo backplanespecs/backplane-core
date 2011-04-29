@@ -1,9 +1,5 @@
 Proposed Backplane Protocol v.2
 
-TODO
-====
- • supply bus then allocating a new channel
-
 Methods
 =======
 
