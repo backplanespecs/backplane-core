@@ -857,6 +857,46 @@ Backplane.getChannelID();
         </artwork></figure>
       </section>
     </section><!-- ]]] -->
+    <section title="Security Considerations">
+      <t>
+        See <xref target="trust">Trust</xref>.
+      </t>
+      <section title="Channel Name Sensitivity">
+        <t>
+          The Channel Name acts as a session identifier shared among a
+          group of trusted parties. Knowledge of a Channel Name offers
+          Reglar Access level to Backplane Server API.
+        </t>
+        <t>
+          It is therefore important that the Channel Name is not
+          compromised, by either:
+          <list style="symbols">
+            <t>
+              Trusting a party (Widget source) without due verification,
+              or
+            </t>
+            <t>
+              Disclosing Channel Names to untrusted parties.
+            </t>
+          </list>
+        </t>
+      </section>
+      <section title="Message Payloads">
+        <t>
+          Message payloads are only sent to Backplane Clients at
+          <xref target="access.level.privileged">Privileged Access Level</xref>.
+          This is in order to allow sensitive data to be exchanged
+          among server-side Backplane Clients, while not allowing it to
+          reach the less secure context of web browser.
+        </t>
+        <t>
+          It is therefore important that
+          <xref target="access.level.privileged">Privileged Access Level</xref>
+          credentials are not provisioned to Backplane Clients that run
+          in a web browser.
+        </t>
+      </section>
+    </section>
   </middle><!-- ]]] -->
 
   <back><!-- [[[ -->
