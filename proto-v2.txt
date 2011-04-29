@@ -3,20 +3,34 @@ Proposed Backplane Protocol v.2
 Methods
 =======
 
-GET /bus/<BUS> (privileged access level only)
----------------------------------------------
+GET /bus (privileged access level only)
+---------------------------------------
 
-Retrieve the current message chain from <BUS>.
+Retrieve the message chains from buses. The client is only able to retrieve
+messages from buses it has been granted access to.
 
 Parameters:
  • callback (string, optional) — to package results as JSONP.
+ • busName (string, one or many) — names of the buses the caller is
+ 	interested in.
 
 Returns:
- • next_chain_url (string) — URL of a message chain within the bus.
+ • chains[]
+	 • bus (string) — bus name the chain URL refers to.
+	 • next_chain_url (string) — URL of a message chain within the bus.
 
 Response example:
 {
-	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5"
+	"chains": [
+		{
+			"bus": "customer.com",
+			"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5"
+		},
+		{
+			"bus": "organization.org",
+			"next_chain_url": "https://bp.example.com/v2/chain/8ae73b3e95cc08503cd4b395cb457e92"
+		}
+	]
 }
 
 GET /channel
@@ -40,7 +54,7 @@ Response example:
 GET /chain/<CHAIN>
 ------------------
 
-Retrieve the next chain of messages from a source.
+Retrieve the next chain of messages from a source (channel or bus).
 
 Parameters:
  • block (integer, default 0) — if no messages are available for immediate
@@ -62,6 +76,7 @@ Response example:
 	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5",
 	"messages": [
 		{
+			"bus": "customer.com",
 			"channel": "67dc880cc265b0dbc755ea959b257118",
 			"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
 			"originURL": "https://bp.example.com/v2/client/echo",
@@ -95,10 +110,10 @@ Response example:
 POST /message (privileged access only)
 --------------------------------------
 
-Publish a message to the Backplane. The message is posted to the bus
-associated with the client invoking the method.
+Publish a message to the Backplane.
 
 Parameters:
+ • bus (string) — the bus to post the message to.
  • channel (string) — the id of a Backplane channel to post the message to.
  	The channel has to belong to the bus associated with the client.
  • payload (object, optional) — message payload. Only available to
@@ -112,6 +127,7 @@ Returns:
 
 Request example:
 {
+	"bus": "customer.com",
 	"channel": "67dc880cc265b0dbc755ea959b257118",
 	"payload": {
 		"role": "administrator"
@@ -130,6 +146,7 @@ Parameters:
 Returns:
  • Status code 200 ("OK") if the message is available. The body of the
  response is a JSON object of the following structure:
+	 • bus (string) — the Backplane bus the message was posted do.
 	 • channel (string) — the id of a Backplane channel the message was
 		posted do.
 	 • messageURL (string) — a URL of the message.
@@ -141,6 +158,7 @@ Returns:
 
 Response example:
 {
+	"bus": "customer.com",
 	"channel": "67dc880cc265b0dbc755ea959b257118",
 	"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
 	"originURL": "https://bp.example.com/v2/client/echo",
