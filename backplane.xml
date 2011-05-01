@@ -275,7 +275,7 @@
         Considering the significantly different security enforcement
         capabilities of applications running in a web browser versus the
         ones running on a web server, two access levels are defined for
-        Backplane Clients:
+        Backplane Clients: Regular and Privileged.
       </t>
 
       <section anchor="access.level.regular" title="Regular Access">
