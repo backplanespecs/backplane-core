@@ -99,7 +99,7 @@
 
       <t>These components can be active and continue to run after the
           web page completed loading and are generally decoupled
-          - not under the control of a single entity.</t>
+          &mdash; not under the control of a single entity.</t>
 
       <t>Interactions between the end user, the web page, and its
           features provided through such components can greatly benefit
