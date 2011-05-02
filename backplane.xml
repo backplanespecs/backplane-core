@@ -4,6 +4,7 @@
   <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
   <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
   <!ENTITY RFC2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
+  <!ENTITY RFC4086 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4086.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
 <?rfc toc="yes"?>
@@ -19,10 +20,46 @@
 <?rfc private="Echo"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane v2 - draft 01</title>
+    <title abbrev="Backplane">Backplane 2.0 - draft 03</title>
 
-    <author>
+    <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
+      <address>
+        <email>chris@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Vlad Skvortsov" initials="V." surname="Skvortsov">
+      <organization>Echo</organization>
+      <address>
+        <email>vss@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Yuri Lukyanov" initials="Y." surname="Lukyanov">
+      <organization>Echo</organization>
+      <address>
+        <email>snaky@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Alexander Zhuravlev" initials="A." surname="Zhuravlev">
+      <organization>Echo</organization>
+      <address>
+        <email>zaa@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
+    </author>
+
+    <author fullname="Ivan Glushkov" initials="I." surname="Glushkov">
+      <organization>Echo</organization>
+      <address>
+        <email>gli@aboutecho.com</email>
+        <uri>http://aboutecho.com</uri>
+      </address>
     </author>
 
     <author fullname="Carl Howells" initials="C." surname="Howells">
@@ -44,7 +81,7 @@
     <date day="12" month="April" year="2011" />
 
     <keyword>Internet-Draft</keyword>
-    
+
     <abstract>
       <t>Backplane is a framework that facilitates message exchanges
           and event notifications between third-party JavaScript
@@ -62,7 +99,7 @@
 
       <t>These components can be active and continue to run after the
           web page completed loading and are generally decoupled
-          - not under the control of a single entity.</t>
+          &mdash; not under the control of a single entity.</t>
 
       <t>Interactions between the end user, the web page, and its
           features provided through such components can greatly benefit
@@ -72,10 +109,10 @@
       <t>The Backplane framework facilitates such interactions by
           providing an open standard API that is secure in the context
           of the assumed trust relationships between the parties
-          involved. Messages are delivered reliably, in order and in
-          nearly real-time fashion. The framework may be used in
-          different scenarios which build on top of the transport-level
-          semantics described in this document.</t>
+          involved. Messages are delivered reliably and in order. The
+          framework may be used in different scenarios which build on
+          top of the transport-level semantics described in this
+          document.</t>
     </section><!-- ]]] -->
 
 
@@ -136,15 +173,14 @@
           </t>
 
           <t hangText="Bus">
-            Identifier for a logical grouping of Backplane Clients that
-            need to interact with each other, typically belonging to one
-            organization.
+            Logical grouping of Backplane Clients that need to interact
+            with each other, typically belonging to one organization.
           </t>
 
           <t hangText="Channel">
-            Identifier for a subset of Backplane Messages on a Bus that
-            are addressed to the Backplane Clients interacting with the
-            end user through a single session and Web Page.
+            Subset of Backplane Messages that belong to a Bus and are
+            addressed to the Backplane Clients interacting with the end
+            user through a single session and Web Page.
           </t>
 
           <t hangText="Channel Name">
@@ -161,7 +197,7 @@
           "OPTIONAL" in this document are to be interpreted as described
           in <xref target="RFC2119">RFC 2119</xref>.</t>
       </section>
-      
+
     </section>
 
     <section anchor="overview" title="Overview"><!-- [[[ -->
@@ -217,6 +253,13 @@
             this specification.
           </t>
           <t>
+            The Web Page owner (and indirectly the end user) trusts
+            all content on the Web Page to not attack the widgets or
+            the Backplane framework. This must explicitly include all
+            JavaScript loaded for any purpose, including JavaScript
+            that is not part of any of the Widgets on the Web Page.
+          </t>
+          <t>
             Backplane Clients trust the Bus owner and the authenticity
             of Backplane Messages received through a Bus, i.e all
             Backplane Clients that were granted permission to post on
@@ -232,7 +275,7 @@
         Considering the significantly different security enforcement
         capabilities of applications running in a web browser versus the
         ones running on a web server, two access levels are defined for
-        Backplane Clients:
+        Backplane Clients: Regular and Privileged.
       </t>
 
       <section anchor="access.level.regular" title="Regular Access">
@@ -296,44 +339,67 @@
 
     </section>
 
+    <section anchor="padded.response" title="Padded Responses">
+      <t>
+        For API requests made by the Javascript Library, the response
+        is formatted specially.
+      </t>
+      <t>
+        The response body begins with the value of
+        the <spanx type="emph">callback</spanx> parameter from the
+        request.  That value is followed by a &quot;(&quot; (opening
+        parenthesis), then the JSON-encoded result value, then a
+        &quot;)&quot; (closing parenthesis).
+      </t>
+    </section>
+
     <section anchor="buses" title="Buses">
       <t>
-        A Bus is an identifier for a logical grouping of Backplane
-        Clients that need to interact with each other, typically
-        belonging to one organization. The Bus identifier acts as a 
-        namespace for the Backplane Messages exchanged by the group.
+        A Bus is a logical grouping of Backplane Clients that need to
+        interact with each other, typically belonging to one
+        organization. Buses allow a Backplane Server to service
+        multiple customers. Bus names can consist of short strings
+        referencing the Bus owner's name (e.g. "customer.com",
+        "organization.org").
       </t>
       <t>
-        Bus identifiers allow a Backplane Server to service multiple
-        customers and can consist of short strings referencing the Bus
-        owner's name (e.g. "customer.com", "organization.org").
-      </t>
-      <t>
-        Backplane Clients must know the identifiers for the Buses
-        through which they wish to exchange Backplane Messages.
+        Bus identifiers are URLs consisting of the Backplane Server's
+        Bus endpoint and the Bus name. They are used by Backplane
+        Clients for message retrieval and act as a namespace for the
+        Backplane Messages exchanged by the group. Backplane Clients
+        must know the identifiers for the Buses through which they wish
+        to exchange Backplane Messages.
       </t>
       <t>
         It is assumed that a relationship of trust exists between all
         clients granted permission to post messages to a specific
-        bus. See <xref target="trust">Trust</xref>.
+        Bus. See <xref target="trust">Trust</xref>.
       </t>
       <figure>
         <preamble>
           Example of a Bus identifier:
         </preamble>
         <artwork type="code">http://backplane.example.com/v2/bus/customer.com</artwork>
+        <postamble>
+          In this example <spanx>http://backplane.example.com/v2/bus/</spanx>
+          is the Backplane Server Bus endpoint and <spanx>customer.com</spanx>
+          is the Bus name.
+        </postamble>
       </figure>
     </section>
 
     <section anchor="channels" title="Channels">
       <t>
-        A Channel is an identifier for a subset of Backplane Messages on
-        a Bus that are addressed to the Backplane Clients interacting
-        with the end user through a single session and Web Page.
+        A Channel is a subset of Backplane Messages that belong to a Bus
+        and are addressed to the Backplane Clients interacting with the
+        end user through a single session and Web Page. A Channel is
+        similar to a session identifier for the user but is shared by
+        multiple Backplane Clients.
       </t>
       <t>
-        A Channel is similar to a session identifier for the user but is
-        shared by all Backplane Clients. All Backplane Clients that know
+        Channel identifiers are URLs consisting of the Backplane Server's
+        Channel endpoint and the Channel Name and are used by Backplane
+        Clients for message retrieval. All Backplane Clients that know
         a given Channel identifier can receive Backplane Messages posted
         to that Channel.
       </t>
@@ -342,26 +408,31 @@
         <list style="symbols">
           <t>allocated within Buses</t>
           <t>referenced by unique, unguessable identifiers (URLs)</t>
-          <t>created implicitly once a Backplane message gets
+          <t>created implicitly once a Backplane Message gets
             posted to a channel that doesn't yet exist</t>
           <t>non-persistent and expire after being inactive (no
             messages posted) for specific amount of time (e.g. 30
             minutes)</t>
           <t>sensitive (i.e. content that cannot be trusted to keep the
-            channel identifier secret MUST NOT be loaded)</t>
+            Channel identifier secret MUST NOT be loaded)</t>
         </list>
       </t>
 
-      <t>Channel names MUST only contain characters from the
+      <t>Channel Names MUST only contain characters from the
         <xref target="RFC4648.section5">base64url</xref>
         character set.
       </t>
-      
+
       <figure>
         <preamble>
           Example of a Channel identifier:
         </preamble>
         <artwork type="code">http://backplane.example.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+        <postamble>
+          In this example <spanx>http://backplane.example.com/v2/bus/customer.com/channel/</spanx>
+          is the Backplane Server Channel endpoint and <spanx>8ec92f459fa70b0da1a40e8fe70a0bc8</spanx>
+          is the Channel Name.
+        </postamble>
       </figure>
     </section>
 
@@ -376,7 +447,7 @@
             message type, string
           </t>
           <t hangText="payload">
-            arbitrary object carrying data specific to the particular 
+            arbitrary object carrying data specific to the particular
             message type
           </t>
         </list>
@@ -421,76 +492,98 @@
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
         <t>
-          A Backplane Server maintains a "window" of most recent
-          messages for each of the existing buses and channels. The
-          exact amount of messages that fit into the window depends
-          on the server implementation or policy.
+          Backplane Servers MUST maintain a window of most recent
+          messages for each of the existing Channels. The window
+          size MUST be at least 1 minute. It is RECOMMENDED that
+          Backplane Servers maintain a window of at least 5 minutes.
+        </t>
+
+        <t>
+          It is RECOMMENDED that it is an operational priority for
+          Backplane Servers to make messages available for retrieval
+          as soon as possible after they are posted.
+        </t>
+
+        <t>
+          Backplane Clients that require reliable message delivery
+          MUST poll their Backplane Servers with an interval of 30
+          seconds or less in order to avoid omissions.
         </t>
 
         <t>
           All Backplane Server API methods dealing with Backplane
           Message retrieval observe the principles outlined below. A
           retrieval request may contain an optional 'since' parameter,
-          referring to a message previously seen by the caller.
+          referring to a Backplane Frame previously seen by the caller.
         </t>
 
         <t>
           If the 'since' parameter is...
           <list>
-            <t>...omitted, the whole window worth of Backplane Messages
+            <t>...omitted, the whole window worth of Backplane Frames
               is returned.</t>
-            <t>...present and refers to a Backplane Message...
+            <t>...present and refers to a Backplane Frame...
               <list>
                 <t>...currently residing in the window, the Backplane
-                  Server returns all Backplane Messages that are more
+                  Server returns all Backplane Frames that are more
                   recent than the referenced one.</t>
                 <t>...which is no longer in the window, the whole window
-                  worth of Backplane Messages is returned.</t>
+                  worth of Backplane Frames is returned.</t>
               </list>
             </t>
           </list>
         </t>
 
-        <t>In order to avoid omissions, a Backplane Client needs to
-          invoke the method often enough (specific recommendations
-          will be based on the server implementation or policy).</t>
-
       </section>
 
       <t>A Backplane Server provides the following API.</t>
 
-      <section anchor="backplane.server.api.new_channel" title="Get a
+      <section anchor="backplane.server.api.new_channel" title="Get A
         New Channel Name">
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v2/new_channel</spanx></t>
+              <spanx style="verb">/v2/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
-            <t hangText="Security">HTTPS only,
+            <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
-            <t hangText="Parameters">None</t>
-            <t hangText="Returns">a new, securely-generated Channel Name</t>
+            <t hangText="Parameters">
+              callback: the <xref target="padded.response">callback
+              name</xref> to pad the response with.
+            </t>
+            <t hangText="Returns">a new, securely-generated Channel Name
+              in a HTTP <xref target="padded.response">padded response</xref>
+              body
+            </t>
           </list>
         </t>
-        <t>
-          This call exists to help the Backplane JavaScript Library
-          provision new Channel Names. Since JavaScript provides no
-          method to generate unguessable values, it needs server-side
-          assistance.
-        </t>
-        <t>
-          The result value of this call should be 32 characters
-          indepedently chosen uniformly from the set
-          <spanx style="emph">0123456789abcdef</spanx>. The content
-          returned must not be guessable given knowledge of the
-          algorithms in use or any details of the request being
-          made.
-        </t>
-        <t>
-          As an operational note, this API call should not be
-          implemented in a way that makes it capable of blocking or
-          exhausting any system resources.
-        </t>
+        <t>This call exists to help the JavaScript Library provision
+          new channel names. <xref target="RFC4086">RFC
+          4086</xref> discusses the requirements and pitfalls of
+          generating unguessable values in great detail. None of the
+          mechanisms it suggests are available in JavaScript, so a
+          server-side component must be available to help generate
+          unguessable values.</t>
+        <t>The result value of this call is a channel name. The
+          channel name MUST be at least 32 characters indepedently
+          chosen with uniform distribution from the
+          set <spanx style="emph">0123456789abcdef</spanx>. The
+          channel name MUST NOT be guessable given knowledge of the
+          algorithms in use or any details of the request being made.
+          The result MUST be padded as specified in
+          the <xref target="padded.response">padded response</xref>
+          section.</t>
+        <t>As operational notes, this API call SHOULD NOT be
+          implemented in a way that makes it capable of blocking and
+          use of one of the mechanisms in section 7
+          of <xref target="RFC4086">RFC 4086</xref> is
+          RECOMMENDED.</t>
+        <figure>
+          <preamble>
+            Example HTTP padded response body with Channel Name:
+          </preamble>
+          <artwork type="code">(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
+        </figure>
       </section>
 
       <section anchor="backplane.server.api.bus" title="Get All
@@ -530,8 +623,14 @@
             </t>
             <t hangText="Parameters">
               since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
-              above)
+              <xref target="backplane.server.conventions">Message
+              Retrieval Conventions</xref> above)
+            </t>
+            <t>
+              callback (required if and only if the call uses Regular
+              Access Level):
+              the <xref target="padded.response">callback name</xref>
+              to pad the response with.
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
               Backplane Frames or Backplane Frame Headers, depending on
@@ -539,15 +638,19 @@
         </list>
         </t>
         <t>
-          With <xref target="access.level.privileged">Privileged Access Level</xref>
-          this method is used by server-side components to receive Backplane
-          Frames that were posted to a specific Channel.
+          With <xref target="access.level.privileged">Privileged
+          Access Level</xref> this method is used by server-side
+          components to receive Backplane Frames that were posted to a
+          specific Channel.
         </t>
         <t>
-          With <xref target="access.level.regular">Regular Access Level</xref>
-          this method is used by Widgets to receive Backplane Frame
-          Headers for Backplane Messages that were posted to a specific
-          Channel.
+          With <xref target="access.level.regular">Regular Access
+          Level</xref> this method is used by Widgets to receive
+          Backplane Frame Headers for Backplane Messages that were
+          posted to a specific Channel.  In this access level, the
+          result MUST be padded as specified in
+          the <xref target="padded.response">padded response</xref>
+          section.
         </t>
       </section>
 
@@ -754,6 +857,46 @@ Backplane.getChannelID();
         </artwork></figure>
       </section>
     </section><!-- ]]] -->
+    <section title="Security Considerations">
+      <t>
+        See <xref target="trust">Trust</xref>.
+      </t>
+      <section title="Channel Name Sensitivity">
+        <t>
+          The Channel Name acts as a session identifier shared among a
+          group of trusted parties. Knowledge of a Channel Name offers
+          Regular Access level to Backplane Server API.
+        </t>
+        <t>
+          It is therefore important that the Channel Name is not
+          compromised, by either:
+          <list style="symbols">
+            <t>
+              Trusting any third-party JavaScript source included in the
+              Web Page without due verification, or
+            </t>
+            <t>
+              Disclosing Channel Names to untrusted parties.
+            </t>
+          </list>
+        </t>
+      </section>
+      <section title="Message Payloads">
+        <t>
+          Message payloads are only sent to Backplane Clients at
+          <xref target="access.level.privileged">Privileged Access Level</xref>.
+          This is in order to allow sensitive data to be exchanged
+          among server-side Backplane Clients, while not allowing it to
+          reach the less secure context of web browser.
+        </t>
+        <t>
+          It is therefore important that
+          <xref target="access.level.privileged">Privileged Access Level</xref>
+          credentials are not provisioned to Backplane Clients that run
+          in a web browser.
+        </t>
+      </section>
+    </section>
   </middle><!-- ]]] -->
 
   <back><!-- [[[ -->
@@ -764,6 +907,8 @@ Backplane.getChannelID();
       &RFC2617;
 
       &RFC4627;
+
+      &RFC4086;
 
       &RFC2119;
 
