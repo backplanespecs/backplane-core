@@ -20,7 +20,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane 2.0 - draft 03</title>
+    <title abbrev="Backplane">Backplane 2.0 - draft 04</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -163,15 +163,6 @@
             Backplane Server API implementation.
           </t>
 
-          <t hangText="Backplane Frame">
-            A Backplane Message and metadata assigned to it by the
-            Backplane Server.
-          </t>
-
-          <t hangText="Backplane Frame Header">
-            A Backplane Frame without the Backplane Message payload field.
-          </t>
-
           <t hangText="Bus">
             Logical grouping of Backplane Clients that need to interact
             with each other, typically belonging to one organization.
@@ -181,11 +172,6 @@
             Subset of Backplane Messages that belong to a Bus and are
             addressed to the Backplane Clients interacting with the end
             user through a single session and Web Page.
-          </t>
-
-          <t hangText="Channel Name">
-            The part of the Channel identifier that is unique within a
-            Bus.
           </t>
 
         </list>
