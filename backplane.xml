@@ -345,34 +345,17 @@
         A Bus is a logical grouping of Backplane Clients that need to
         interact with each other, typically belonging to one
         organization. Buses allow a Backplane Server to service
-        multiple customers. Bus names can consist of short strings
+        multiple customers. Bus names are short strings
         referencing the Bus owner's name (e.g. "customer.com",
         "organization.org").
-      </t>
-      <t>
-        Bus identifiers are URLs consisting of the Backplane Server's
-        Bus endpoint and the Bus name. They are used by Backplane
-        Clients for message retrieval and act as a namespace for the
-        Backplane Messages exchanged by the group. Backplane Clients
-        must know the identifiers for the Buses through which they wish
-        to exchange Backplane Messages.
+        Backplane Clients must know the identifiers for the Buses through
+        which they wish to exchange Backplane Messages.
       </t>
       <t>
         It is assumed that a relationship of trust exists between all
         clients granted permission to post messages to a specific
-        Bus. See <xref target="trust">Trust</xref>.
+        Bus (see <xref target="trust">Trust</xref>).
       </t>
-      <figure>
-        <preamble>
-          Example of a Bus identifier:
-        </preamble>
-        <artwork type="code">http://backplane.example.com/v2/bus/customer.com</artwork>
-        <postamble>
-          In this example <spanx>http://backplane.example.com/v2/bus/</spanx>
-          is the Backplane Server Bus endpoint and <spanx>customer.com</spanx>
-          is the Bus name.
-        </postamble>
-      </figure>
     </section>
 
     <section anchor="channels" title="Channels">
