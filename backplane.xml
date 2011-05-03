@@ -491,7 +491,71 @@
 
       </section>
 
-      <t>A Backplane Server provides the following API.</t>
+      <section anchor="backplane.server.api.get.bus"
+          title="Get All Messages From Buses">
+        <t><list style="hanging">
+            <t hangText="HTTP Method">GET</t>
+            <t hangText="Endpoint">
+              <spanx style="verb">/v2/bus</spanx></t>
+            <t hangText="Security">HTTPS with
+              <xref target="access.level.privileged">Privileged Access Level</xref></t>
+            <t hangText="Parameters">
+              <list style="symbols">
+                <t>
+                  callback (string, optional) &mdash; the
+                  <xref target="padded.response">callback name</xref> to
+                  pad the response with
+                </t>
+                <t>
+                  busName (string, one or many) &mdash; names of the buses
+                  to retrieve messages from
+                </t>
+              </list>
+            </t>
+            <t hangText="Returns">
+              <list style="symbols">
+                <t>
+                  On success &mdash; status code 200 ("OK"). The response
+                  body is then a JSON object of the following structure:
+                  <list style="symbols">
+                    <t>
+                      nextSequenceURL (string) &mdash; a URL that the Client
+                      can use to retrieve the first sequence of messages from
+                      the requested buses.
+                    </t>
+                  </list>
+                </t>
+                <t>
+                  If the Client is not authorized to retrieve messages from
+                  the requested Bus, status code 401 ("Not Authorized") is
+                  returned.
+                </t>
+                <t>
+                  If the requested Bus name is not known to the server,
+                  status code 404 ("Not Found") is returned.
+                </t>
+              </list>
+            </t>
+          </list>
+        </t>
+        <t>
+          This method is used by Backplane Clients to receive all
+          messages distributed on specific Buses. A Client is only able to
+          retrieve messages from buses it has been granted access to (per
+          the Server configuration).
+        </t>
+
+      <figure>
+        <preamble>
+          Example response
+        </preamble>
+        <artwork type="code">
+{
+  "nextSequenceURL": "https://bp.example.com/v2/sequence/958bfa2dd8aed82c86afbd54b4a314a5"
+}
+        </artwork>
+      </figure>
+      </section>
 
       <section anchor="backplane.server.api.new_channel" title="Get A
         New Channel Name">
@@ -539,29 +603,6 @@
           </preamble>
           <artwork type="code">(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
         </figure>
-      </section>
-
-      <section anchor="backplane.server.api.bus" title="Get All
-        Messages In A Bus">
-        <t><list style="hanging">
-            <t hangText="Endpoint">
-              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;</spanx></t>
-            <t hangText="HTTP Method">GET</t>
-            <t hangText="Security">HTTPS with
-              <xref target="access.level.privileged">Privileged Access Level</xref></t>
-            <t hangText="Parameters">
-              since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
-              above)
-            </t>
-            <t hangText="Returns">a JSON object consisting of a list of
-              Backplane Frames</t>
-          </list>
-        </t>
-        <t>
-          This method is used by Backplane Clients to receive all
-          messages distributed on the specific Bus &lt;BUS_NAME&gt;.
-        </t>
       </section>
 
       <section anchor="backplane.server.api.channel.get"
