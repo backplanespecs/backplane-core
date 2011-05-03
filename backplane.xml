@@ -304,8 +304,8 @@
           Server API requests. Backplane Servers MUST validate the
           authorization credentials for all Backplane Server API
           operations that require Privileged access level, summarized
-          below.
-          See <xref target="backplane.server.api">Backplane Server API</xref>.
+          below (see <xref target="backplane.server.api">Backplane Server
+          API</xref>).
           The provisioning of Privileged access level credentials is
           outside of the scope of this specification.
         </t>
@@ -315,16 +315,10 @@
           authorization credentials from the Bus owner:
           <list style="symbols">
             <t>
-              retrieve Backplane Messages (which include payloads) that
-              were sent to a Channel for which they know the Channel
-              identifier
+              retrieve all Backplane Messages sent to the Bus (XXX: xref)
             </t>
             <t>
-              retrieve all Backplane Messages sent to the Bus
-            </t>
-            <t>
-              post Backplane Messages to a Channel for which they know
-              the Channel identifier
+              post Backplane Messages to a Channel (XXX: xref)
             </t>
           </list>
         </t>
