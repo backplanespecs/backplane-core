@@ -366,18 +366,11 @@
         similar to a session identifier for the user but is shared by
         multiple Backplane Clients.
       </t>
-      <t>
-        Channel identifiers are URLs consisting of the Backplane Server's
-        Channel endpoint and the Channel Name and are used by Backplane
-        Clients for message retrieval. All Backplane Clients that know
-        a given Channel identifier can receive Backplane Messages posted
-        to that Channel.
-      </t>
 
       <t>Channels are:
         <list style="symbols">
           <t>allocated within Buses</t>
-          <t>referenced by unique, unguessable identifiers (URLs)</t>
+          <t>referenced by unique, unguessable identifiers</t>
           <t>created implicitly once a Backplane Message gets
             posted to a channel that doesn't yet exist</t>
           <t>non-persistent and expire after being inactive (no
@@ -388,22 +381,16 @@
         </list>
       </t>
 
-      <t>Channel Names MUST only contain characters from the
-        <xref target="RFC4648.section5">base64url</xref>
-        character set.
+      <t>
+        Channel identifiers are used by Backplane Clients for message
+        retrieval. All Backplane Clients that know a given Channel identifier
+        can receive Backplane Messages posted to that Channel.
       </t>
 
-      <figure>
-        <preamble>
-          Example of a Channel identifier:
-        </preamble>
-        <artwork type="code">http://backplane.example.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
-        <postamble>
-          In this example <spanx>http://backplane.example.com/v2/bus/customer.com/channel/</spanx>
-          is the Backplane Server Channel endpoint and <spanx>8ec92f459fa70b0da1a40e8fe70a0bc8</spanx>
-          is the Channel Name.
-        </postamble>
-      </figure>
+      <t>Channel identifiers MUST only contain characters from the
+        <xref target="RFC4648.section5">base64url</xref> character set
+        and be at least 32 characters long.
+      </t>
     </section>
 
     <section anchor="backplane.messages" title="Backplane Messages">
