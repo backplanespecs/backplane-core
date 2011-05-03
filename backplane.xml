@@ -396,29 +396,47 @@
     <section anchor="backplane.messages" title="Backplane Messages">
       <t>A Backplane message is a JSON object with the following fields:
         <list style="hanging">
-          <t hangText="source">
-            the source of the message, MUST be a URL
-            (e.g. "http://client.com/")
+          <t hangText="bus (string)">
+            the name of the Bus the message was posted to
           </t>
-          <t hangText="type">
-            message type, string
+          <t hangText="channel (string)">
+            the identifier of Channel the message was posted to
           </t>
-          <t hangText="payload">
-            arbitrary object carrying data specific to the particular
+          <t hangText="messageId (string)">
+            the unique identifier of the message
+          </t>
+          <t hangText="source (string)">
+            an arbitrary URL identifying the client which posted the message
+          </t>
+          <t hangText="payload (object, optional)">
+            arbitrary data specific to the particular message type (only
+            available to Clients with Privileged Access)
+          </t>
+          <t hangText="type (string)">
             message type
           </t>
         </list>
       </t>
 
-      <t>
-        A Backplane message MAY be wrapped in a
-        <xref target="draft-panzer-magicsig-00">Magic Envelope</xref>.
-        Backplane Clients MUST be able to process (unwrap) such messages
-        (note that unwrapping a magic envelope is not the same as
-        signature verification).
-      </t>
-    </section>
+      <figure>
+        <preamble>
+          Example Backplane Message
+        </preamble>
+        <artwork type="code">
+{
+        "bus": "customer.com",
+        "channel": "67dc880cc265b0dbc755ea959b257118",
+        "messageId": "097a5cc401001f95b45d37aca32a3bd2",
+        "source": "http://aboutecho.com",
+        "payload": {
+                "role": "administrator"
+        },
+        "type": "identity/ack"
+}
+        </artwork>
+      </figure>
 
+    </section>
 
     <section anchor="backplane.frames" title="Backplane Frames">
       <t>
@@ -868,21 +886,6 @@ Backplane.getChannelID();
       &RFC4086;
 
       &RFC2119;
-
-      <reference
-        anchor="draft-panzer-magicsig-00"
-        target="http://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-magicsig-00.html#anchor3">
-        <front>
-          <title>Magic Signatures</title>
-          <author initials="J." surname="Panzer" fullname="J. Panzer">
-            <organization>Google Inc.</organization>
-          </author>
-          <author initials="B." surname="Laurie" fullname="B. Laurie">
-            <organization>Google Inc.</organization>
-          </author>
-          <date year="2010" month="February" />
-        </front>
-      </reference>
 
       <reference
         anchor="RFC4648.section5"
