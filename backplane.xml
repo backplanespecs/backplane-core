@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="12" month="April" year="2011" />
+    <date day="3" month="May" year="2011" />
 
     <keyword>Internet-Draft</keyword>
 
@@ -178,6 +178,11 @@
             A set of Backplane Messages that meet a certain filter criteria,
             in the same order as they have been received by a Backplane
             server.
+          </t>
+
+          <t hangText="Message Age">
+            The length of time since the Message was received by the
+            Backplane server.
           </t>
 
         </list>
@@ -438,45 +443,21 @@
 
     </section>
 
-    <section anchor="backplane.frames" title="Backplane Frames">
-      <t>
-        A Backplane frame is a JSON object with the following fields:
-        <list style="hanging">
-          <t hangText="message">
-            the Backplane Message
-          </t>
-          <t hangText="channel_name">
-            the Channel Name the message was posted to (can be used to
-            construct Channel identifier of the message)
-          </t>
-          <t hangText="id">
-            an arbitrary string identifier assigned by the server to
-            the message for the purpose of later referencing
-          </t>
-        </list>
-      </t>
-      <t>
-        For the purpose of managing and referencing Backplane Messages,
-        a Backplane Server wraps them with the meta information
-        described above into Backplane Frames.
-      </t>
-
-    </section>
-
     <section anchor="backplane.server.api" title="Backplane Server API"><!-- [[[ -->
 
       <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
         <t>
-          Backplane Servers MUST maintain a window of most recent
-          messages for each of the existing Channels. The window
-          size MUST be at least 1 minute. It is RECOMMENDED that
-          Backplane Servers maintain a window of at least 5 minutes.
+          Backplane Servers MUST maintain a buffer of messages received from
+          all their clients until messages become older than a certain
+          threshold. Such threshold MUST be no less than 1 minute. It is
+          RECOMMENDED that Backplane Servers set the threshold to at least 5
+          minutes. A message is considered obsolete once its age reaches the
+          threshold.
         </t>
 
         <t>
-          It is RECOMMENDED that it is an operational priority for
-          Backplane Servers to make messages available for retrieval
-          as soon as possible after they are posted.
+          It is RECOMMENDED that Backplane Servers make messages available
+          for retrieval as soon as possible after they are posted.
         </t>
 
         <t>
@@ -486,27 +467,26 @@
         </t>
 
         <t>
-          All Backplane Server API methods dealing with Backplane
-          Message retrieval observe the principles outlined below. A
-          retrieval request may contain an optional 'since' parameter,
-          referring to a Backplane Frame previously seen by the caller.
+          Backplane Clients retrieve messages from a Backplane Server by
+          presenting a Message Sequence identifier (see XXX). The server's
+          response to such request includes a set of messages matching
+          certain criteria and a new Sequence identifier which can be
+          presented by the Client in a later call to the Server.
         </t>
 
         <t>
-          If the 'since' parameter is...
-          <list>
-            <t>...omitted, the whole window worth of Backplane Frames
-              is returned.</t>
-            <t>...present and refers to a Backplane Frame...
-              <list>
-                <t>...currently residing in the window, the Backplane
-                  Server returns all Backplane Frames that are more
-                  recent than the referenced one.</t>
-                <t>...which is no longer in the window, the whole window
-                  worth of Backplane Frames is returned.</t>
-              </list>
-            </t>
-          </list>
+          A Backplane Server keeps record of provisioned Sequence
+          identifiers and maps each of them to a set of filters along with a
+          reference to the Backplane Message in the Server's message buffer.
+          A Sequence identifier is considered obsolete if it references an
+          obsolete message.
+        </t>
+
+        <t>
+          If a Backplane Server receives a request to retrieve Messages with
+          an obsolete Sequence identifier, it serves the request as if the
+          Sequence identifier refered to the oldest Message still in the
+          buffer.
         </t>
 
       </section>
