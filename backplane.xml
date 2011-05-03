@@ -277,15 +277,16 @@
         </t>
         <t>
           Regular access level is exercised without presenting any
-          authorization credentials aside from the Channel identifier.
+          authorization credentials aside from the Message Sequence
+          identifier.
           Bus owners and Backplane Servers acting on their behalf MUST
           NOT give authorization credentials for Privileged access level
           to Backplane Clients running in the web browser.
         </t>
         <t>
-          Backplane Clients having Regular access level can retrieve
-          Backplane Frame Headers sent to Channels for which they know
-          the Channel identifier.
+          Backplane Server MUST only make Backplane Message Headers (not
+          full Backplane Messages) available to Clients having Regular
+          access level.
         </t>
       </section>
 
