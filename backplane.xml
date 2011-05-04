@@ -407,15 +407,14 @@
           <t hangText="channel (string)">
             the identifier of Channel the message was posted to
           </t>
-          <t hangText="messageId (string)">
-            the unique identifier of the message
+          <t hangText="messageURL (string)">
+            a URL that a client can use to retrieve the message
           </t>
           <t hangText="source (string)">
             an arbitrary URL identifying the client which posted the message
           </t>
           <t hangText="payload (object)">
-            arbitrary data specific to the particular message type (only
-            available to Clients with Privileged Access)
+            arbitrary data specific to the particular message type
           </t>
           <t hangText="type (string)">
             message type
@@ -447,7 +446,7 @@
 {
         "bus": "customer.com",
         "channel": "67dc880cc265b0dbc755ea959b257118",
-        "messageId": "097a5cc401001f95b45d37aca32a3bd2",
+        "messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
         "source": "http://aboutecho.com",
         "payload": {
                 "role": "administrator"
