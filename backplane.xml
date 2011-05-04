@@ -425,7 +425,7 @@
 
       <figure>
         <preamble>
-          Example Backplane Message
+          Example Backplane Message:
         </preamble>
         <artwork type="code">
 {
@@ -547,7 +547,7 @@
 
       <figure>
         <preamble>
-          Example response
+          Example response:
         </preamble>
         <artwork type="code">
 {
@@ -557,51 +557,76 @@
       </figure>
       </section>
 
-      <section anchor="backplane.server.api.new_channel" title="Get A
-        New Channel Name">
+      <section anchor="backplane.server.api.new_channel"
+        title="Get Messages From A New Channel">
         <t>
           <list style="hanging">
-            <t hangText="Endpoint">
-              <spanx style="verb">/v2/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
+            <t hangText="Endpoint">
+              <spanx style="verb">/v2/channel</spanx></t>
             <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
             <t hangText="Parameters">
-              callback: the <xref target="padded.response">callback
-              name</xref> to pad the response with.
+              <list style="symbols">
+                <t>
+                  callback (string, optional) &mdash; the
+                  <xref target="padded.response">callback name</xref> to
+                  pad the response with
+                </t>
+              </list>
             </t>
-            <t hangText="Returns">a new, securely-generated Channel Name
-              in a HTTP <xref target="padded.response">padded response</xref>
-              body
+            <t hangText="Returns">
+              <list style="symbols">
+                <t>
+                  Status code 200 ("OK"). The response body is a JSON object
+                  of the following structure:
+                  <list style="symbols">
+                    <t>
+                      channel (string) &mdash; unguessable channel name
+                    </t>
+                    <t>
+                      nextSequenceURL (string) &mdash; a URL that the Client
+                      can use to retrieve the first sequence of messages from
+                      the newly allocated Channel
+                    </t>
+                  </list>
+                </t>
+              </list>
             </t>
           </list>
         </t>
-        <t>This call exists to help the JavaScript Library provision
-          new channel names. <xref target="RFC4086">RFC
-          4086</xref> discusses the requirements and pitfalls of
-          generating unguessable values in great detail. None of the
-          mechanisms it suggests are available in JavaScript, so a
-          server-side component must be available to help generate
-          unguessable values.</t>
-        <t>The result value of this call is a channel name. The
-          channel name MUST be at least 32 characters indepedently
-          chosen with uniform distribution from the
+        <t>
+          This method allocates a new Backplane Channel and returns its name
+          to the Client (<xref target="RFC4086">RFC 4086</xref> discusses the
+          requirements and pitfalls of generating unguessable values in great
+          detail). The channel name MUST be at least 32 characters
+          indepedently chosen with uniform distribution from the
           set <spanx style="emph">0123456789abcdef</spanx>. The
           channel name MUST NOT be guessable given knowledge of the
           algorithms in use or any details of the request being made.
-          The result MUST be padded as specified in
-          the <xref target="padded.response">padded response</xref>
-          section.</t>
-        <t>As operational notes, this API call SHOULD NOT be
+        </t>
+
+        <t>As an operational note, this API call SHOULD NOT be
           implemented in a way that makes it capable of blocking and
-          use of one of the mechanisms in section 7
-          of <xref target="RFC4086">RFC 4086</xref> is
-          RECOMMENDED.</t>
+          use of one of the mechanisms in section 7 of
+          <xref target="RFC4086">RFC 4086</xref> is RECOMMENDED.
+        </t>
+
+        <t>
+          The Sequence identifier returned by this method can be used by the
+          Client to retrieve messages posted to the newly created Channel.
+        </t>
+
         <figure>
           <preamble>
-            Example HTTP padded response body with Channel Name:
+            Example response:
           </preamble>
-          <artwork type="code">(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
+          <artwork type="code">
+{
+	"channel": "67dc880cc265b0dbc755ea959b257118"
+	"nextSequenceURL": "https://bp.example.com/v2/sequence/958bfa2dd8aed82c86afbd54b4a314a5"
+}
+          </artwork>
         </figure>
       </section>
 
