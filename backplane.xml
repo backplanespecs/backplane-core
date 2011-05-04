@@ -716,6 +716,71 @@
         </figure>
       </section>
 
+      <section anchor="backplane.server.api.get.message" title="Get Message">
+        <t>
+          <list style="hanging">
+            <t hangText="HTTP Method">GET</t>
+            <t hangText="Endpoint">
+              <spanx style="verb">/v2/message/&lt;MSG&gt;</spanx></t>
+            <t hangText="Security">optional HTTPS</t>
+            <t hangText="Parameters">
+              <list style="symbols">
+                <t>
+                  callback (string, optional) &mdash; the
+                  <xref target="padded.response">callback name</xref> to
+                  pad the response with
+                </t>
+              </list>
+            </t>
+            <t hangText="Returns">
+              <list style="symbols">
+                <t>
+                  Status code 200 ("OK") if the message is available in the
+                  server's buffer. The response body is the requested
+                  downstream Backplane message.
+                </t>
+                <t>
+                  Status code 404 ("Not Found") is the message is not
+                  present in the server's buffer.
+                </t>
+              </list>
+            </t>
+          </list>
+        </t>
+
+        <t>
+          Note that the availability of the message depends on its age and
+          the size of the server's buffer (see <xref
+          target="backplane.server.conventions">Message Retrieval
+          Conventions</xref>).
+        </t>
+
+        <t>
+          Since the message returned by this method is a downstream one,
+          the "payload" field is only available to clients with Privileged
+          access (see <xref target="backplane.messages">Backplane
+          messages</xref>).
+        </t>
+
+        <figure>
+          <preamble>
+            Example response to a privileged access client:
+          </preamble>
+          <artwork type="code">
+{
+        "bus": "customer.com",
+        "channel": "67dc880cc265b0dbc755ea959b257118",
+        "messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
+        "source": "http://aboutecho.com",
+        "payload": {
+                "role": "administrator"
+        },
+        "type": "identity/ack"
+}
+          </artwork>
+        </figure>
+      </section>
+
       <section anchor="backplane.server.api.channel.get"
         title="Get Channel Messages">
         <t><list style="hanging">
