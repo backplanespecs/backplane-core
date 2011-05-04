@@ -740,7 +740,7 @@
                   downstream Backplane message.
                 </t>
                 <t>
-                  Status code 404 ("Not Found") is the message is not
+                  Status code 404 ("Not Found") if the message is not
                   present in the server's buffer.
                 </t>
               </list>
@@ -781,12 +781,13 @@
         </figure>
       </section>
 
-      <section anchor="backplane.server.api.channel.get"
-        title="Get Channel Messages">
+      <section anchor="backplane.server.api.get.sequence"
+        title="Get Message Sequence">
         <t><list style="hanging">
-            <t hangText="Endpoint">
-              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
+            <t hangText="Endpoint">
+              <spanx style="verb">/v2/sequence/&lt;SEQ&gt;</spanx>
+            </t>
             <t hangText="Security">
               <xref target="access.level.privileged">Privileged Access Level</xref>
               with HTTPS, or
@@ -794,36 +795,85 @@
               with either HTTP or HTTPS.
             </t>
             <t hangText="Parameters">
-              since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message
-              Retrieval Conventions</xref> above)
+              <list style="symbols">
+                <t>block (integer, default 0) &mdash; if no messages are
+                  available for immediate retrieval, this parameter
+                  communicates how long (in seconds) the server should wait
+                  before returning an empty response
+                </t>
+                <t>
+                  callback (string, optional) &mdash; the
+                  <xref target="padded.response">callback name</xref> to
+                  pad the response with
+                </t>
+              </list>
             </t>
-            <t>
-              callback (required if and only if the call uses Regular
-              Access Level):
-              the <xref target="padded.response">callback name</xref>
-              to pad the response with.
+            <t hangText="Returns">
+              <list style="symbols">
+                <t>
+                  Status code 200 ("OK") if the sequence identifier is known
+                  to the server. The response body is a JSON object of the
+                  following structure:
+                  <list style="symbols">
+                    <t>
+                      nextSequenceURL (string) &mdash; a URL that the Client
+                      can use to retrieve the next sequence of messages 
+                      meeting the original selection criteria
+                    </t>
+                    <t>
+                      messages (array) &mdash; an array of
+                      <xref target="backplane.messages">downstream Backplane
+                      messages</xref>
+                    </t>
+                  </list>
+                </t>
+                <t>
+                  Status code 404 ("Not Found") if the sequence identifier
+                  is unknown to the server.
+                </t>
+              </list>
             </t>
-            <t hangText="Returns">a JSON object consisting of a list of
-              Backplane Frames or Backplane Frame Headers, depending on
-              the access level used by the requester.</t>
-        </list>
+          </list>
         </t>
+
         <t>
-          With <xref target="access.level.privileged">Privileged
-          Access Level</xref> this method is used by server-side
-          components to receive Backplane Frames that were posted to a
-          specific Channel.
+          This API method retrieves a sequence of Backplane messages meeting
+          criteria set with either
+          <xref target="backplane.server.api.get.bus">"Get All Messages From
+          Buses"</xref> (messages posted to specific buses)
+          or <xref target="backplane.server.api.new_channel">"Get Messages
+          From A New Channel"</xref> (messages posted to a specific channel).
         </t>
+
         <t>
-          With <xref target="access.level.regular">Regular Access
-          Level</xref> this method is used by Widgets to receive
-          Backplane Frame Headers for Backplane Messages that were
-          posted to a specific Channel.  In this access level, the
-          result MUST be padded as specified in
-          the <xref target="padded.response">padded response</xref>
-          section.
+          Since messages returned by this method are downstream ones,
+          the "payload" fields are only available to clients with Privileged
+          access (see <xref target="backplane.messages">Backplane
+          messages</xref>).
         </t>
+
+        <figure>
+          <preamble>
+            Example response to a privileged access client:
+          </preamble>
+          <artwork type="code">
+{
+	"nextSequenceURL": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5",
+	"messages": [
+		{
+			"bus": "customer.com",
+			"channel": "67dc880cc265b0dbc755ea959b257118",
+			"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
+                        "source": "http://aboutecho.com",
+			"payload": {
+				"role": "administrator"
+			},
+			"type": "identity/ack"
+		}
+	]
+}
+          </artwork>
+        </figure>
       </section>
 
     </section><!-- ]]] -->
