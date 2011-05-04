@@ -597,13 +597,14 @@
         </t>
         <t>
           This method allocates a new Backplane Channel and returns its name
-          to the Client (<xref target="RFC4086">RFC 4086</xref> discusses the
-          requirements and pitfalls of generating unguessable values in great
-          detail). The channel name MUST be at least 32 characters
+          to the Client. The channel name MUST be at least 32 characters
           indepedently chosen with uniform distribution from the
           set <spanx style="emph">0123456789abcdef</spanx>. The
           channel name MUST NOT be guessable given knowledge of the
-          algorithms in use or any details of the request being made.
+          algorithms in use or any details of the request being made
+          (<xref target="RFC4086">RFC 4086</xref> discusses the
+          requirements and pitfalls of generating unguessable values in great
+          detail).
         </t>
 
         <t>As an operational note, this API call SHOULD NOT be
