@@ -413,7 +413,7 @@
           <t hangText="source (string)">
             an arbitrary URL identifying the client which posted the message
           </t>
-          <t hangText="payload (object, optional)">
+          <t hangText="payload (object)">
             arbitrary data specific to the particular message type (only
             available to Clients with Privileged Access)
           </t>
@@ -423,9 +423,25 @@
         </list>
       </t>
 
+      <t>
+        The presence of certain fields in a Backplane message depends on the
+        context it appears in.
+      </t>
+
+      <t>
+        A downstream (server-to-client) Backplane message MUST contain all
+        the fields listed above. If the client receiving the message has
+        regular access, the server MUST omit the "payload" field.
+      </t>
+
+      <t>
+        An upstream (client-to-server) Backplane message MUST only contain
+        the following fields: "bus", "channel", "payload", "type".
+      </t>
+
       <figure>
         <preamble>
-          Example Backplane Message:
+          Example downstream Backplane Message:
         </preamble>
         <artwork type="code">
 {
@@ -631,6 +647,76 @@
         </figure>
       </section>
 
+      <section anchor="backplane.server.api.post.message"
+        title="Post Messages To A Channel">
+        <t><list style="hanging">
+            <t hangText="HTTP Method">POST</t>
+            <t hangText="Endpoint">
+              <spanx style="verb">/v2/message</spanx></t>
+            <t hangText="Security">HTTPS,
+              <xref target="access.level.privileged">Privileged Access Level</xref></t>
+            <t hangText="HTTP Request Body">an array of
+              <xref target="backplane.messages">upstream Backplane
+                messages</xref>
+            </t>
+            <t hangText="Returns">
+              <list style="symbols">
+                <t>
+                  Status code 201 ("Created") on success.
+                </t>
+                <t>
+                  Status code 401 ("Not Authorized") if the Client is not
+                  authorized to post messages to a bus or channel.
+                </t>
+                <t>
+                  Status code 404 ("Not Found") if the requested Bus or
+                  channel name is not known to the server.
+                </t>
+              </list>
+            </t>
+          </list>
+        </t>
+        <t>
+          This method injects one or more Backplane Messages to the
+          Channels and Buses. Channels that do not exist are created and
+          associated with corresponding buses.
+        </t>
+        <t>
+          The server MUST ensure the client posts messages to buses it has
+          been granted access to.
+        </t>
+        <t>
+          The server MUST process the request as a whole. If any of the
+          messages in the request body cannot be processed successfully, the
+          entire request MUST be discarded.
+        </t>
+        <figure>
+          <preamble>
+            Example request:
+          </preamble>
+          <artwork type="code">
+[
+        {
+                "bus": "customer.com",
+                "channel": "67dc880cc265b0dbc755ea959b257118",
+                "payload": {
+                        "role": "administrator"
+                },
+                "type": "identity/ack"
+        },
+        {
+                "bus": "organization.org",
+                "channel": "96a6370f9dfc61ae12070b284acc8603",
+                "payload": {
+                        "role": "moderator"
+                },
+                "type": "identity/ack"
+        }
+]
+          </artwork>
+        </figure>
+      </section>
+
       <section anchor="backplane.server.api.channel.get"
         title="Get Channel Messages">
         <t><list style="hanging">
@@ -674,24 +760,6 @@
           the <xref target="padded.response">padded response</xref>
           section.
         </t>
-      </section>
-
-      <section anchor="backplane.server.api.channel.post"
-        title="Post Messages To A Channel">
-        <t><list style="hanging">
-            <t hangText="Endpoint">
-              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
-            <t hangText="HTTP Method">POST</t>
-            <t hangText="HTTP Request Body">a JSON object consisting of
-              a list of Backplane Messages to post to the channel</t>
-            <t hangText="Security">HTTPS,
-              <xref target="access.level.privileged">Privileged Access Level</xref></t>
-          </list>
-        </t>
-        <t>
-          This method injects one or more Backplane Messages to the
-          Channel. If Channel &lt;CHANNEL_NAME&gt; doesn't exist, it
-          is created.</t>
       </section>
 
     </section><!-- ]]] -->
