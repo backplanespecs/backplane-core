@@ -20,7 +20,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane 2.0 - draft 03</title>
+    <title abbrev="Backplane">Backplane 1.1 - draft 01</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="12" month="April" year="2011" />
+    <date day="11" month="May" year="2011" />
 
     <keyword>Internet-Draft</keyword>
 
@@ -141,10 +141,6 @@
             Backplane Clients.
           </t>
 
-          <t hangText="Backplane Header">
-            A Backplane Message without the payload field.
-          </t>
-
           <t hangText="Backplane JavaScript API">
             JavaScript API used by Widgets to initialize and subscribe
             to Backplane Messages.
@@ -166,10 +162,6 @@
           <t hangText="Backplane Frame">
             A Backplane Message and metadata assigned to it by the
             Backplane Server.
-          </t>
-
-          <t hangText="Backplane Frame Header">
-            A Backplane Frame without the Backplane Message payload field.
           </t>
 
           <t hangText="Bus">
@@ -292,8 +284,8 @@
         </t>
         <t>
           Backplane Clients having Regular access level can retrieve
-          Backplane Frame Headers sent to Channels for which they know
-          the Channel identifier.
+          Backplane Frames sent to Channels for which they know the
+          Channel identifier.
         </t>
       </section>
 
@@ -322,9 +314,8 @@
           authorization credentials from the Bus owner:
           <list style="symbols">
             <t>
-              retrieve Backplane Messages (which include payloads) that
-              were sent to a Channel for which they know the Channel
-              identifier
+              retrieve Backplane Messages that were sent to a Channel 
+              for which they know the Channel identifier
             </t>
             <t>
               retrieve all Backplane Messages sent to the Bus
@@ -346,7 +337,7 @@
       </t>
       <t>
         The response body begins with the value of
-        the <spanx type="emph">callback</spanx> parameter from the
+        the <spanx style="emph">callback</spanx> parameter from the
         request.  That value is followed by a &quot;(&quot; (opening
         parenthesis), then the JSON-encoded result value, then a
         &quot;)&quot; (closing parenthesis).
@@ -379,9 +370,9 @@
         <preamble>
           Example of a Bus identifier:
         </preamble>
-        <artwork type="code">http://backplane.example.com/v2/bus/customer.com</artwork>
+        <artwork type="code">http://backplane.example.com/v1.1/bus/customer.com</artwork>
         <postamble>
-          In this example <spanx>http://backplane.example.com/v2/bus/</spanx>
+          In this example <spanx>http://backplane.example.com/v1.1/bus/</spanx>
           is the Backplane Server Bus endpoint and <spanx>customer.com</spanx>
           is the Bus name.
         </postamble>
@@ -427,9 +418,9 @@
         <preamble>
           Example of a Channel identifier:
         </preamble>
-        <artwork type="code">http://backplane.example.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+        <artwork type="code">http://backplane.example.com/v1.1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
         <postamble>
-          In this example <spanx>http://backplane.example.com/v2/bus/customer.com/channel/</spanx>
+          In this example <spanx>http://backplane.example.com/v1.1/bus/customer.com/channel/</spanx>
           is the Backplane Server Channel endpoint and <spanx>8ec92f459fa70b0da1a40e8fe70a0bc8</spanx>
           is the Channel Name.
         </postamble>
@@ -543,7 +534,7 @@
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v2/&lt;BUS NAME&gt;/channel/new</spanx></t>
+              <spanx style="verb">/v1.1/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
@@ -558,17 +549,17 @@
           </list>
         </t>
         <t>This call exists to help the JavaScript Library provision
-          new channel names. <xref target="RFC4086">RFC
+          new Channel Names. <xref target="RFC4086">RFC
           4086</xref> discusses the requirements and pitfalls of
           generating unguessable values in great detail. None of the
           mechanisms it suggests are available in JavaScript, so a
           server-side component must be available to help generate
           unguessable values.</t>
-        <t>The result value of this call is a channel name. The
-          channel name MUST be at least 32 characters indepedently
+        <t>The result value of this call is a Channel Name. The
+          Channel Name MUST be at least 32 characters indepedently
           chosen with uniform distribution from the
           set <spanx style="emph">0123456789abcdef</spanx>. The
-          channel name MUST NOT be guessable given knowledge of the
+          Channel Name MUST NOT be guessable given knowledge of the
           algorithms in use or any details of the request being made.
           The result MUST be padded as specified in
           the <xref target="padded.response">padded response</xref>
@@ -582,7 +573,7 @@
           <preamble>
             Example HTTP padded response body with Channel Name:
           </preamble>
-          <artwork type="code">(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
+          <artwork type="code">callback(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
         </figure>
       </section>
 
@@ -590,7 +581,7 @@
         Messages In A Bus">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;</spanx></t>
+              <spanx style="verb">/v1.1/bus/&lt;BUS_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">HTTPS with
               <xref target="access.level.privileged">Privileged Access Level</xref></t>
@@ -613,13 +604,10 @@
         title="Get Channel Messages">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+              <spanx style="verb">/v1.1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">
-              <xref target="access.level.privileged">Privileged Access Level</xref>
-              with HTTPS, or
               <xref target="access.level.regular">Regular Access Level</xref>
-              with either HTTP or HTTPS.
             </t>
             <t hangText="Parameters">
               since (optional): Backplane Message identifier (see
@@ -627,30 +615,19 @@
               Retrieval Conventions</xref> above)
             </t>
             <t>
-              callback (required if and only if the call uses Regular
-              Access Level):
+              callback (required):
               the <xref target="padded.response">callback name</xref>
               to pad the response with.
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
-              Backplane Frames or Backplane Frame Headers, depending on
-              the access level used by the requester.</t>
+              Backplane Frames.</t>
         </list>
         </t>
         <t>
-          With <xref target="access.level.privileged">Privileged
-          Access Level</xref> this method is used by server-side
-          components to receive Backplane Frames that were posted to a
-          specific Channel.
-        </t>
-        <t>
-          With <xref target="access.level.regular">Regular Access
-          Level</xref> this method is used by Widgets to receive
-          Backplane Frame Headers for Backplane Messages that were
-          posted to a specific Channel.  In this access level, the
-          result MUST be padded as specified in
-          the <xref target="padded.response">padded response</xref>
-          section.
+          This method is used by Widgets to receive Backplane Frames
+          corresponding to Backplane Messages that were posted to a
+          specific Channel. The result MUST be padded as specified in the
+          <xref target="padded.response">padded response</xref> section.
         </t>
       </section>
 
@@ -658,7 +635,7 @@
         title="Post Messages To A Channel">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+              <spanx style="verb">/v1.1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">POST</t>
             <t hangText="HTTP Request Body">a JSON object consisting of
               a list of Backplane Messages to post to the channel</t>
@@ -715,7 +692,7 @@ Backplane.subscribe(Callback);
 Backplane.unsubscribe(SubscriptionID);
 
 /**
- * Returns channel ID (like http://backplane.customer.com/v2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
+ * Returns channel ID (like http://backplane.customer.com/v1.1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
  *
  * @returns Backplane channel ID
  */
@@ -741,8 +718,8 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           Channel Name unless information about one for the specified
           <spanx style="emph">bus name</spanx> already exists in the
           <spanx style="verb">backplane-channel</spanx> cookie. Since
-          client-side generation of the channel name is non-secure,
-          the library performs a request to obtain a channel name
+          client-side generation of the Channel Name is non-secure,
+          the library performs a request to obtain a Channel Name
           from the Backplane Server.</t>
 
         <t>After initialization the library stores the current Channel
@@ -758,7 +735,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           <preamble>Here is an example of cookie that stores association
             of Bus names <spanx style="verb">example.com</spanx> and
             <spanx style="verb">example.org</spanx> to the corresponding
-            channel names <spanx style="verb">123</spanx> and
+            Channel Names <spanx style="verb">123</spanx> and
             <spanx style="verb">456</spanx>:</preamble>
           <artwork type="example">backplane-channel=example.com:123|example.org:456</artwork>
         </figure>
@@ -825,7 +802,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           title="Usage Example">
         <figure><artwork type="code">
 Backplane.init({
-    serverBaseURL: "http://backplane.customer.com/v2",
+    serverBaseURL: "http://backplane.customer.com/v1.1",
     busName: "customer.com"
 });
 
@@ -883,17 +860,16 @@ Backplane.getChannelID();
       </section>
       <section title="Message Payloads">
         <t>
-          Message payloads are only sent to Backplane Clients at
-          <xref target="access.level.privileged">Privileged Access Level</xref>.
-          This is in order to allow sensitive data to be exchanged
-          among server-side Backplane Clients, while not allowing it to
-          reach the less secure context of web browser.
+          Message payloads are sent to all Backplane Clients, including
+          clients that run in the browser. Message payloads are
+          therefore available to all JavaScript components loaded with
+          the Web Page.
         </t>
         <t>
-          It is therefore important that
-          <xref target="access.level.privileged">Privileged Access Level</xref>
-          credentials are not provisioned to Backplane Clients that run
-          in a web browser.
+          It is therefore important that Backplane Messages that contain
+          sensitive data payloads that cannot be shared with all
+          JavaScript components loaded with the Web Page are not posted
+          to a Backplane Channel.
         </t>
       </section>
     </section>
