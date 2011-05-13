@@ -147,7 +147,8 @@
           </t>
 
           <t hangText="Backplane JavaScript Library">
-            Backplane JavaScript API implementation.
+            Backplane Client that also implements the Backplane
+            JavaScript API.
           </t>
 
           <t hangText="Backplane Server API">
@@ -199,7 +200,7 @@
         <list style="symbols">
           <t>A Backplane Server</t>
           <t>A Backplane JavaScript Library</t>
-          <t>Widgets that act as Backplane Clients</t>
+          <t>Widgets</t>
           <t>Widgets' server-side counterparts that act as Backplane Clients.</t>
         </list>
       </t>
