@@ -343,6 +343,14 @@
         parenthesis), then the JSON-encoded result value, then a
         &quot;)&quot; (closing parenthesis).
       </t>
+      <figure>
+        <preamble>
+          Example HTTP padded response body for a
+          <xref target="backplane.server.api.new_channel">Get A New Channel Name</xref>
+          API call with the value "callback" for the callback parameter.
+        </preamble>
+        <artwork type="code">callback("8ec92f459fa70b0da1a40e8fe70a0bc8")</artwork>
+      </figure>
     </section>
 
     <section anchor="buses" title="Buses">
