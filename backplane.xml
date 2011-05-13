@@ -582,7 +582,7 @@
           <preamble>
             Example HTTP padded response body with Channel Name:
           </preamble>
-          <artwork type="code">callback(8ec92f459fa70b0da1a40e8fe70a0bc8)</artwork>
+          <artwork type="code">callback("8ec92f459fa70b0da1a40e8fe70a0bc8")</artwork>
         </figure>
       </section>
 
