@@ -77,6 +77,25 @@ Response example:
 	"token_type": "Bearer"
 }
 
+GET /auth (HTTPS)
+-----------------
+
+This method is provided to facilitate anonymous authentication for
+JavaScript clients running in browsers.
+
+Parameters:
+ • callback (string) — callback function to pad the response with. MUST only
+ contain alphanumeric characters (a-zA-Z0-9).
+
+This call MUST be treated by the server equivalently to the "POST /auth"
+with the following parameters:
+ • client_id — "anonymous"
+ • grant_type — "client_credentials"
+
+The semantics and returned values are the same as with the "POST /auth"
+method. The only difference is that the returned values are padded with the
+value of the "callback" parameter.
+
 GET /channel
 ------------
 
