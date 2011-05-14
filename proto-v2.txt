@@ -1,36 +1,80 @@
 Proposed Backplane Protocol v.2
 
+References
+==========
+
+ • OAuth 2.0 is defined at: http://tools.ietf.org/html/draft-ietf-oauth-v2-15
+
+ • OAuth 2.0 Bearer tokens: http://tools.ietf.org/html/draft-ietf-oauth-v2-bearer-04
+
+Prerequisites
+=============
+
+Backplane server has to support TLS 1.2 (RFC5246) or later (OAuth 2.0
+requirement).
+
+Backplane clients and servers MUST be able to handle OAuth 2.0 Bearer
+tokens.
+
 Methods
 =======
 
-GET /bus (privileged access level only)
----------------------------------------
+POST /auth (HTTPS only)
+-----------------------
 
-Retrieve the message chains from buses. The client is only able to retrieve
-messages from buses it has been granted access to.
+This is an OAuth "Token Endpoint" as defined in section 2.2. of the OAuth 2.0
+spec.
+
+The parameters MUST be passed in the request body using the
+"application/x-www-form-urlencoded" format.
 
 Parameters:
- • callback (string, optional) — to package results as JSONP.
- • busName (string, one or many) — names of the buses the caller is
- 	interested in.
+ • client_id (string) — client id. 
+ • client_secret (optional string) — client secret.
+ • grant_type (string) — MUST be "client_credentials".
+ • scope (optional string) — a list of space-delimited case-sensitive
+ strings denoting Backplane bus names the client is interested in.
 
-Returns:
- • chains[]
-	 • bus (string) — bus name the chain URL refers to.
-	 • next_chain_url (string) — URL of a message chain within the bus.
+If the "client_id" parameter is set to "anonymous", the request implies
+anonymous access mode. The client MUST omit the "client_secret" parameter in
+this case. The server MUST ignore the value of the "scope" parameter.
+
+In anonymous mode the server allocates a new channel and grants the client
+restricted access (no message payloads) to this channel. The channel is not
+bound to a bus until the first message is posted to the channel.
+
+If both "client_id" and "client_secret" are present, the server MUST check
+the credentials of the client. If the credentials are valid, authenticated
+access mode is assumed; otherwise the server MUST return error per section
+5.2 of the OAuth 2.0 spec (error "unautorized_client").
+
+In authenticated mode the server MUST check that the client making the request
+is authorized to access the buses enlisted in the value of the parameter. If
+the client is not authorized to access a bus it's requesting access to, the
+server MUST return error per section 5.2 of the OAuth spec (error
+"invalid_scope").
+
+In authenticated mode the server grants the client full access to the
+specified buses. If no "scope" parameter was specified in the request, the
+client is granted access to all buses it is authorized to per the server
+configuration. Full access implies that the client can retrieve full
+messages (including payloads) and post messages to the buses it has been
+granted access to as a result of the request.
+
+On success, returns a JSON object per section 5.1 of the OAuth spec.
+
+Tokens granted to anonymous clients MUST expire. It is RECOMMENDED that
+such tokens expire within 1 hour after having been issued.
+
+The server MUST include the "expires_in" parameter if the issued token is
+set to expire.
+
+The server MUST NOT include the "refresh_token" into the response.
 
 Response example:
 {
-	"chains": [
-		{
-			"bus": "customer.com",
-			"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5"
-		},
-		{
-			"bus": "organization.org",
-			"next_chain_url": "https://bp.example.com/v2/chain/8ae73b3e95cc08503cd4b395cb457e92"
-		}
-	]
+	"access_token": "465203f03680f59b7ddd5e1e5d851461",
+	"token_type": "Bearer"
 }
 
 GET /channel
