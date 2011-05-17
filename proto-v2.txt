@@ -16,6 +16,65 @@ requirement).
 Backplane clients and servers MUST be able to handle OAuth 2.0 Bearer
 tokens.
 
+Operational semantics
+=====================
+
+Conceptually a Backplane server maintains an ordered list of messages it
+has received. The list is ordered by message age from the oldest to the
+newest. Once a message's age reaches a certain threshold, the server
+disposes of the message.
+
+Each message has a unique sequence number and is associated with a bus and
+a channel. Sequence numbers are monotonically increasing integers. Buses and
+channels are referenced by names.
+
+Here is a diagram of a list of messages in a server's buffer. Sequence
+numbers 10..14 are assigned to the messages and each message references a
+bus (Ba, Bb) and a channel (Ca, Cb, Cc, Cd) is was posted to. Message with
+sequence number 10 is the oldest one in the buffer.
+
+[Ba,Ca]-->[Ba,Cb]-->[Bb,Cc]-->[Ba,Ca]-->[Bb,Cd]
+   10        11        12        13        14
+
+The server issues access tokens to the clients to retrieve a certain subset
+of the messages from the server's buffer. Each access token has associated
+scope which can be either a list of bus names (meaning "messages that have
+been posted to any of the listed buses") or a specific channel name
+(meaning "messages posted to the channel").
+
+To retrieve messages from a server, a client presents an access token and may
+optionally include a reference to a previously retrieved message. Such
+references are opaque to clients but can be mapped to a message sequence
+number by the server.
+
+When fulfilling a retrieval request, a server first locates the oldest
+message in the buffer that is a candidate to be returned. If no message
+reference was passed along in the request, such candidate is just the oldest
+message in the buffer (message 10 in the above example).
+
+If a client passes a message reference along, the server maps such
+reference to a sequence number and tries to locate the corresponding
+message. If such message has already been disposed of, the first candidate
+to be returned is the oldest message currently in the buffer. Continuing
+with the above example, if the server is presented a reference that maps to
+sequence number 8, then message 10 is again the first candidate to be
+returned.
+
+If a client passes a reference to a still existing message, the server
+locates the immediately following one and uses it as a candidate. For
+example, if the server in the above example is passed a reference that maps
+to message 11, then message 12 becomes a candidate to be returned.
+
+Once the oldest candidate message is located, a server traverses the list
+checking whether each message matches the scope associated with the access
+token presented by the client. For the example above, if the scope is "bus
+Ba" and the first candidate is message 10, the server will return messages
+10, 11 and 13.
+
+A reponse to a retrieval request also contains a reference to a message that
+is currently the newest in the buffer. This allows the client to present the
+reference in a subsequent request to pick up where it has left off.
+
 Methods
 =======
 
@@ -96,24 +155,6 @@ The semantics and returned values are the same as with the "POST /auth"
 method. The only difference is that the returned values are padded with the
 value of the "callback" parameter.
 
-GET /channel
-------------
-
-Allocate a new Backplane channel.
-
-Parameters:
- • callback (string, optional) — to package results as JSONP.
-
-Returns:
- • channel (string) — unguessable channel id.
- • next_chain_url (string) — URL of a message chain within the channel.
-
-Response example:
-{
-	"channel": "67dc880cc265b0dbc755ea959b257118"
-	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5"
-}
-
 GET /chain/<CHAIN>
 ------------------
 
@@ -149,25 +190,6 @@ Response example:
 			"type": "identity/ack"
 		}
 	]
-}
-
-GET /client/<CLIENT>
---------------------
-
-Returns public information about <CLIENT>.
-
-Parameters:
- • callback (string, optional) — to package results as JSONP.
-
-Returns:
- • title (string) — client title.
- • wellKnownTLD (string) — a well-known top-level domain that belongs to the
-	 client.
-
-Response example:
-{
-	"title": "Echo",
-	"wellKnownTLD": "aboutecho.com"
 }
 
 POST /message (privileged access only)
