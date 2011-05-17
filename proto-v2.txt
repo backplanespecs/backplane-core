@@ -122,6 +122,10 @@ granted access to as a result of the request.
 
 On success, returns a JSON object per section 5.1 of the OAuth spec.
 
+If a new channel was created as a result of the request (e.g. in anonymous
+mode), its name is also returned in the response JSON object in a string
+field "backplane_channel".
+
 Tokens granted to anonymous clients MUST expire. It is RECOMMENDED that
 such tokens expire within 1 hour after having been issued.
 
@@ -133,7 +137,8 @@ The server MUST NOT include the "refresh_token" into the response.
 Response example:
 {
 	"access_token": "465203f03680f59b7ddd5e1e5d851461",
-	"token_type": "Bearer"
+	"token_type": "Bearer",
+	"backplane_channel": "0a92d76f54f7877a68abe19c5b3ffcf8"
 }
 
 GET /auth (HTTPS)
@@ -174,6 +179,8 @@ Authorization: the client MUST present the access token it has received in
 the call to "POST /auth" method as described in sections 2.2 and 2.4 of OAuth
 Bearer Token spec.
 
+Note that message payloads are only available to clients with full access.
+
 Returns:
  • next_url (string) — a complete URL that the client can invoke to retrieve
  	subsequent messages from the server.
@@ -200,32 +207,70 @@ Response example:
 	]
 }
 
-POST /message (privileged access only)
---------------------------------------
+POST /messages (HTTPS, privileged access only)
+----------------------------------------------
 
-Publish a message to the Backplane.
+Publish messages to the Backplane.
 
-Parameters:
- • bus (string) — the bus to post the message to.
- • channel (string) — the id of a Backplane channel to post the message to.
- 	The channel has to belong to the bus associated with the client.
- • payload (object, optional) — message payload. Only available to
-	privileged access clients.
- • type (string) — message type (arbitrary string).
+The body of the request is a JSON object of the following structure:
+ • messages[] — an array of messages to be posted, represented as JSON
+	objects of the following structure:
+	 XXX: to be revised
+ 	 • bus (string) — the name of the bus to post the message to.
+	 • channel (string) — the name of the channel to post the message to.
+	 • payload (object) — message payload.
+ 	 • type (string) — message type (arbitrary string).
 
 Returns:
- • Status code 201 ("Created") upon success. The "Location" header of the
- response refers to the message resource URL.
+ • Status code 201 ("Created") upon success.
  • Status code XXX if the client has no permission to post to the channel.
+
+A client MUST present an access token to prove it has been granted full
+access. The scope of the access token MUST include buses that the client is
+requesting to post to.
+
+A server processes messages one by one. If a message can't be posted for any
+reason, the whole request fails and none of the messages get posted.
+
+A server MUST check that the channel in a message was indeed allocated by a
+previous call to "GET/POST /auth". If the channel is not yet bound to a bus,
+the server binds the channel to a bus specified in the request message
+object. If the channel is already bound to a bus and the client presents
+another bus/channel combination, the request is considered invalid and is
+aborted.
+
+Example:
+1. A client makes a request to "GET /auth", the server creates a new unbound
+channel "A".
+2. A client posts a message referencing "bus A, client A", the server binds
+channel "A" to bus "B".
+3. A client posts a message referencing "bus B, client A", the server treats
+the request as invalid.
+
+If items 2 and 3 happened during a single call to the "POST /messages"
+method (e.g. there was two message objects in the passed array), the server
+would discard both messages and keep the channel unbound.
 
 Request example:
 {
-	"bus": "customer.com",
-	"channel": "67dc880cc265b0dbc755ea959b257118",
-	"payload": {
-		"role": "administrator"
-	},
-	"type": "identity/ack"
+	"messages": [
+		{
+			"bus": "customer.com",
+			"channel": "67dc880cc265b0dbc755ea959b257118",
+			"payload": {
+				"role": "administrator"
+			},
+			"type": "identity/ack"
+		},
+		{
+			"bus": "organization.org",
+			"channel": "d7a592b31fbbc2baf5f9476884b9acd5",
+			"payload": {
+				"role": "moderator"
+			},
+			"type": "identity/ack"
+		}
+	]
 }
 
 GET /message/<MSG>
