@@ -155,30 +155,38 @@ The semantics and returned values are the same as with the "POST /auth"
 method. The only difference is that the returned values are padded with the
 value of the "callback" parameter.
 
-GET /chain/<CHAIN>
-------------------
+GET /messages
+-------------
 
-Retrieve the next chain of messages from a source (channel or bus).
+Retrieve messages from the server with an optional reference to a previously
+retrieved message. The server responds to this call as described in the
+"Operational semantics".
 
 Parameters:
  • block (integer, default 0) — if no messages are available for immediate
 	 retrieval, this parameter communicates how long (in seconds) the
 	 server should wait before returning an empty response.
- • callback (string, optional) — to package results as JSONP.
+ • callback (string) — callback function to pad the response with. MUST only
+ contain alphanumeric characters (a-zA-Z0-9).
+ • ref (optional, string) — a reference to a previously retrieved message.
+
+Authorization: the client MUST present the access token it has received in
+the call to "POST /auth" method as described in sections 2.2 and 2.4 of OAuth
+Bearer Token spec.
 
 Returns:
- • next_chain_url (string) — URL of a message chain following the
-	last message retrieved with this API call.
- • messages[] — an array of messages within the chain in order as
-	they were originally received by the server. Each message
-	within the array is represented as a JSON object with the
-	same structure as returned by "GET /message/<MSG>" API
-	method.
+ • next_url (string) — a complete URL that the client can invoke to retrieve
+ 	subsequent messages from the server.
+ • messages[] — an array of messages in the order they were originally
+ 	received by the server. Each message within the array is represented
+	as a JSON object of the same structure as returned by
+	"GET /message/<MSG>" API method.
 
 Response example:
 {
-	"next_chain_url": "https://bp.example.com/v2/chain/958bfa2dd8aed82c86afbd54b4a314a5",
+	"next_url": "https://bp.example.com/v2/messages?ref=958bfa2dd8aed82c86afbd54b4a314a5",
 	"messages": [
+		XXX: to be revised
 		{
 			"bus": "customer.com",
 			"channel": "67dc880cc265b0dbc755ea959b257118",
