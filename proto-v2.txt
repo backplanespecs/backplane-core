@@ -171,8 +171,8 @@ Parameters:
  • block (integer, default 0) — if no messages are available for immediate
 	 retrieval, this parameter communicates how long (in seconds) the
 	 server should wait before returning an empty response.
- • callback (string) — callback function to pad the response with. MUST only
- contain alphanumeric characters (a-zA-Z0-9).
+ • callback (string, optional) — callback function to pad the response with.
+ 	MUST only contain alphanumeric characters (a-zA-Z0-9).
  • ref (optional, string) — a reference to a previously retrieved message.
 
 Authorization: the client MUST present the access token it has received in
@@ -182,7 +182,7 @@ Bearer Token spec.
 Note that message payloads are only available to clients with full access.
 
 Returns:
- • next_url (string) — a complete URL that the client can invoke to retrieve
+ • nextURL (string) — a complete URL that the client can invoke to retrieve
  	subsequent messages from the server.
  • messages[] — an array of messages in the order they were originally
  	received by the server. Each message within the array is represented
@@ -191,17 +191,16 @@ Returns:
 
 Response example:
 {
-	"next_url": "https://bp.example.com/v2/messages?ref=958bfa2dd8aed82c86afbd54b4a314a5",
+	"nextURL": "https://bp.example.com/v2/messages?ref=958bfa2dd8aed82c86afbd54b4a314a5",
 	"messages": [
-		XXX: to be revised
 		{
 			"bus": "customer.com",
 			"channel": "67dc880cc265b0dbc755ea959b257118",
 			"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
-			"originURL": "https://bp.example.com/v2/client/echo",
 			"payload": {
 				"role": "administrator"
 			},
+			"source": "http://aboutecho.com",
 			"type": "identity/ack"
 		}
 	]
@@ -215,15 +214,17 @@ Publish messages to the Backplane.
 The body of the request is a JSON object of the following structure:
  • messages[] — an array of messages to be posted, represented as JSON
 	objects of the following structure:
-	 XXX: to be revised
  	 • bus (string) — the name of the bus to post the message to.
 	 • channel (string) — the name of the channel to post the message to.
 	 • payload (object) — message payload.
+         • source (string) — an arbitrary URL identifying the client which
+	 	has posted the message.
  	 • type (string) — message type (arbitrary string).
 
 Returns:
  • Status code 201 ("Created") upon success.
- • Status code XXX if the client has no permission to post to the channel.
+ • Status code 403 ("Forbidden") if the client has no permission to post to
+ 	the channel.
 
 A client MUST present an access token to prove it has been granted full
 access. The scope of the access token MUST include buses that the client is
@@ -260,6 +261,7 @@ Request example:
 			"payload": {
 				"role": "administrator"
 			},
+			"source": "http://aboutecho.com",
 			"type": "identity/ack"
 		},
 		{
@@ -268,6 +270,7 @@ Request example:
 			"payload": {
 				"role": "moderator"
 			},
+			"source": "http://aboutecho.com",
 			"type": "identity/ack"
 		}
 	]
@@ -279,19 +282,27 @@ GET /message/<MSG>
 Retrieve a message from the server.
 
 Parameters:
- • callback (string, optional) — to package results as JSONP.
+ • callback (string, optional) — callback function to pad the response with.
+ 	MUST only contain alphanumeric characters (a-zA-Z0-9).
+
+A client MUST present an access token to prove it has access to the message.
+A server MUST check that the client can access either the bus or channel the
+message was posted to. If the presented access token is of restricted
+access, the message payload is not included into the response.
 
 Returns:
+ • Status code 404 ("Not Found") if the message is no longer available.
+ • Status code 403 ("Forbidden") if the client doesn't have access to the
+ 	message.
  • Status code 200 ("OK") if the message is available. The body of the
- response is a JSON object of the following structure:
-	 • bus (string) — the Backplane bus the message was posted do.
-	 • channel (string) — the id of a Backplane channel the message was
-		posted do.
+ 	response is a JSON object of the following structure:
+	 • bus (string) — the bus name the message was posted do.
+	 • channel (string) — the channel name the message was posted do.
 	 • messageURL (string) — a URL of the message.
-	 • originURL (string) — the resource URL of a client which
-		originally posted the message.
 	 • payload (object, optional) — message payload. Only available to
 		privileged access clients.
+         • source (string) — an arbitrary URL identifying the client which
+	 	has posted the message.
 	 • type (string) — message type (arbitrary string).
 
 Response example:
@@ -299,9 +310,9 @@ Response example:
 	"bus": "customer.com",
 	"channel": "67dc880cc265b0dbc755ea959b257118",
 	"messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
-	"originURL": "https://bp.example.com/v2/client/echo",
 	"payload": {
 		"role": "administrator"
 	},
+	"source": "http://aboutecho.com",
 	"type": "identity/ack"
 }
