@@ -78,8 +78,8 @@ reference in a subsequent request to pick up where it has left off.
 Methods
 =======
 
-POST /auth (HTTPS only)
------------------------
+POST /token (HTTPS only)
+------------------------
 
 This is an OAuth "Token Endpoint" as defined in section 2.2. of the OAuth 2.0
 spec.
@@ -141,8 +141,8 @@ Response example:
 	"backplane_channel": "0a92d76f54f7877a68abe19c5b3ffcf8"
 }
 
-GET /auth (HTTPS)
------------------
+GET /token (HTTPS)
+------------------
 
 This method is provided to facilitate anonymous authentication for
 JavaScript clients running in browsers.
@@ -151,12 +151,12 @@ Parameters:
  • callback (string) — callback function to pad the response with. MUST only
  contain alphanumeric characters (a-zA-Z0-9).
 
-This call MUST be treated by the server equivalently to the "POST /auth"
+This call MUST be treated by the server equivalently to the "POST /token"
 with the following parameters:
  • client_id — "anonymous"
  • grant_type — "client_credentials"
 
-The semantics and returned values are the same as with the "POST /auth"
+The semantics and returned values are the same as with the "POST /token"
 method. The only difference is that the returned values are padded with the
 value of the "callback" parameter.
 
@@ -176,8 +176,8 @@ Parameters:
  • ref (optional, string) — a reference to a previously retrieved message.
 
 Authorization: the client MUST present the access token it has received in
-the call to "POST /auth" method as described in sections 2.2 and 2.4 of OAuth
-Bearer Token spec.
+the call to "POST /token" method as described in sections 2.2 and 2.4 of
+OAuth Bearer Token spec.
 
 Note that message payloads are only available to clients with full access.
 
@@ -234,14 +234,14 @@ A server processes messages one by one. If a message can't be posted for any
 reason, the whole request fails and none of the messages get posted.
 
 A server MUST check that the channel in a message was indeed allocated by a
-previous call to "GET/POST /auth". If the channel is not yet bound to a bus,
+previous call to "GET/POST /token". If the channel is not yet bound to a bus,
 the server binds the channel to a bus specified in the request message
 object. If the channel is already bound to a bus and the client presents
 another bus/channel combination, the request is considered invalid and is
 aborted.
 
 Example:
-1. A client makes a request to "GET /auth", the server creates a new unbound
+1. A client makes a request to "GET /token", the server creates a new unbound
 channel "A".
 2. A client posts a message referencing "bus A, client A", the server binds
 channel "A" to bus "B".
