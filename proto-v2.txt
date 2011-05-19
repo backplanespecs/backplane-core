@@ -3,7 +3,7 @@ Proposed Backplane Protocol v.2
 References
 ==========
 
- • OAuth 2.0 is defined at: http://tools.ietf.org/html/draft-ietf-oauth-v2-15
+ • OAuth 2.0 is defined at: http://tools.ietf.org/html/draft-ietf-oauth-v2-16
 
  • OAuth 2.0 Bearer tokens: http://tools.ietf.org/html/draft-ietf-oauth-v2-bearer-04
 
