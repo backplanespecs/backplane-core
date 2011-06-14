@@ -551,9 +551,10 @@
               callback: the <xref target="padded.response">callback
               name</xref> to pad the response with.
             </t>
-            <t hangText="Returns">a new, securely-generated Channel Name
-              in a HTTP <xref target="padded.response">padded response</xref>
-              body
+            <t hangText="Returns">a JSON string (a sequence of zero or more
+              Unicode characters, wrapped in double quotes) containing a new,
+              securely-generated Channel Name in a  HTTP
+              <xref target="padded.response">padded response</xref> body
             </t>
           </list>
         </t>
