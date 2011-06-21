@@ -50,7 +50,7 @@ Backplane.init = function(config) {
         if (this.getChannelName()) {
                 this.finishInit(false);
         } else {
-                document.write("<script language=\"javascript\" src=\"" + this.config.serverBaseURL + "/v1/" + this.config.busName + "/channel/new?callback=Backplane.finishInit\"><\/script>");
+                document.write("<script language=\"javascript\" src=\"" + this.config.serverBaseURL + "/bus/" + this.config.busName + "/channel/new?callback=Backplane.finishInit\"><\/script>");
         }
         return true;
 };
