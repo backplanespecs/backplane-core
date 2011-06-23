@@ -543,7 +543,7 @@
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1.1/&lt;BUS NAME&gt;/channel/new</spanx></t>
+              <spanx style="verb">/v1.1/bus/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
