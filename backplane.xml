@@ -20,7 +20,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="Backplane">Backplane 1.1</title>
+    <title abbrev="Backplane">Backplane 1.2 - draft 01</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -379,9 +379,9 @@
         <preamble>
           Example of a Bus identifier:
         </preamble>
-        <artwork type="code">http://backplane.example.com/v1.1/bus/customer.com</artwork>
+        <artwork type="code">http://backplane.example.com/v1.2/bus/customer.com</artwork>
         <postamble>
-          In this example <spanx>http://backplane.example.com/v1.1/bus/</spanx>
+          In this example <spanx>http://backplane.example.com/v1.2/bus/</spanx>
           is the Backplane Server Bus endpoint and <spanx>customer.com</spanx>
           is the Bus name.
         </postamble>
@@ -427,9 +427,9 @@
         <preamble>
           Example of a Channel identifier:
         </preamble>
-        <artwork type="code">http://backplane.example.com/v1.1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
+        <artwork type="code">http://backplane.example.com/v1.2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8</artwork>
         <postamble>
-          In this example <spanx>http://backplane.example.com/v1.1/bus/customer.com/channel/</spanx>
+          In this example <spanx>http://backplane.example.com/v1.2/bus/customer.com/channel/</spanx>
           is the Backplane Server Channel endpoint and <spanx>8ec92f459fa70b0da1a40e8fe70a0bc8</spanx>
           is the Channel Name.
         </postamble>
@@ -445,6 +445,10 @@
           </t>
           <t hangText="type">
             message type, string
+          </t>
+          <t hangText="sticky">
+            sticky flag, boolean. See
+            <xref target="backplane.server.retention.sticky">Sticky Messages</xref>
           </t>
           <t hangText="payload">
             arbitrary object carrying data specific to the particular
@@ -488,53 +492,119 @@
 
     </section>
 
-    <section anchor="backplane.server.api" title="Backplane Server API"><!-- [[[ -->
+    <section anchor="backplane.server.retention" title="Message Retention">
 
-      <section anchor="backplane.server.conventions" title="Message Retrieval Conventions">
+      <t>
+        Backplane Servers MUST maintain a window of most recent
+        messages for each of the existing Channels. The window
+        size MUST be at least 1 minute. It is RECOMMENDED that
+        Backplane Servers maintain a window of at least 5 minutes.
+      </t>
+
+      <t>
+        It is RECOMMENDED that it is an operational priority for
+        Backplane Servers to make messages available for retrieval
+        as soon as possible after they are posted.
+      </t>
+
+      <t>
+        Backplane Clients that require reliable message delivery
+        MUST poll their Backplane Servers with an interval of 30
+        seconds or less in order to avoid omissions.
+      </t>
+
+      <section anchor="backplane.server.retention.sticky" title="Sticky Messages">
         <t>
-          Backplane Servers MUST maintain a window of most recent
-          messages for each of the existing Channels. The window
-          size MUST be at least 1 minute. It is RECOMMENDED that
-          Backplane Servers maintain a window of at least 5 minutes.
+          Some Backplane application scenarios may require longer
+          lived Backplane Messages, such as for keeping a shared state
+          about a end user's logged-in identity or profile data.
         </t>
 
         <t>
-          It is RECOMMENDED that it is an operational priority for
-          Backplane Servers to make messages available for retrieval
-          as soon as possible after they are posted.
+          Support for such scenarios is accomplished by flagging
+          messages as "sticky" when they are posted (see
+          <xref target="backplane.server.api.channel.post">Post Messages To A Channel</xref>).
+          Backplane Servers MUST retain sticky messages for at least X
+          minutes. It is RECOMMENDED that Backplane Servers retain
+          sticky messages for Y minutes.
         </t>
 
         <t>
-          Backplane Clients that require reliable message delivery
-          MUST poll their Backplane Servers with an interval of 30
-          seconds or less in order to avoid omissions.
+          Backplane Clients can request retrieval of Backplane Frames
+          that only encapsulate sticky messages by using the "sticky"
+          request parameter. See 
+          <xref target="backplane.server.retrieval">Message Retrieval Conventions</xref>
+          below.
         </t>
 
         <t>
-          All Backplane Server API methods dealing with Backplane
-          Message retrieval observe the principles outlined below. A
-          retrieval request may contain an optional 'since' parameter,
-          referring to a Backplane Frame previously seen by the caller.
+          Application scenario protocols MUST specify the criteria for
+          posting sticky messages, if any, such as defining certain
+          message types or operations as sticky.
         </t>
 
         <t>
-          If the 'since' parameter is...
-          <list>
-            <t>...omitted, the whole window worth of Backplane Frames
-              is returned.</t>
-            <t>...present and refers to a Backplane Frame...
-              <list>
-                <t>...currently residing in the window, the Backplane
-                  Server returns all Backplane Frames that are more
-                  recent than the referenced one.</t>
-                <t>...which is no longer in the window, the whole window
-                  worth of Backplane Frames is returned.</t>
-              </list>
-            </t>
-          </list>
+          Application scenario protocols SHOULD define sticky messages
+          in such a way as to minimize the number of sticky messages
+          that may be retained by the Backplane Server at any one time
+          for a channel, in order to reduce complexity of retrieval and
+          processing by the Backplane Clients that rely on them.
         </t>
-
       </section>
+
+    </section>
+
+    <section anchor="backplane.server.retrieval" title="Message Retrieval Conventions">
+
+      <t>
+        All Backplane Server API methods dealing with Backplane
+        Message retrieval observe the principles outlined below.
+      </t>
+      <t>
+        A retrieval request may contain an optional 'since' parameter,
+        referring to a Backplane Frame previously seen by the caller.
+        If the 'since' parameter is...
+        <list>
+          <t>...omitted, the whole window worth of Backplane Frames
+            is returned.</t>
+          <t>...present and refers to a Backplane Frame...
+            <list>
+              <t>...currently residing in the window, the Backplane
+                Server returns all Backplane Frames that are more
+                recent than the referenced one.</t>
+              <t>...which is no longer in the window, the whole window
+                worth of Backplane Frames is returned.</t>
+            </list>
+          </t>
+        </list>
+      </t>
+
+      <t>
+        A retrieval request may contain an optional 'sticky' parameter.
+        The only value permitted for the 'sticky' parameter is "true".
+        If the 'sticky' parameter is...
+        <list>
+          <t>
+            ...omitted: the current window of regular, non-sticky
+            Backplane Frames is returned.
+          </t>
+          <t>
+            ...present with the value "true": only the sticky Backplane
+            Frames are returned.
+          </t>
+        </list>
+      </t>
+
+      <t>
+        If both the 'since' and 'sticky' parameters are included in a
+        request, their effect is combined. The Backplane Server MUST
+        return all sticky Backplane Frames that are more recent than
+        the one referenced by the 'since' parameter.
+      </t>
+
+    </section>
+
+    <section anchor="backplane.server.api" title="Backplane Server API"><!-- [[[ -->
 
       <t>A Backplane Server provides the following API.</t>
 
@@ -543,7 +613,7 @@
         <t>
           <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1.1/bus/&lt;BUS NAME&gt;/channel/new</spanx></t>
+              <spanx style="verb">/v1.2/bus/&lt;BUS NAME&gt;/channel/new</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">optional HTTPS,
               <xref target="access.level.regular">Regular Access Level</xref></t>
@@ -591,13 +661,18 @@
         Messages In A Bus">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1.1/bus/&lt;BUS_NAME&gt;</spanx></t>
+              <spanx style="verb">/v1.2/bus/&lt;BUS_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">HTTPS with
               <xref target="access.level.privileged">Privileged Access Level</xref></t>
             <t hangText="Parameters">
               since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message Retrieval Conventions</xref>
+              <xref target="backplane.server.retrieval">Message Retrieval Conventions</xref>
+              above)
+            </t>
+            <t>
+              sticky (optional): true (see
+              <xref target="backplane.server.retrieval">Message Retrieval Conventions</xref>
               above)
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
@@ -614,20 +689,25 @@
         title="Get Channel Messages">
         <t><list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1.1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+              <spanx style="verb">/v1.2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">GET</t>
             <t hangText="Security">
               <xref target="access.level.regular">Regular Access Level</xref>
             </t>
             <t hangText="Parameters">
-              since (optional): Backplane Message identifier (see
-              <xref target="backplane.server.conventions">Message
-              Retrieval Conventions</xref> above)
-            </t>
-            <t>
               callback (required):
               the <xref target="padded.response">callback name</xref>
               to pad the response with.
+            </t>
+            <t>
+              since (optional): Backplane Message identifier (see
+              <xref target="backplane.server.retrieval">Message
+              Retrieval Conventions</xref> above)
+            </t>
+            <t>
+              sticky (optional): true (see
+              <xref target="backplane.server.retrieval">Message Retrieval Conventions</xref>
+              above)
             </t>
             <t hangText="Returns">a JSON object consisting of a list of
               Backplane Frames.</t>
@@ -643,20 +723,22 @@
 
       <section anchor="backplane.server.api.channel.post"
         title="Post Messages To A Channel">
-        <t><list style="hanging">
+        <t>
+          <list style="hanging">
             <t hangText="Endpoint">
-              <spanx style="verb">/v1.1/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
+              <spanx style="verb">/v1.2/bus/&lt;BUS_NAME&gt;/channel/&lt;CHANNEL_NAME&gt;</spanx></t>
             <t hangText="HTTP Method">POST</t>
-            <t hangText="HTTP Request Body">a JSON object consisting of
-              a list of Backplane Messages to post to the channel</t>
             <t hangText="Security">HTTPS,
               <xref target="access.level.privileged">Privileged Access Level</xref></t>
+            <t hangText="HTTP Request Body">a JSON object consisting of
+              a list of Backplane Messages to post to the channel</t>
           </list>
         </t>
         <t>
           This method injects one or more Backplane Messages to the
           Channel. If Channel &lt;CHANNEL_NAME&gt; doesn't exist, it
-          is created.</t>
+          is created.
+        </t>
       </section>
 
     </section><!-- ]]] -->
@@ -702,7 +784,7 @@ Backplane.subscribe(Callback);
 Backplane.unsubscribe(SubscriptionID);
 
 /**
- * Returns channel ID (like http://backplane.customer.com/v1.1/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
+ * Returns channel ID (like http://backplane.customer.com/v1.2/bus/customer.com/channel/8ec92f459fa70b0da1a40e8fe70a0bc8)
  *
  * @returns Backplane channel ID
  */
@@ -812,7 +894,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           title="Usage Example">
         <figure><artwork type="code">
 Backplane.init({
-    serverBaseURL: "http://backplane.customer.com/v1.1",
+    serverBaseURL: "http://backplane.customer.com/v1.2",
     busName: "customer.com"
 });
 
