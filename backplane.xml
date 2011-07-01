@@ -585,7 +585,8 @@
         <t>
           Backplane Clients can request retrieval of Backplane Frames
           that only encapsulate sticky messages by using the "sticky"
-          request parameter. See
+          <xref target="token.scopes">Access Scope</xref> filter. 
+          See also
           <xref target="message.sequence.retrieval">Message Retrieval Conventions</xref>
           below.
         </t>
