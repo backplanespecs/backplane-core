@@ -585,12 +585,12 @@
         If the 'sticky' parameter is...
         <list>
           <t>
-            ...omitted: the current window of regular, non-sticky
-            Backplane Frames is returned.
-          </t>
-          <t>
             ...present with the value "true": only the sticky Backplane
             Frames are returned.
+          </t>
+          <t>
+            ...omitted: the current window with all non-sticky and
+            sticky Backplane Frames is returned.
           </t>
         </list>
       </t>
