@@ -10,24 +10,38 @@
  * $Id: backplane.js 32046 2011-03-31 08:53:15Z jskit $
  */
 
-
-window.Backplane = window.Backplane || {
-        "channelByBus": {},
-        "config": {},
-        "initialized": false,
-        "subscribers": {},
-        "awaiting": {
-                "since": 0,
-                "until": 0,
-                "queue": []
-        },
-        "intervals": {
-                "min": 1,
-                "frequent": 5,
-                "regular": 60,
-                "slowdown": 120
-        }
-};
+window.Backplane = window.Backplane || (function() {
+  // Backplane is a function that accepts a function to be run onInit
+  var BP = function(fn) {
+    if (Backplane.getChannelID()) fn();
+    else {
+      Backplane.onInit = (function() {
+        var original_onInit = Backplane.onInit;
+        return function() {
+          original_onInit();
+          fn();
+        };
+      })();
+    }
+  };
+  BP.channelByBus = {};
+  BP.config = {};
+  BP.initialized = false;
+  BP.subscribers = {};
+  BP.awaiting = {
+    "since": 0,
+    "until": 0,
+    "queue": []
+  };
+  BP.intervals = {
+    "min": 1,
+    "frequent": 5,
+    "regular": 60,
+    "slowdown": 120
+  };
+  BP.onInit = function() {};
+  return BP;
+})();
 
 /**
  * Initializes the backplane library
@@ -132,6 +146,7 @@ Backplane.finishInit = function (channelName) {
 
         this.config.channelName = this.getChannelName();
         this.config.channelID = this.generateChannelID();
+        this.onInit();
         this.request();
 };
 
