@@ -64,7 +64,11 @@ Backplane.init = function(config) {
         if (this.getChannelName()) {
                 this.finishInit(false);
         } else {
-                document.write("<script language=\"javascript\" src=\"" + this.config.serverBaseURL + "/v1/" + this.config.busName + "/channel/new?callback=Backplane.finishInit\"><\/script>");
+          var script = document.createElement("script");
+          script.src =  this.config.serverBaseURL + "/bus/" + this.config.busName + "/channel/new?callback=Backplane.finishInit";
+          script.type = "text/javascript";
+          var firstScript = document.getElementsByTagName("script")[0];
+          firstScript.parentNode.insertBefore(script, firstScript);
         }
         return true;
 };
