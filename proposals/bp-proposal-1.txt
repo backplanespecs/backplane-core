@@ -1,0 +1,48 @@
+Author: Vlad Skvortsov <vss@aboutecho.com>, Echo
+Title: Backplane Versioning Model
+
+MOTIVATION
+==========
+
+Since we have a goal of making Backplane a widely adopted open protocol
+used by multiple independent vendors, we need to provide clients with a
+clear understanding of changes that may occur from one release of the
+Backplane specification to the next.
+
+PROPOSAL
+========
+
+Proposed is a pretty standard versioning model (see [1]) with major, minor
+and patch version numbers. The following rules apply:
+
+ • Client and server of different major version numbers are not
+ interoperable.
+
+ • Changes introduced in minor releases of the specification (such
+ releases result in a minor version number bump) are always
+ backwards-compatible. This means that if a client depends on features
+ found in Backplane version X.Y, it will work with Backplane version X.Z
+ provided that Z >= Y.
+
+ • Minor releases can introduce new features and mark existing features as
+ deprecated to discourage their further use by clients. Data formats can be
+ extended in backwards-compatible manner (older clients should still be able
+ to consume such data items).
+
+ • Patch versions of the specification can only introduce nonsubstantial
+ changes (typo fixes, wording changes etc). It is recommended that clients
+ specify dependencies only on major and minor version numbers. If a client
+ was built with Backplane version X.Y.Z as a dependency, it will work
+ with any patch version of Backplane X.Y anyways.
+
+IMPLEMENTATION
+==============
+
+Action items to implement the proposal:
+
+ • Display the versioning strategy and details on the project web site
+ (TBD where exactly).
+
+REFERENCES
+==========
+[1]: http://apr.apache.org/versioning.html
