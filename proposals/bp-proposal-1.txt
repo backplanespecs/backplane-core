@@ -43,6 +43,11 @@ Action items to implement the proposal:
  • Display the versioning strategy and details on the project web site
  (TBD where exactly).
 
+DISCUSSION
+==========
+
+ • http://groups.google.com/group/backplanespec/browse_thread/thread/2aa4ec207653ddf0
+
 REFERENCES
 ==========
 [1]: http://apr.apache.org/versioning.html
