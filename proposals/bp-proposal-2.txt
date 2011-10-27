@@ -72,6 +72,8 @@ Action items to implement the proposal:
 DISCUSSION
 ==========
 
+http://groups.google.com/group/backplanespec/browse_thread/thread/da26d308c61bdd13
+
 REFERENCES
 ==========
 [1]: https://github.com/backplanespecs/backplane-core/blob/master/proposals/bp-proposal-1.txt
