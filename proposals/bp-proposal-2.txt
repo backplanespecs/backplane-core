@@ -1,0 +1,77 @@
+Author: Vlad Skvortsov <vss@aboutecho.com>, Echo
+Title: Backplane Version Discovery
+
+MOTIVATION
+==========
+
+Clients need to know capabilities of the environment they run in to check
+dependencies and ensure interoperability. Versioning model[1] outlines
+general principles and this proposal deals with technical aspects of version
+discovery.
+
+PROPOSAL
+========
+
+Backplane defines an HTTP and Javascript APIs both of which have to provide
+means for version discovery.
+
+1. HTTP API
+-----------
+
+A Backplane server should support the following method for clients to
+discover the version of the specification it is compliant with:
+
+GET /version (HTTP/HTTPS)
+
+Parameters:
+ • callback (optional, string) — callback function to pad the response with.
+ MUST only contain alphanumeric characters (a-zA-Z0-9).
+
+Returns:
+ • Content-type: application/json (if the 'callback' parameter was omitted) or
+ application/javascript (if the 'callback' parameter was present).
+ • Body: a possibly padded JSON object of the following structure:
+   • version
+     • major (integer) — major version number.
+     • minor (integer) — minor version number.
+     • patch (integer) — patch version number.
+
+Response example:
+{
+  "version":
+  {
+    "major": 2,
+    "minor": 1,
+    "patch": 3
+  }
+}
+
+2. Javascript API
+-----------------
+
+The Javascript library MUST check the server version upon initialization
+and retain the object returned. If the server is of an incompatible
+Backplane version, diagnostics should be provided (TBD how exactly) and all
+subsequent calls to the Backplane library should return errors (TBD: should
+we rather undefine 'Backplane'?).
+
+New function Backplane.version() should return a copy of the version object
+received from the server.
+
+IMPLEMENTATION
+==============
+
+Action items to implement the proposal:
+
+ • Modify the specification to include the new APIs.
+
+ • Implement version checking in the Javascript library.
+
+ • Implement Backplane.version() function.
+
+DISCUSSION
+==========
+
+REFERENCES
+==========
+[1]: https://github.com/backplanespecs/backplane-core/blob/master/proposals/bp-proposal-1.txt
