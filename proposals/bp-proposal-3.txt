@@ -1,0 +1,125 @@
+Author: Vlad Skvortsov <vss@aboutecho.com>, Echo
+Title: Remove 'Sticky Messages'
+
+MOTIVATION
+==========
+
+'Sticky Messages' feature was introduced in Backplane 1.2 to address a
+specific problem with the Identity Scenario. Although technically it's a
+scenario-agnostic feature, the design of it was driven by a single use
+case. Inclusion of the feature in the core spec increases implementation
+complexity and (I believe) doesn't help to solve the original problem.
+
+BACKGROUND
+==========
+
+1. Use Case
+-----------
+
+(This is also known as "the 'whoami' problem")
+
+There is a Backplane-enabled page with a few applications deployed on it.
+Some applications have both server-side and client-side (widget)
+components; others are client-side only. Let's say application A is of the
+former type and B is of the latter.
+
+In this case application A's server listens to Backplane bus and
+maintains associations between channel ids and identities referenced by
+'identity/{login,logout}' messages posted to the channels.
+
+The first scenario to consider here is when a user logs in on the page. In
+this case an "Identity Connector" (service facilitating the login, such
+as Janrain RPX) posts an 'identity/login' message to the corresponding
+Backplane channel. This triggers application A's server to add or update the
+association between the Backplane channel and the identities of the
+just-logged-in user. After the association has been updated, application A's
+server posts 'identity/ack' back to the channel.
+
+Application A's widget notices 'identity/ack' coming from its (application
+A's) server and asks the latter (via a proprietary protocol) to return the
+current user's identities. In such request the widget supplies its server
+with the Backplane channel id; the server uses it as a key in the
+association table to look up the user's identities.
+
+Application B, on the other hand, can't retrieve such information in a
+clean way. Noone is keeping state for it, so the best it can do is use
+application A's proprietary protocol.
+
+In the second scenario a logged-in user reloads the page. Widgets need to
+discover the user's identity (the only way for them is again to ask
+application A's proprietary API), which means that the state has to survive
+page reloads.
+
+2. Sticky Messages Solution
+---------------------------
+
+The 'Sticky Messages' solution deals with the problem by retaining messages
+with the sticky bit longer than others. Sticky messages that were
+previously posted to channel can be retrieved separately or along with
+regular messages.
+
+In the Identity Scenario an Identity Connector would make
+'identity/{login,logout}' messages as sticky. Thus any client (whether it's
+code running on server or in browser) can retrieve a list of login/logout
+events and reconstruct state by "replaying" the events in order.
+
+PROPOSAL
+========
+
+I propose to remove the 'Sticky Messages' feature from the Backplane 2.x
+for the reasons explained below.
+
+1. Not Meeting The Objective
+----------------------------
+
+Widgets can recreate state only if sticky messages contain payloads. This
+is possible in Backplane 1.x, but for Backplane 2.x message payloads will
+be stripped.
+
+This will force widgets to either use proprietary APIs (as shown in the
+example where B uses A's API) or duplicate effort (e.g. where B implements
+a server very similar to A's one). It hinders interoperability and raises
+barrier to entry for application developers.
+
+2. Duplicate Work
+-----------------
+
+(If sensitive data is still delivered to browser, maybe stripped down)
+
+Every widget on page will have to "replay" the message sequence and
+reconstruct state. This is a waste of CPU and a potential source of bugs
+since different implementations may handle nuances of such process
+differently.
+
+3. Increased Complexity
+-----------------------
+
+The 'sticky messages' feature is driven by a single known use case. While
+it solves the problem at hand, other use cases may have different
+requirements for state keeping.
+
+Sticky messages overload existing retrieval APIs and change message
+retention principles. Additional moving parts and complexity place
+unnecessary burden on implementations supporting just the core specification.
+It doesn't provide benefits for clients that are not interested in Identity
+Scenario specifically.
+
+A simpler core feature set would make Backplane more suitable to a broader
+set of use cases. Different approaches to keeping state may be tried in
+independent scenarios first and then adopted by the core specification if
+they prove to be useful.
+
+IMPLEMENTATION
+==============
+
+Action items to implement the proposal:
+
+ • Remove the 'sticky messages' feature from the core specification.
+
+ • Follow-up with a proposal to solve the 'whoami' problem.
+
+DISCUSSION
+==========
+
+REFERENCES
+==========
