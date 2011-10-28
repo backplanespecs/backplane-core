@@ -121,5 +121,7 @@ Action items to implement the proposal:
 DISCUSSION
 ==========
 
+http://groups.google.com/group/backplanespec/browse_thread/thread/f672f562bfa58d0f
+
 REFERENCES
 ==========
