@@ -141,6 +141,12 @@
             Backplane Clients.
           </t>
 
+          <t hangText="Message Identifier">
+            Unique string assigned by Backplane Servers to each incoming
+            Backplane Messages for the purpose of identifying and
+            referencing them via the "since" retrieval mechanism.
+          </t>
+
           <t hangText="Backplane Header">
             A Backplane Message without the payload field.
           </t>
@@ -178,14 +184,6 @@
             A set of Backplane Messages that meet a certain filter criteria,
             in the same order as they have been received by a Backplane
             server.
-          </t>
-
-          <t hangText="Message Sequence Identifier">
-            String associated by the Backplane Server with a Sequence's
-            filter criteria and a Backplane Message representing the
-            starting point for a Message Sequence and used as a handle
-            for identifying and retrieving the current set of Backplane
-            Messages that belong to the Message Sequence.
           </t>
 
           <t hangText="Message Age">
@@ -622,23 +620,24 @@
       <t>
         The <xref target="server.api.token.post">token</xref> endpoint
         is used to obtain an access token tailored to the filter
-        criteria desired by the client. The access token that is used
+        criteria desired by the client. The access token is used
         at the
         <xref target="server.api.messages.get">Get Messages</xref>
         endpoint to retrieve the messages in the current buffer that
         belong to the associated Message Sequence.
       </t>
       <t>
-        A Message Sequence Identifier is issued with the retrieval
-        of each batch of messages from a Message Sequence such that the
-        new one will point to the messages that will immediately follow
-        in the buffer and will not retrieve any of the messages that
-        were already retrieved.
+        The Message Identifier of the last Backplane Message in a
+        retrieved batch of messages is returned as the value of the
+        "since" query parameter of the nextURL response field, such that
+        the nextURL value will point to the messages that will
+        immediately follow in the buffer and will not retrieve any of
+        the messages that were already retrieved.
       </t>
       <t>
-        If a Message Sequence Identifier points to a message that is no
-        longer in the buffer, the associated filter criteria is
-        evaluated against the entire current buffer.
+        If a Message Identifier points to a message that is no longer
+        in the buffer, the associated filter criteria is evaluated
+        against the entire current buffer.
       </t>
 
       <section anchor="token.scopes" title="Access Scopes">
@@ -924,8 +923,10 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
                   <xref target="padded.response">Padded Responses</xref>);
                   MUST only contain alphanumeric characters (a-zA-Z0-9)
                 </t>
-                <t>seq (optional, string): a
-                  <xref target="message.sequence.retrieval">Message Sequence Identifier</xref>
+                <t>since (optional, string): the Message Identifier
+                  representing the starting point of the requested
+                  Message Sequence. See
+                  <xref target="message.sequence.retrieval">Message Sequences and Retrieval</xref>.
                 </t>
               </list>
             </t>
@@ -937,8 +938,8 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
                   a complete URL pointing to the Get Messages endpoint
                   that the client can invoke to retrieve subsequent
                   messages from the server. The URL MUST contain a
-                  Message Sequence Identifier in the
-                  <spanx style="emph">seq</spanx> query parameter.
+                  Message Identifier in the
+                  <spanx style="emph">since</spanx> query parameter.
                 </t>
                 <t>messages[]:
                   an array of messages in the order they were originally
@@ -955,7 +956,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
                 </preamble>
                 <artwork type="code">
 {
-  "nextURL": "https://bp.example.com/v2/messages?seq=958bfa2dd8aed82c86afbd54b4a314a5",
+  "nextURL": "https://bp.example.com/v2/messages?since=958bfa2dd8aed82c86afbd54b4a314a5",
   "messages": [
     {
       "bus": "customer.com",
