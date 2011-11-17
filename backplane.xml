@@ -632,7 +632,9 @@
             [[[ who/how/when/where? ]]]
           </t>
           <t hangText="type (string)">
-            message type
+            opaque to the core Backplane specification; value, semantic
+            and associated payload format is defined in application
+            scenario specifications
           </t>
           <t hangText="bus (string)">
             the name of the Bus the message was posted to
