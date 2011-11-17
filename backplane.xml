@@ -222,7 +222,7 @@
       <t>A Backplane framework instance needs to be configured prior to use:
         all Backplane Clients and the Server have to share the same Bus. 
         Backplane Clients operating at the
-        <xref target="auth.level.privileged">Privileged Access Level</xref>
+        <xref target="access.level.privileged">Privileged Access Level</xref>
         need a password to authenticate themselves to the Server. It is
         outside the scope of this document how such configuration is
         performed.</t>
@@ -272,7 +272,7 @@
       </t>
     </section>
 
-    <section anchor="auth" title="Client Authorization and Access Levels">
+    <section anchor="access.levels" title="Access Levels">
 
       <t>
         Considering the significantly different security enforcement
@@ -298,7 +298,7 @@
         endpoint and determine the access level associated with it.
       </t>
 
-      <section anchor="auth.level.regular" title="Regular Access">
+      <section anchor="access.level.regular" title="Regular Access">
         <t>
           Regular access level is given to Backplane Clients running in
           the web browser (Widgets and the Backplane JavaScript Library)
@@ -317,18 +317,19 @@
         </t>
       </section>
 
-      <section anchor="auth.level.privileged" title="Privileged Access">
+      <section anchor="access.level.privileged" title="Privileged Access">
         <t>
           Privileged access level is given to Backplane Clients that
-          are not running in a web browser, typically the Widgets'
-          server-side components and are obtained through authenticated
+          are not running in a web browser (typically the Widgets'
+          server-side components) and are obtained through authenticated
           calls to the
           <xref target="server.api.token.post">token</xref> endpoint.
         </t>
         <t>
           Backplane Clients having Privileged access level can perform
           the following operations on a Bus for which they have obtained
-          authorization credentials from the Bus owner:
+          <xref target="authorization">authorization</xref> credentials
+          from the Bus owner:
           <list style="symbols">
             <t>
               retrieve all Backplane Messages sent to the Bus [[[  xref ]]]
@@ -338,73 +339,217 @@
             </t>
           </list>
         </t>
+        <section anchor="auth.privileged.authorization" title="Authorization">
+          <t>
+            <xref target="client.registration">Registered</xref>
+            Backplane Clients must be authorized with Privilged Access
+            Level. This can be done in one of the following ways:
+            <list style="symbols">
+              <t>
+                By Backplane Server administrators. It is outside of
+                the scope of this specification how the administrators
+                learn from their customers, the Bus Owners, the Buses
+                and Backplane Clients to be authorized with Privileged
+                Access.
+              </t>
+              <t>
+                By Bus Owners, through an administrative interface
+                provided by the Backplane Server. The interactions
+                between a Backplane Server and its Bus Owner customers
+                (e.g. registration, authentication, Bus allocation)
+                remain outside of the scope of this specification.
+              </t>
+            </list>
+          </t>
+
+        </section>
+      </section>
+    </section>
+    <section anchor="discovery.registration.authorization" title="Discovery, Registration and Authorization">
+
+      <t>
+        For a functional setup, the Bus Owners, Backplane Servers and
+        Backplane Clients needing Privileged Access have to perform
+        the following preliminary interactions:
+        <list style="symbols">
+          <t>
+            Bakplane Clients must
+            <xref target="server.discovery">discover</xref> Backplane
+            Servers' endpoints for registration, authorization, token,
+            message.
+          </t>
+          <t>
+            Backplane Clients must
+            <xref target="client.registration">register</xref> with
+            Backplane Servers.
+          </t>
+          <t>
+            Bus Owners must
+            <xref target="authorization">authorize</xref> Backplane 
+            Clients with Privileged Access.
+          </t>
+        </list>
+      </t>
+
+      <section anchor="server.discovery" title="Backplane Server Discovery">
+        <section anchor="server.discovery.dynamic" title="Dynamic Discovery">
+          <t>
+            It is RECOMMENDED that Backplane Servers support dynamic
+            discovery, as described in
+            <xref target="OAuth.Dynamic.Client.Registration"/> section
+            5.  Discovery of Server's Client Registration Endpoint.
+            [[[ doesn't cover authorization/token endpoints, it probably should ]]]
+          </t>
+        </section>
+        <section anchor="server.discovery.static" title="Static Discovery">
+          <t>
+            When dynamic discovery is not available, Backplane Clients
+            must independently acquire and keep configuration entries
+            for the registration, authorization, token and message
+            endpoints of the Backplane Servers they wish to interact
+            with.
+          </t>
+        </section>
       </section>
 
-      <section anchor="auth.privileged.provisioning" title="Privileged Access Provisioning">
+      <section anchor="client.registration" title="Backplane Client Registration">
+
         <t>
-          Although the message exchanges described by the core of the
-          protocol can be performed independently of how Privileged
-          Access Level credentials are obtained, it is RECOMMENDED that
-          <xref target="OAuth2"/> is used for Privileged Access Level
-          provisioning as described in this section.
+          Backplane Clients need to be registered with the Backplane
+          Server in order to be authorized with
+          <xref target="access.level.privileged">Privileged Access</xref>.
+          Backplane Servers SHOULD provide one of the following
+          registation methods, listed in decreasing order of preference.
         </t>
-        <t>
-          The interactions between a Backplane Server and its customers
-          (e.g. registration, authentication, Bus allocation) remain
-          outside of the scope of this specification. Backplane Servers
-          may provide an interface where Bus Owner administrators can
-          authorize Backplane Clients with Privileged Access Level for
-          one or more Buses that are under their control.
-        </t>
-        <t>
-          Backplane Clients also must independently acquire and keep
-          configuration entries for the token and message endpoints of
-          the Backplane Servers they wish to interact with.
-        </t>
-        <t>
-          For the purpose of Privileged Access Level authorization a
-          server-side Backplane Client needs to be identified by a URL
-          that corresponds to the Redirection URI defined in
-          <xref target="OAuth2">section 2.1.1</xref> and used
-          in the authorization step in
-          <xref target="OAuth2">section 4</xref>.
-          The redirection URI MUST be obtained and approved by the Bus
-          Owner administrator. Backplane Servers may assist Bus Owner
-          administrators by providing the redirection URIs of well known
-          Backplane Clients (such as popular Widget providers) in their
-          administration user interface.
-        </t>
-        <t>
-          Since an unsolicited OAuth Authorization Response will be
-          issued, the Backplane Server's
-          <xref target="server.api.token.post">token</xref> endpoint
-          MUST be identified in the Redirection URI using a query
-          parameter named "bp_token_endpoint".
-        </t>
-        <t>
-          Once the Backplane Client has been identified and the Bus Owner
-          has selected the Buses for authorization, the Backplane Server
-          persists the authorization grant and sends an OAuth code
-          corresponding to the grant to the Backplane Client's
-          redirection URI. The successful authorization response SHOULD
-          contain a space sperated list with the authorized Bus names in
-          the <spanx style="emph">scope</spanx> field.
-        </t>
-        <t>
-          The Backplane Client exchanges the authorization code for an
-          access token at the Backplane Server's token endpoint, as
-          described in
-          <xref target="OAuth2">sections 4.1.3 and 4.1.4</xref> and
-          <xref target="server.api.token.post">Access Token Request</xref>.
-        </t>
-        <t>
-          In addition to the verifications prescribed by
-          <xref target="OAuth2"/> for this step, if the Backplane Client
-          opted to also send client credentials, the Backplane Server can
-          <xref target="server.api.token.registration">register</xref>
-          and associate them with the grant, after validating the OAuth
-          code.
-        </t>
+
+        <section anchor="client.registration.dynamic" title="Dynamic Client Registration">
+          <t>
+            It is RECOMMENDED that Backplane Servers and Backplane
+            Clients employ
+            <xref target="OAuth.Dynamic.Client.Registration"/> as
+            described in sections "6. Client Registration with Pushed
+            Metadata" and "7. Client Registration with Pushed URL and
+            Pulled Metadata".
+          </t>
+        </section>
+
+        <section anchor="client.registration.static" title="Static Client Registration">
+          <t>
+            Backplane Servers MAY provide an administrative interface
+            through which Bus Owners can register Backplane Clients.
+            The interactions between a Backplane Server and its
+            Bus Owner customers (e.g. registration, authentication, Bus
+            allocation) remain outside of the scope of this
+            specification.
+          </t>
+          <t>
+            For the purpose of Privileged Access Level authorization a
+            server-side Backplane Client needs to be identified by a URL
+            that corresponds to the Redirection URI defined in
+            <xref target="OAuth2">section 2.1.1</xref> and used
+            in the authorization step in
+            <xref target="OAuth2">section 4</xref>.
+            The redirection URI MUST be obtained and approved by the Bus
+            Owner administrator. Backplane Servers may assist Bus Owner
+            administrators by providing the redirection URIs of well known
+            Backplane Clients (such as popular Widget providers) in their
+            administration user interface.
+          </t>
+          <t>
+            When completing a
+            <xref target="authorization.server.initiated">Backplane Server Initiated Authorization</xref>
+            if the previously unregistered Backplane Client opted to
+            also send client credentials, the Backplane Server MAY
+            <xref target="client.registration.static">register</xref>
+            the Backplane Client. The Backplane Server MUST verify all
+            of the following:
+            <list style="symbols">
+              <t>
+                The grant_type is "code".
+              </t>
+              <t>
+                The code is present and the value is recognized as a
+                previously issued, one-time use, valid code.
+              </t>
+              <t>
+                The redirect_uri is present and matches the
+                redirect_uri for which the supplied code was
+                issued.
+              </t>
+              <t>
+                The client_id is present and is different than
+                "anonymous" or any other already registered client_id.
+              </t>
+            </list>
+          </t>
+          <t>
+            After a successful registration the Backplane Server
+            MUST continue processing the
+            <xref target="server.api.token.authenticated">Authenticated Access Token Request</xref>
+          </t>
+
+        </section>
+
+        <section anchor="client.registration.manual" title="Manual Client Registration">
+          <t>
+            As a last resort, Backplane Server administrators MAY
+            manually register Backplane Clients and make them available
+            to Bus Owners for Privileged Access authorization.
+          </t>
+        </section>
+
+      </section>
+
+      <section anchor="authorization" title="Authorization">
+
+        <section anchor="authorization.client.initiated" title="Backplane Client Initiated Authorization">
+          <t>
+            A Bus Owner MAY initiate standard OAuth 2.0 authorization
+            code flow from the Backplane Client as described in
+            <xref target="OAuth2">section 4.1 Authorization Code</xref>,
+            if supported by the Backplane Client. Backplane Servers
+            SHOULD support the standard OAuth Authorization Code flow.
+          </t>
+
+
+        </section>
+
+        <section anchor="authorization.server.initiated" title="Backplane Server Initiated Authorization">
+          <t>
+            Backplane Servers MAY provide an administrative interface
+            through which Bus Owners can initiate the authorization of
+            <xref target="client.registration">registered</xref>
+            Backplane Clients using a slightly modified OAuth
+            Authorization Code flow described in this section.
+          </t>
+          <t>
+            Once the Backplane Client has been identified and the Bus
+            Owner has selected the Buses for authorization, the
+            Backplane Server persists the authorization grant,
+            generates an OAuth code for it and sends it with an
+            unsolicited OAuth Authorization Response to the Backplane
+            Client's redirection URI. The successful authorization
+            response SHOULD contain a space sperated list with the
+            authorized Bus names in the
+            <spanx style="emph">scope</spanx> field.
+          </t>
+          <t>
+            Since an unsolicited OAuth Authorization Response is issued,
+            the Backplane Server's
+            <xref target="server.api.token.post">token</xref> endpoint
+            MUST be identified in the Redirection URI using a query
+            parameter named
+            <spanx style="emph">bp_token_endpoint</spanx>.
+          </t>
+          <t>
+            The Backplane Client continues by following the OAuth
+            Authorization Code flow from this point, and exchanges the
+            authorization code for an access token at the Backplane
+            Server's token endpoint, as described in
+            <xref target="OAuth2">sections 4.1.3 and 4.1.4</xref> and
+            <xref target="server.api.token.post">Access Token Request</xref>.
+          </t>
+        </section>
 
       </section>
 
@@ -681,7 +826,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
           When issuing or verifying the scope of an access token,
           Backplane Servers MUST enforce that the requester is
           authorized with
-          <xref target="auth.level.privileged">Privileged Access</xref>
+          <xref target="access.level.privileged">Privileged Access</xref>
           for all "<spanx style="emph">bus:</spanx>" access scopes.
         </t>
         <t>
@@ -699,7 +844,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
       <section anchor="server.api.token.post" title="Access Token Request">
         <t>
           The OAuth "Token Endpoint" as defined in 
-          <xref target="OAuth2">section 2.2</xref> used to obtain an
+          <xref target="OAuth2">section 2.2</xref> is used to obtain an
           access token to be used for retrieving messages from the
           <xref target="server.api.messages.get">Get Messages</xref>
           endpoint.
@@ -773,53 +918,6 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
           </figure>
         </t>
 
-        <section anchor="server.api.token.registration" title="Client Registration">
-          <t>
-            The Backplane Server SHOULD perform a client registration if
-            all of the following conditions are true for an access token
-            request:
-            <list style="symbols">
-              <t>
-                The grant_type is "code".
-              </t>
-              <t>
-                The code is present and the value is recognized as a
-                previously issued, one-time use, valid code.
-              </t>
-              <t>
-                The redirect_uri is present and matches the
-                redirect_uri for which the supplied code was
-                issued.
-              </t>
-              <t>
-                The client_id is present and is different than
-                "anonymous".
-              </t>
-              <t>
-                The client_secret is present and, if the client_id
-                matches an already registered client_id, then the
-                client_secret also matches the existing entry.
-              </t>
-            </list>
-          </t>
-          <t>
-            A registration operation consists of associating the
-            supplied client credentials with the grant (the associated
-            scopes) for which the code was issued.
-          </t>
-          <t>
-            After a successful registration the Backplane Server
-            MUST continue processing the
-            <xref target="server.api.token.authenticated">Authenticated Access Token Request</xref>
-          </t>
-          <t>
-            If the grant_type is "code" and any of the conditions above
-            is false, the server MUST return error per
-            <xref target="OAuth2">section 5.2</xref> (either error
-            "invalid_client" or "invalid_grant").
-          </t>
-        </section>
-
         <section anchor="server.api.token.anonymous" title="Anonymous Access Token Request">
           <t>
             If the "grant_type" parameter is "client_credentials" and
@@ -831,7 +929,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
           <t>
             In response to a anonymous access token request the
             Backplane Server allocates a new channel and issues a
-            <xref target="auth.level.regular">regular access token</xref>
+            <xref target="access.level.regular">regular access token</xref>
             to the client (no message payloads) for the channel. The
             channel is not bound to a bus until the first message is
             posted to the channel (see
@@ -861,9 +959,12 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
 
         <section anchor="server.api.token.authenticated" title="Authenticated Access Token Request">
           <t>
-            If the "grant_type" parameter is "client_credentials" and
-            both "client_id" and "client_secret" are present, the
-            server MUST check the credentials of the client. If the
+            If the "grant_type" parameter is "code" and both "client_id"
+            and "client_secret" are present, the server MAY attempt
+            <xref target="client.registration.static">Static Client Registration</xref>.
+          </t>
+          <t>
+            The server MUST check the credentials of the client. If the
             credentials are valid, the request is a authenticated access
             token request; otherwise the server MUST return error per
             <xref target="OAuth2">section 5.2</xref> (error
@@ -880,7 +981,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
           <t>
             In response to a authenticated access token request the
             Backplane Server issues an
-            <xref target="auth.level.privileged">privileged access token</xref>
+            <xref target="access.level.privileged">privileged access token</xref>
             to the client for the requested scope. If no "scope"
             parameter was specified in the request, the client is
             granted access to all buses it is authorized to per the
@@ -908,7 +1009,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
               <xref target="token.scopes">Access Scopes</xref>
               associated with the presented access token, determine the
               <xref target="message.sequence.retrieval">Message Sequence</xref>
-              filter and <xref target="auth">access level</xref>,
+              filter and <xref target="access.levels">access level</xref>,
               and respond accordingly.
             </t>
             <t hangText="Parameters">
@@ -1001,7 +1102,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
               The server MUST retrieve the
               <xref target="token.scopes">Access Scopes</xref>
               associated with the presented access token, determine its
-              <xref target="auth">access level</xref> and respond
+              <xref target="access.levels">access level</xref> and respond
               accordingly with either a Backplane Header, a Backplane
               Message (including payload), or error.
             </t>
@@ -1092,7 +1193,7 @@ bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
               <xref target="token.scopes">Access Scopes</xref>
               associated with the presented access token and determine
               that it has
-              <xref target="auth.level.privileged">Privileged Access Level</xref>
+              <xref target="access.level.privileged">Privileged Access Level</xref>
               for each of the Buses referenced in the request body.
             </t>
             <t hangText="Request body">
@@ -1395,14 +1496,14 @@ Backplane.getChannelID();
       <section title="Message Payloads">
         <t>
           Message payloads are only sent to Backplane Clients at
-          <xref target="auth.level.privileged">Privileged Access Level</xref>.
+          <xref target="access.level.privileged">Privileged Access Level</xref>.
           This is in order to allow sensitive data to be exchanged
           among server-side Backplane Clients, while not allowing it to
           reach the less secure context of web browser.
         </t>
         <t>
           It is therefore important that
-          <xref target="auth.level.privileged">Privileged Access Level</xref>
+          <xref target="access.level.privileged">Privileged Access Level</xref>
           credentials are not provisioned to Backplane Clients that run
           in a web browser.
         </t>
@@ -1475,6 +1576,31 @@ Backplane.getChannelID();
             <organization>Facebook</organization>
           </author>
           <date year="2011" month="Jun" />
+        </front>
+      </reference>
+
+      <reference
+        anchor="OAuth.Dynamic.Client.Registration"
+        target="http://tools.ietf.org/html/draft-hardjono-oauth-dynreg">
+        <front>
+          <title>OAuth Dynamic Client Registration Protocol</title>
+          <author initials="T." surname="Hardjono"
+            fullname="T. Hardjono">
+            <organization>MIT</organization>
+          </author>
+          <author initials="M." surname="Machulak"
+            fullname="M. Machulak">
+            <organization>Newcastle University</organization>
+          </author>
+          <author initials="E." surname="Maler"
+            fullname="E. Maler">
+            <organization>XMLgrrl.com</organization>
+          </author>
+          <author initials="C." surname="Scholz"
+            fullname="C. Scholz">
+            <organization>COM.lounge GmbH</organization>
+          </author>
+          <date year="2011" month="Oct" />
         </front>
       </reference>
 
