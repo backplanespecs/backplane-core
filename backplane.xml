@@ -806,10 +806,20 @@
           expected field's value.
         </t>
         <t>
-          A list of access scopes evaluates to true if all of the
-          individual access scopes evaluate to true when performing a
-          case-sensitive string comparison of the expected field's
-          value with the actual field value from the Backplane Message.
+          An access scope is evaluated by performing a case-sensitive
+          string comparison between the expected field's value in the
+          access scope, and the field value from the Backplane Message.
+        </t>
+        <t>
+          A list of access scopes is evaluated as follows:
+          <list style="symbols">
+            <t>
+              a logical OR operation is performed for all access scopes having the same field name
+            </t>
+            <t>
+              a logical AND operation is performed among all access scopes having different field names
+            </t>
+          </list>
         </t>
         <t>
         <figure>
@@ -820,6 +830,17 @@
           </preamble>
           <artwork type="code">
 bus:customer.com source:http://aboutecho.com type:identity/ack sticky:true
+          </artwork>
+        </figure>
+        </t>
+
+        <t>
+        <figure>
+          <preamble>
+            Example access scopes: all messages (belonging to bus A OR bus B) AND (having type C OR type D) 
+          </preamble>
+          <artwork type="code">
+bus:A bus:B type:C type:D
           </artwork>
         </figure>
         </t>
