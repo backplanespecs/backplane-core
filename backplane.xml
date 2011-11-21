@@ -629,6 +629,10 @@
         requirements and pitfalls of generating unguessable values
         in great detail).
       </t>
+      <t>
+        There can be at most one channel active on a Web Page at a
+        given time.
+      </t>
     </section>
 
     <section anchor="backplane.messages" title="Backplane Messages">
@@ -1381,6 +1385,11 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           client-side generation of the channel name is non-secure,
           the library performs a request to obtain a channel name
           from the Backplane Server.</t>
+
+        <t>
+          There can be at most one channel active on a Web Page at a
+          given time.
+        </t>
 
         <t>After initialization the library stores the current Channel
           Name in the <spanx style="verb">backplane-channel</spanx>
