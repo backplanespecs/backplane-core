@@ -615,9 +615,12 @@
         can receive Backplane Messages posted to that Channel.
       </t>
 
-      <t>Channel identifiers MUST only contain characters from the
+      <t>
+        Channel identifiers MUST only contain characters from the
         <xref target="RFC4648.section5">base64url</xref> character set
-        and be at least 32 characters long.
+        and be at least 32 characters long. New channels are generated
+        only on
+        <xref target="server.api.token.anonymous">anonymous access token requests</xref>.
       </t>
       <t>
         The channel name MUST NOT be guessable given knowledge of the
@@ -961,8 +964,9 @@ bus:A bus:B type:C type:D
             Backplane Server allocates a
             <xref target="channels">new channel</xref> and issues a
             <xref target="access.level.regular">regular access token</xref>
-            to the client (no message payloads) for the channel. The
-            channel is not bound to a bus until the first message is
+            to the client (no message payloads) for the channel. New
+            channels are generated only anonymous access token requests.
+            The channel is not bound to a bus until the first message is
             posted to the channel (see
             <xref target="server.api.messages.post">Post Messages</xref>).
           </t>
