@@ -1,0 +1,97 @@
+Author: Vlad Skvortsov <vss@aboutecho.com>, Echo
+Title: Management of User Identity State
+Depends-on: bp-proposal-4
+
+MOTIVATION
+==========
+
+Backplane applications using Identity Scenario should be able to retrieve
+the current user's identity information with minimum possible effort.
+
+BACKGROUND
+==========
+
+Consider the context of Identity Scenario within Backplane 1.x. Since
+Backplane is stateless, any application (a widget and its server-side)
+deployed on a page has to process identity-related messages posted on
+the corresponding channel to maintain identity-related state.
+
+This was a burden for Backplane application developers (some even chose
+to use Echo's proprietary API 'whoami' to avoid it). It is deemed
+desirable to lower the barrier to entry by providing means for
+applications to easily discover the current user's identity.
+
+This effectively means sparing application of the need to perform any
+non-trivial processing (on either server- and client-side) in order
+to discover the identities.
+
+PROPOSAL
+========
+
+I propose to replace all 'identity/*' messages with a new message named
+'identity/update'.
+
+All Identity Connectors MUST send this message whenever they facilitate
+a login/logout or when they receive a 'core/pageload' message.
+
+The 'identity/update' message structure is as follows (details TBD: this
+can be structured as PoCo or another open standard, the current
+format is for illustration purpose only):
+
+{
+  ...
+  "payload": {
+    "delta": {
+      // This describes how the state has changed recently. May be empty
+      // (if the message is sent as a response to 'core/pageload', for
+      // example).
+      "logged-in-to": [
+        // List of identitites.
+        "http://twitter.com/john",
+        "http://facebook.com/john"
+      ],
+
+      "logged-out-from": [
+        "http://john.myopenid.com"
+      ]
+    },
+
+    "state": {
+      // All identities the user is currently logged in to along with
+      // full details, such as emails, OAuth tokens, etc.
+      // Note that there is a MySpace identity that the user has logged
+      // in to previously (not during the transaction that triggered
+      // this message from the Identity Connector).
+      "identities":  {
+        "http://twitter.com/john": { ... },
+        "http://facebook.com/john": { ... },
+        "http://myspace.com/john": { ... }
+      }
+    }
+  }
+}
+
+I believe that this approach provides the following advantages:
+
+1. Backplane application developers are spared from all the work
+required to obtain up-to-date identity information, as well as tracking
+state changes.
+
+2. Identity state is maintained by Identity Connectors where it is readily
+available at all times.
+
+3. The message format provides state increments as well as the latest
+snapshot which makes it reliable even in case of message omissions and simple
+in use for clients with different needs.
+
+IMPLEMENTATION
+==============
+
+Action items to implement the proposal:
+
+DISCUSSION
+==========
+
+REFERENCES
+==========
+
