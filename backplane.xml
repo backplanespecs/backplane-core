@@ -878,6 +878,66 @@ bus:A bus:B type:C type:D
 
     <section anchor="server.api" title="Backplane Server API">
 
+      <section anchor="server.api.version" title="Server API Version">
+        <t>
+          This API method enables client to learn the version of Backplane
+          framework supported by the server. Please note that this version
+          number identifies the API as defined by this specification, not
+          the version of a particular implementation of Backplane server.
+        </t>
+        <t>
+          <list style="hanging">
+            <t hangText="Endpoint">/v2/version</t>
+            <t hangText="HTTP mehod">GET</t>
+            <t hangText="Security">none (plain HTTP)</t>
+            <t hangText="Parameters">
+              <list style="symbols">
+                <t>callback (string, optional):
+                  callback function to pad the response with (see
+                  <xref target="padded.response">Padded Responses</xref>);
+                  MUST only contain alphanumeric characters (a-zA-Z0-9)
+                </t>
+              </list>
+            </t>
+            <t hangText="Returns">
+              Returns HTTP code 200 ("OK") and a (possibly
+              <xref target="padded.response">padded</xref>) JSON object in
+              the response body, which contains the following fields:
+              <list style="symbols">
+                <t>version: an object with version information:
+                  <list style="symbols">
+                    <t>major (integer, REQUIRED):
+                      major version number
+                    </t>
+                    <t>minor (integer, REQUIRED):
+                      minor version number
+                    </t>
+                    <t>patch (integer, REQUIRED):
+                      patch version number
+                    </t>
+                  </list>
+                </t>
+              </list>
+              <figure>
+                <preamble>
+                  Response example
+                </preamble>
+                <artwork type="code">
+{
+  "version":
+  {
+    "major": 2,
+    "minor": 1,
+    "patch": 3
+  }
+}
+                </artwork>
+              </figure>
+            </t>
+          </list>
+        </t>
+      </section>
+
       <section anchor="server.api.token.post" title="Access Token Request">
         <t>
           The OAuth "Token Endpoint" as defined in 
