@@ -201,6 +201,39 @@
           in <xref target="RFC2119">RFC 2119</xref>.</t>
       </section>
 
+      <section title="Versioning">
+        <t>Backplane adopts versioning model known as
+          <xref target="SemVer">Semantic Versioning</xref>. Below is the
+          list of the most important aspects of the model:
+        </t>
+        <list style="symbols">
+          <t>Client and server of different major version numbers are not
+            interoperable.
+          </t>
+
+          <t>Changes introduced in minor revisions of the specification
+            (such revisions entail a minor version number bump) are always
+            backwards-compatible. If a client depends on features found in
+            Backplane version X.Y, it will work with Backplane version X.Z
+            provided that Z >= Y.
+          </t>
+
+          <t>Minor releases can introduce new features and mark existing
+            features as deprecated to discourage their further use by clients.
+            Data formats can be extended in backwards-compatible manner (older
+            clients will still be able to consume such data items).
+          </t>
+
+          <t>Patch revisions of the specification can only introduce
+            nonsubstantial changes (typo fixes, wording changes etc). It is
+            RECOMMENDED that clients specify dependencies only on major and
+            minor version numbers. 
+          </t>
+
+        </list>
+
+      </section>
+
     </section>
 
     <section anchor="overview" title="Overview">
@@ -1607,6 +1640,7 @@ Backplane.getChannelID();
 
   <back>
     <references title="Normative References">
+      <!-- XXX: sort references alphabetically? -->
 
       &RFC2616;
 
@@ -1698,6 +1732,17 @@ Backplane.getChannelID();
         </front>
       </reference>
 
+      <reference
+        anchor="SemVer"
+        target="http://semver.org">
+        <front>
+          <title>Semantic Versioning</title>
+          <author initials="T." surname="Preston-Werner"
+            fullname="T. Preston-Werner">
+            <organization>GitHub</organization>
+          </author>
+        </front>
+      </reference>
 
     </references>
   </back>
