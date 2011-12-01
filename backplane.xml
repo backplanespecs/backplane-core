@@ -218,10 +218,10 @@
             provided that Z >= Y.
           </t>
 
-          <t>Minor releases can introduce new features and mark existing
+          <t>Minor revisions can introduce new features and mark existing
             features as deprecated to discourage their further use by clients.
             Data formats can be extended in backwards-compatible manner (older
-            clients will still be able to consume such data items).
+            clients will still be able to consume such data).
           </t>
 
           <t>Patch revisions of the specification can only introduce
@@ -914,7 +914,7 @@ bus:A bus:B type:C type:D
       <section anchor="server.api.version" title="Server API Version">
         <t>
           This API method enables client to learn the version of Backplane
-          framework supported by the server. Please note that this version
+          framework supported by the server. Note that this version
           number identifies the API as defined by this specification, not
           the version of a particular implementation of Backplane server.
         </t>
@@ -1434,6 +1434,11 @@ bus:A bus:B type:C type:D
 Backplane.init(Params);
 
 /**
+ * Returns version of the Backplane library
+ */
+Backplane.version();
+
+/**
  * Subscribes to messages from Backplane server
  *
  * @param {Function} Callback - Callback function which accepts backplane messages.
@@ -1470,6 +1475,12 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
         title="Initialization">
         <t>Backplane is initialized using the
           <spanx style="verb">Backplane.init</spanx> method.</t>
+
+        <t>The method first uses <xref target="server.api.version">Server
+          API Version</xref> method to check that the client is
+          interoperable with the Backplane Server. If this is not the case,
+          XXX: what's the best way to signal error?. 
+        </t>
 
         <t>During initialization the library generates a random
           Channel Name unless information about one for the specified
@@ -1511,6 +1522,52 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           Backplane Messages which arrived after the library had been
           fully initialized.</t>
 
+      </section>
+
+      <section anchor="client.side.library.version"
+          title="Version Information">
+        <t>The version of the Backplane specification supported by the
+          library is available through the <spanx style="verb">Backplane.version()</spanx>
+          method. Successful initialization of the Backplane library implies
+          a compatible version of the server, therefore exact server version
+          is not exposed through this API. Instead, Widgets can check
+          interoperability with the Backplane library since that's the
+          primary API they deal with.
+        </t>
+
+        <t>The format of the object returned by the <spanx style="verb">Backplane.version()</spanx>
+          call is the following:
+          <list style="symbols">
+            <t>version: an object with version information:
+              <list style="symbols">
+                <t>major (integer, REQUIRED):
+                  major version number
+                </t>
+                <t>minor (integer, REQUIRED):
+                  minor version number
+                </t>
+                <t>patch (integer, REQUIRED):
+                  patch version number
+                </t>
+              </list>
+            </t>
+          </list>
+            <figure>
+              <preamble>
+                An example of returned object
+              </preamble>
+              <artwork type="code">
+{
+  "version":
+  {
+    "major": 2,
+    "minor": 1,
+    "patch": 3
+  }
+}
+              </artwork>
+            </figure>
+          </t>
       </section>
 
       <section anchor="client.side.library.subscription"
