@@ -911,6 +911,28 @@ bus:A bus:B type:C type:D
 
     <section anchor="server.api" title="Backplane Server API">
 
+      <section anchor="server.api.response.headers" title="Response Headers">
+        <section anchor="server.api.response.header.version"
+          title="X-Backplane-Version">
+          <t>This header communicates what version of Backplane specification
+            the server implements. A Backplane server MUST include this
+            header into all its responses. The content of the header are
+            three dot-separated ('.') integers corresponding to the major,
+            minor and the patch version numbers as a call to
+            <xref target="server.api.version">Server API Version method</xref>
+            would return.
+              <figure>
+                <preamble>
+                  Response header example
+                </preamble>
+                <artwork type="code">
+X-Backplane-Version: 2.3.1
+                </artwork>
+              </figure>
+          </t>
+        </section>
+      </section>
+
       <section anchor="server.api.version" title="Server API Version">
         <t>
           This API method enables client to learn the version of Backplane
