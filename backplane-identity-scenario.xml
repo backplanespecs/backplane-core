@@ -308,8 +308,7 @@
           which contains the following fields:
           <list style="hanging">
             <t hangText="context">
-              the URL of the page where the authentication took place
-              [[[ TODO: this is not clear enough ]]]
+              the URL of the Web Page where the user login was initiated
             </t>
             <t hangText="identities">
               a Portable Contacts object listing the authenticated User
@@ -326,8 +325,7 @@
           which contains the following fields:
           <list style="hanging">
             <t hangText="context">
-              the URL of the page where the logout took place
-              [[[ TODO: this is not clear enough ]]]
+              the URL of the Web Page where the user logout was initiated
             </t>
             <t hangText="identities">
               a Portable Contacts object listing the User Identifiers
@@ -344,8 +342,8 @@
           which contains the following fields:
           <list style="hanging">
             <t hangText="context">
-              the URL of the page where the logout took place
-              [[[ TODO: this is not clear enough ]]]
+              the URL of the Web Page to which the User Identity
+              Information update is addressed
             </t>
             <t hangText="identities">
               a Portable Contacts object listing the User Identifiers
