@@ -378,7 +378,7 @@
         Since the scenario deals with a single user (the one performing
         identity-related actions in the context of a concrete browsing
         session), "entry" object in the Portable Contacts response node
-        MUST be an array with a single value.
+        MUST contain a single value.
       </t>
 
       <t>
@@ -412,7 +412,7 @@
     "totalResults": 1,
     "entry": [
         {
-        "accounts": [
+        "accounts":
             {
                 "identityUrl" : "http://twitter.com/johndoe",
                 "username": "johndoe",
@@ -453,7 +453,7 @@
             {
                 "identityUrl": "sgn://livejournal.com/?ident=johndoe"
             }
-        ]
+
         }
     ]
 }
@@ -485,7 +485,7 @@
     "totalResults": 1,
     "entry": [
         {
-        "accounts": [
+        "accounts":
             {
                 "identityUrl" : "http://twitter.com/johndoe",
                 "photos": [
@@ -495,7 +495,7 @@
                   }
                 ]
             }
-        ]
+
         }
     ]
 }
