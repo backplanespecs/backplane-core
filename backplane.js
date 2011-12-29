@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // vim: set ts=8 sts=8 sw=8 noet:
+// vim: set ts=8 sts=8 sw=8 noet:
 /*
  * Copyright (c) 2006-2011 Echo <solutions@aboutecho.com>. All rights reserved.
  * You may copy and modify this script as long as the above copyright notice,
@@ -197,6 +197,10 @@ Backplane.resetCookieChannel = function() {
         this.setCookieChannels();
         this.config.channelName = this.getChannelName();
         this.config.channelID = this.generateChannelID();
+        // Create a new channel id
+        this.initialized = false;
+        this.init({serverBaseURL: this.config.serverBaseURL,
+                   busName: this.config.busName});
 };
 
 Backplane.normalizeURL = function(rawURL) {
