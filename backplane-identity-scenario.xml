@@ -574,7 +574,16 @@
         </t>
       </section>
 
-      <section anchor="use.cases.user.logout" title="User Logout">
+      <section anchor="use.cases.user.logout.idp" title="User Logout: Identity Provider">
+        
+        <t>
+          If the user logs out from the Identity Provider a
+          identity/logout message SHOULD (and ideally MUST) be
+          published on the Backplane channel. Widgets can react to this
+          state change and update the session they have with the user to
+          reflect the new logged-out state.
+        </t>
+        
         <t>
           <list style="numbers">
             <t>
@@ -603,8 +612,8 @@
               Channel from a previous interaction
             </t>
             <t>
-              The user initiates a logout event by clicking o a link or
-              button provided by the Login Widget
+              The user initiates a Identity Provider logout event by
+              clicking o a link or button provided by the Login Widget
             </t>
             <t>
               Login Widget's server-side component posts a identity/logout
@@ -620,6 +629,70 @@
               message and react to the logout event as they see fit
             </t>
           </list>
+        </t>
+      </section>
+
+      <section anchor="use.cases.user.logout.local" title="User Logout: Site Local">
+        
+        <t>
+          The widgets on a site may wish to end the session they have
+          with a user independently from the logged-in or logged-out
+          state the user has with their Identity Provider. This can be
+          desired if, for example, the site knows the user is leaving
+          the site and wants to force a re-login when the user returns,
+          or perhaps if the site does not want to rely on the Identity
+          Provider support of identity/logout advertisements.
+        </t>
+
+        <t>
+          In this case the widget must reset the Backplane channel in
+          order to ensure the current session and logged-in state is
+          ended.
+        </t>
+
+        <t>
+          <list style="numbers">
+            <t>
+              Backplane.js library initializes on each page load:
+              <list style="numbers">
+                <t>
+                  reads the channel_id from a previously set cookie, or
+                </t>
+                <t>
+                  retrieves a new channel_id from the Backplane Server
+                </t>
+                <t>
+                  sets up polling for new messages from the Backplane
+                  Server at regular intervals
+                </t>
+              </list>
+            </t>
+            <t>
+              Widgets on the page subscribe to receive notifications for
+              all Backplane messages, or for specific message types that
+              they are interested in; for Identity Scenario, presumably
+              identity/* messages types
+            </t>
+            <t>
+              A User Identifier in the Logged-in State exists on the
+              Channel from a previous interaction
+            </t>
+            <t>
+              The user initiates a site local logout by clicking o a
+              link or button provided by the local website
+            </t>
+            <t>
+              The site resets the Backplane channel and terminates the
+              local session it has for the user
+            </t>
+          </list>
+        </t>
+        <t>
+          If the same user (having the same Logged-in state with their
+          Identity Provider) returns to a Backplane-enabled page, the
+          site has the opportunity to process again the identity/login
+          events and create a new local session even though it is the
+          same user.
         </t>
       </section>
 
