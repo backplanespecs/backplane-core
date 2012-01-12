@@ -302,6 +302,14 @@
         employed by the Identity Scenario.
       </t>
 
+      <t>
+        Note that message payloads are sent only to server-side
+        Backplane clients. Widgets only receive message headers: no
+        payloads, acting as event notifications. They must contact
+        their corresponding server-side components for the details
+        on how to fully react to each event.
+      </t>
+
       <section anchor="message.type.identity.login" title="identity/login">
         <t>
           The payload of the 'identity/login' message is a JSON object
