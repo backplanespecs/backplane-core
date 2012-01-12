@@ -223,9 +223,7 @@
         all Backplane Clients and the Server have to share the same Bus. 
         Backplane Clients operating at the
         <xref target="access.level.privileged">Privileged Access Level</xref>
-        need a password to authenticate themselves to the Server. It is
-        outside the scope of this document how such configuration is
-        performed.</t>
+        need a password to authenticate themselves to the Server.</t>
 
     </section>
 
