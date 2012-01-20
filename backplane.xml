@@ -1256,11 +1256,6 @@ bus:A bus:B type:C type:D
                   objects of the following structure:
                   <list style="symbols">
                     <t>
-                      source (string):
-                      an arbitrary URL identifying the client which has
-                      posted the message
-                    </t>
-                    <t>
                       type (string):
                       message type (arbitrary string)
                     </t>
