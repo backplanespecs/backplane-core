@@ -416,6 +416,16 @@
           Backplane Clients need to be registered with the Backplane
           Server in order to be authorized with
           <xref target="access.level.privileged">Privileged Access</xref>.
+        </t>
+        
+        <t>
+          As part of the registration process Backplane Servers MUST
+          associate with each client a message source URL that will be 
+          used as the <spanx style="emph">source</spanx> field value for
+          the messages posted by that client. 
+        </t>
+
+        <t>
           Backplane Servers SHOULD provide one of the following
           registation methods, listed in decreasing order of preference.
         </t>
@@ -479,6 +489,10 @@
                 "anonymous" or any other already registered client_id.
               </t>
             </list>
+          </t>
+          <t>
+            Backplane Servers MAY register the redirect_uri as the
+            message source URL associated with the client.
           </t>
           <t>
             After a successful registration the Backplane Server
@@ -640,8 +654,9 @@
             a URL that a client can use to retrieve the message
           </t>
           <t hangText="source (string)">
-            an arbitrary URL identifying the client which posted the message
-            [[[ who/how/when/where? ]]]
+            an URL identifying the client which posted the message,
+            associated with the client during
+            <xref target="client.registration">registration</xref>
           </t>
           <t hangText="type (string)">
             opaque to the core Backplane specification; value, semantic
