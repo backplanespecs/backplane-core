@@ -685,14 +685,22 @@
       </t>
 
       <t>
-        A downstream (server-to-client) Backplane message MUST contain all
-        the fields listed above. If the client receiving the message has
-        regular access, the server MUST omit the "payload" field.
+        A downstream (server-to-client) Backplane message delivered to
+        a client with
+        <xref target="access.level.privileged">privileged access</xref>
+        MUST contain all the fields listed above; downstream messages
+        delivered to
+        <xref target="access.level.regular">regular access</xref>
+        clients MUST contain all except the "payload" field from the
+        fields listed above.
       </t>
 
       <t>
-        An upstream (client-to-server) Backplane message MUST only contain
-        the following fields: "bus", "channel", "payload", "type".
+        An upstream (client-to-server) Backplane message MUST contain
+        the fields "bus", "channel", "payload", "type", it MAY contain
+        the "sticky" field and MUST NOT contain any other fields. If the
+        "sticky" field is omitted the Backplane Server MUST consider the
+        posted message non-sticky.
       </t>
 
       <figure>
@@ -708,7 +716,8 @@
         "payload": {
                 "role": "administrator"
         },
-        "type": "identity/ack"
+        "type": "identity/ack",
+        "sticky": false
 }
         </artwork>
       </figure>
@@ -1246,19 +1255,30 @@ bus:A bus:B type:C type:D
                   an array of messages to be posted, represented as JSON
                   objects of the following structure:
                   <list style="symbols">
-                    <t>source (string):
+                    <t>
+                      source (string):
                       an arbitrary URL identifying the client which has
                       posted the message
                     </t>
-                    <t>type (string):
+                    <t>
+                      type (string):
                       message type (arbitrary string)
                     </t>
-                    <t>bus (string):
+                    <t>
+                      bus (string):
                       the name of the bus to post the message to
                     </t>
-                    <t>channel (string):
+                    <t>
+                      sticky (boolean, optional):
+                      the <xref target="server.retention.sticky">sticky</xref>
+                      flag; if omitted the Backplane Server MUST consider the
+                      posted message non-sticky
+                    </t>
+                    <t>
+                      channel (string):
                       the name of the channel to post the message to
                     </t>
+
                     <t>payload (object):
                       the message payload
                     </t>
