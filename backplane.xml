@@ -541,9 +541,10 @@
             generates an OAuth code for it and sends it with an
             unsolicited OAuth Authorization Response to the Backplane
             Client's redirection URI. The successful authorization
-            response SHOULD contain a space sperated list with the
-            authorized Bus names in the
-            <spanx style="emph">scope</spanx> field.
+            response SHOULD contain the
+            <spanx style="emph">scope</spanx> field with the appropriate
+            list of
+            <xref target="token.scopes">Access Scopes</xref>.
           </t>
           <t>
             Since an unsolicited OAuth Authorization Response is issued,
@@ -680,8 +681,13 @@
       </t>
 
       <t>
-        The presence of certain fields in a Backplane message depends on the
-        context it appears in.
+        All message field values except "payload" MUST NOT contain the
+        space character (UCS code point 32).
+      </t>
+      
+      <t>
+        The presence of certain fields in a Backplane message depends on
+        the context it appears in.
       </t>
 
       <t>
@@ -828,17 +834,26 @@
           The filter criteria for defining a Message Sequence are passed
           to the token endpoint when
           <xref target="server.api.token.post">requesting access tokens</xref>
-          as a space-delimited list of access scopes in the following
-          format:
+          as a list of access scopes using the space character (UCS code
+          point 32) as the delimiter:
+          in the following format:
           <list style="hanging">
             <t hangText="Access Scope Format:">
               &lt;<spanx style="emph">message_field_name</spanx>&gt;:&lt;<spanx style="emph">message_field_value</spanx>&gt;
             </t>
           </list>
           where <spanx style="emph">message_field_name</spanx> is any
-          of the
-          <xref target="backplane.messages">defined message field names</xref>,
-          and <spanx style="emph">message_field_value</spanx> is the
+          of the following message fields:
+          <list style="symbols">
+            <t>source</t>
+            <t>type</t>
+            <t>bus</t>
+            <t>channel</t>
+            <t>sticky</t>
+            <t>messageURL</t>
+          </list>
+
+          <spanx style="emph">message_field_value</spanx> is the
           expected field's value.
         </t>
         <t>
@@ -935,8 +950,9 @@ bus:A bus:B type:C type:D
                   REQUIRED if and only if grant_type is "code"
                 </t>
                 <t>scope (string, OPTIONAL):
-                  a list of space-delimited
+                  a list of
                   <xref target="token.scopes">filter criteria</xref>
+                  delimited by the space character (UCS code point 32)
                   for the messages the client is interested in.
                 </t>
               </list>
