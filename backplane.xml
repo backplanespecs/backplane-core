@@ -1134,7 +1134,8 @@ bus:A bus:B type:C type:D
         "role": "administrator"
       },
       "source": "http://aboutecho.com",
-      "type": "identity/ack"
+      "type": "identity/ack",
+      "sticky": true
     }
   ]
 }
@@ -1214,6 +1215,12 @@ bus:A bus:B type:C type:D
                     <t>channel (string):
                       the channel name the message was posted do.
                     </t>
+                    <t>
+                      sticky (string):
+                      the sticky flag for the message, as specified by
+                      the application scenario that defines this
+                      message type
+                    </t>
                     <t>payload (object, optional):
                       message payload. Only available to privileged access clients.
                     </t>
@@ -1230,7 +1237,8 @@ bus:A bus:B type:C type:D
 {
   "messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
   "source": "http://aboutecho.com",
-  "type": "identity/ack"
+  "type": "identity/ack"m
+  "sticky": true,
   "bus": "customer.com",
   "channel": "67dc880cc265b0dbc755ea959b257118",
   "payload": {
@@ -1333,7 +1341,8 @@ bus:A bus:B type:C type:D
   "messages": [
     {
       "source": "http://aboutecho.com",
-      "type": "identity/ack"
+      "type": "identity/ack",
+      "sticky": true,
       "bus": "customer.com",
       "channel": "67dc880cc265b0dbc755ea959b257118",
       "payload": {
@@ -1342,7 +1351,8 @@ bus:A bus:B type:C type:D
     },
     {
       "source": "http://aboutecho.com",
-      "type": "identity/ack"
+      "type": "identity/ack",
+      "sticky": true,
       "bus": "organization.org",
       "channel": "d7a592b31fbbc2baf5f9476884b9acd5",
       "payload": {
