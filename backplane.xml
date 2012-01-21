@@ -1049,10 +1049,10 @@ bus:A bus:B type:C type:D
             In response to a authenticated access token request the
             Backplane Server issues an
             <xref target="access.level.privileged">privileged access token</xref>
-            to the client for the requested scope. If no "scope"
-            parameter was specified in the request, the client is
-            granted access to all buses it is authorized to per the
-            server configuration.
+            to the client for the requested scope. If no buses are
+            specified in the "scope" parameter submitted in the
+            request, access is granted to all buses that are part of
+            authorization grants previously issued to the client.
           </t>
         </section>
 
