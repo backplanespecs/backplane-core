@@ -1064,8 +1064,6 @@ bus:A bus:B type:C type:D
             <t hangText="HTTP mehod">GET</t>
             <t hangText="Security">HTTPS</t>
             <t hangText="Parameters">
-              The folllowing parameters MUST be submitted in the HTTP
-              request query:
               <list style="symbols">
                 <t>
                   callback (string, REQUIRED):
@@ -1182,17 +1180,17 @@ bus:A bus:B type:C type:D
             </t>
             <t hangText="Parameters">
               <list style="symbols">
-                <t>block (integer, default 0):
+                <t>block (integer, OPTIONAL, default 0):
                   if no messages are available for immediate retrieval,
                   this parameter communicates how long (in seconds) the
                   server should wait before returning an empty response
                 </t>
-                <t>callback (string, optional):
+                <t>callback (string, OPTIONAL):
                   callback function to pad the response with (see
                   <xref target="padded.response">Padded Responses</xref>);
                   MUST only contain alphanumeric characters (a-zA-Z0-9)
                 </t>
-                <t>since (optional, string): the Message Identifier
+                <t>since (string, OPTIONAL): the Message Identifier
                   representing the starting point of the requested
                   Message Sequence. See
                   <xref target="message.sequence.retrieval">Message Sequences and Retrieval</xref>.
@@ -1277,7 +1275,7 @@ bus:A bus:B type:C type:D
             </t>
             <t hangText="Query parameter">
               <list style="symbols" >
-                <t>callback (string, optional):
+                <t>callback (string, OPTIONAL):
                   callback function to pad the response with (see
                   <xref target="padded.response">Padded Responses</xref>);
                   MUST only contain alphanumeric characters (a-zA-Z0-9)
@@ -1322,7 +1320,7 @@ bus:A bus:B type:C type:D
                       the application scenario that defines this
                       message type
                     </t>
-                    <t>payload (object, optional):
+                    <t>payload (object, OPTIONAL):
                       message payload. Only available to privileged access clients.
                     </t>
                   </list>
@@ -1389,7 +1387,7 @@ bus:A bus:B type:C type:D
                       the name of the bus to post the message to
                     </t>
                     <t>
-                      sticky (boolean, optional):
+                      sticky (boolean, OPTIONAL):
                       the <xref target="server.retention.sticky">sticky</xref>
                       flag; if omitted the Backplane Server MUST consider the
                       posted message non-sticky
