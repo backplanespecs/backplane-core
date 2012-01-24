@@ -284,7 +284,7 @@
         <xref target="server.api.messages.get">Get Messages</xref> endpoint
         by presenting either a regular or a privileged access token
         obtained from the
-        <xref target="server.api.token.post">token</xref> endpoint.
+        <xref target="server.api.token.authenticated">token</xref> endpoint.
         The access token MUST be presented as described
         in <xref target="OAuth2.token.bearer">section 2.1</xref>.
       </t>
@@ -301,7 +301,7 @@
           Regular access level is given to Backplane Clients running in
           the web browser (Widgets and the Backplane JavaScript Library)
           and are obtained through anonymous calls to the
-          <xref target="server.api.token.post">token</xref> endpoint.
+          <xref target="server.api.token.authenticated">token</xref> endpoint.
         </t>
         <t>
           Bus owners and Backplane Servers acting on their behalf MUST
@@ -321,7 +321,7 @@
           are not running in a web browser (typically the Widgets'
           server-side components) and are obtained through authenticated
           calls to the
-          <xref target="server.api.token.post">token</xref> endpoint.
+          <xref target="server.api.token.authenticated">token</xref> endpoint.
         </t>
         <t>
           Backplane Clients having Privileged access level can perform
@@ -549,7 +549,7 @@
           <t>
             Since an unsolicited OAuth Authorization Response is issued,
             the Backplane Server's
-            <xref target="server.api.token.post">token</xref> endpoint
+            <xref target="server.api.token.authenticated">token</xref> endpoint
             MUST be identified in the Redirection URI using a query
             parameter named
             <spanx style="emph">bp_token_endpoint</spanx>.
@@ -560,7 +560,7 @@
             authorization code for an access token at the Backplane
             Server's token endpoint, as described in
             <xref target="OAuth2">sections 4.1.3 and 4.1.4</xref> and
-            <xref target="server.api.token.post">Access Token Request</xref>.
+            <xref target="server.api.token.authenticated">Access Token Request</xref>.
           </t>
         </section>
 
@@ -807,7 +807,7 @@
         order as they have been received by a Backplane server.
       </t>
       <t>
-        The <xref target="server.api.token.post">token</xref> endpoint
+        The <xref target="server.api.token.authenticated">token</xref> endpoint
         is used to obtain an access token tailored to the filter
         criteria desired by the client. The access token is used
         at the
@@ -833,7 +833,7 @@
         <t>
           The filter criteria for defining a Message Sequence are passed
           to the token endpoint when
-          <xref target="server.api.token.post">requesting access tokens</xref>
+          <xref target="server.api.token.authenticated">requesting access tokens</xref>
           as a list of access scopes using the space character (UCS code
           point 32) as the delimiter in the following format:
           <list style="hanging">
@@ -914,11 +914,13 @@ bus:A bus:B type:C type:D
 
     <section anchor="server.api" title="Backplane Server API">
 
-      <section anchor="server.api.token.post" title="Access Token Request">
+      <section anchor="server.api.token.authenticated" title="Authenticated Access Token Request">
         <t>
           The OAuth "Token Endpoint" as defined in 
-          <xref target="OAuth2">section 2.2</xref> is used to obtain an
-          access token to be used for retrieving messages from the
+          <xref target="OAuth2">section 2.2</xref> is used by clients
+          capable of securely maintaining a client secret and
+          authenticating to obtain an access token that will later be
+          used for retrieving messages from the
           <xref target="server.api.messages.get">Get Messages</xref>
           endpoint.
         </t>
@@ -938,7 +940,7 @@ bus:A bus:B type:C type:D
               the "application/x-www-form-urlencoded" format:
               <list style="symbols">
                 <t>client_id (string, REQUIRED)</t>
-                <t>client_secret (string, OPTIONAL)</t>
+                <t>client_secret (string, REQUIRED)</t>
                 <t>grant_type:
                   MUST be "client_credentials" or "code"
                 </t>
@@ -968,14 +970,11 @@ bus:A bus:B type:C type:D
                 </t>
                 <t>expires_in:
                   the server MUST include the "expires_in" parameter
-                  if the issued token is set to expire.
-                </t>
-                <t>backplane_channel (optional): the Channel name,
-                  if one was generated as a result of an anonymous
-                  request
+                  if and only if the issued token is set to expire.
                 </t>
               </list>
-              The server MUST NOT include the "refresh_token" into the response.
+              The server MUST NOT include the "refresh_token" into the
+              response.
             </t>
           </list>
           <figure>
@@ -985,87 +984,179 @@ bus:A bus:B type:C type:D
             <artwork type="code">
 {
   "access_token": "465203f03680f59b7ddd5e1e5d851461",
-  "token_type": "Bearer",
-  "backplane_channel": "0a92d76f54f7877a68abe19c5b3ffcf8"
+  "token_type": "Bearer"
 }
             </artwork>
           </figure>
         </t>
 
-        <section anchor="server.api.token.anonymous" title="Anonymous Access Token Request">
-          <t>
-            If the "grant_type" parameter is "client_credentials" and
-            the "client_id" parameter is set to "anonymous", the
-            request is an anonymous access token request. The client
-            MUST omit the "client_secret" parameter in this case.
-          </t>
-          <t>
-            The client MAY specify a narrower scope for filtering
-            purposes, i.e. the client MUST NOT include any "bus" or
-            "channel" fields in the requested scope. The server MUST
-            NOT allow an anonymous client access to buses or channels
-            other than its own, even if the anonymous client requested
-            such a broader scope. (Note that requesting a narrower,
-            filtered scope for the first token obtained when the channel
-            name is generated will leave the anonymous client no way of
-            later obtaining a token scoped for all the messages of the
-            channel.)
-          </t>
-          <t>
-            In response to a anonymous access token request the
-            Backplane Server allocates a
-            <xref target="channels">new channel</xref> and issues a
-            <xref target="access.level.regular">regular access token</xref>
-            to the client (no message payloads) for the channel. New
-            channels are generated only anonymous access token requests.
-            The channel is not bound to a bus until the first message is
-            posted to the channel (see
-            <xref target="server.api.messages.post">Post Messages</xref>).
-          </t>
-          <t>
-            Regular access tokens issued in response to anonymous access
-            token requests MUST expire. It is RECOMMENDED that such
-            tokens expire within 1 hour after having been issued.
-          </t>
-          <t>As an operational note, this API call SHOULD NOT be
-            implemented in a way that makes it capable of blocking and
-            use of one of the mechanisms in section 7 of
-            <xref target="RFC4086">RFC 4086</xref> is RECOMMENDED.
-          </t>
-        </section>
+        <t>
+          If the "grant_type" parameter is "code":
+          <list style="symbols">
+            <t>
+              the server MAY attempt
+              <xref target="client.registration.static">Static Client Registration</xref>.
+            </t>
+            <t>
+              if the authorization code is presented for the first time
+              the server MUST validate the associated authorization
+              grant
+            </t>
+            <t>
+              if the authorization code is presented for a second time
+              the server MUST invalidate or delete the associated
+              authorization grant; subsequent attempts to reuse the
+              authorization code will fail due to an invalid or 
+              nonexistent authorization grant; the server MUST return
+              error per <xref target="OAuth2">section 5.2</xref> (error
+              "invalid_grant").
+            </t>
+          </list>
+        </t>
 
-        <section anchor="server.api.token.authenticated" title="Authenticated Access Token Request">
-          <t>
-            If the "grant_type" parameter is "code" and both "client_id"
-            and "client_secret" are present, the server MAY attempt
-            <xref target="client.registration.static">Static Client Registration</xref>.
-          </t>
-          <t>
-            The server MUST check the credentials of the client. If the
-            credentials are valid, the request is a authenticated access
-            token request; otherwise the server MUST return error per
-            <xref target="OAuth2">section 5.2</xref> (error
-            "unautorized_client").
-          </t>
-          <t>
-            The server MUST check that the client making the request is
-            authorized for the requested scopes. If the client is not
-            authorized for any of the requested scopes the server MUST
-            return error per
-            <xref target="OAuth2">section 5.2</xref> (error
-            "invalid_scope").
-          </t>
-          <t>
-            In response to a authenticated access token request the
-            Backplane Server issues an
-            <xref target="access.level.privileged">privileged access token</xref>
-            to the client for the requested scope. If no buses are
-            specified in the "scope" parameter submitted in the
-            request, access is granted to all buses that are part of
-            authorization grants previously issued to the client.
-          </t>
-        </section>
+        <t>
+          If the "grant_type" parameter is "client_credentials" the
+          client is requesting a token based on previously issued and
+          validated authorization grants, with a scope possibly spawning
+          across multiple authorization grants received from different
+          bus owners.
+        </t>
 
+        <t>
+          The server MUST check the credentials of the client. If the
+          credentials are valid, the request is an authenticated access
+          token request; otherwise the server MUST return error per
+          <xref target="OAuth2">section 5.2</xref> (error
+          "unautorized_client").
+        </t>
+        <t>
+          The server MUST check that the client making the request is
+          authorized for the requested scopes. If the client is not
+          authorized for any of the requested scopes the server MUST
+          return error per
+          <xref target="OAuth2">section 5.2</xref> (error
+          "invalid_scope").
+        </t>
+        <t>
+          In response to a successful authenticated access token request
+          the Backplane Server issues an
+          <xref target="access.level.privileged">privileged access token</xref>
+          to the client for the requested scope. If no buses are
+          specified in the "scope" parameter submitted in the
+          request, access is granted to all buses that are part of
+          authorization grants previously issued to the client.
+        </t>
+      </section>
+
+      <section anchor="server.api.token.anonymous" title="Anonymous Access Token Request">
+
+        <t>
+          This endpoint is used by clients incapable of maintaining a
+          secret and performing authentication (mainly JavaScript
+          clients running in the browser) to obtain an access token that
+          will later be used for retrieving messages from the
+          <xref target="server.api.messages.get">Get Messages</xref>
+          endpoint from a newly server-side generated Channel.
+        </t>
+        <t>
+          <list style="hanging">
+            <t hangText="Endpoint">/v2/token</t>
+            <t hangText="HTTP mehod">GET</t>
+            <t hangText="Security">HTTPS</t>
+            <t hangText="Parameters">
+              The folllowing parameters MUST be submitted in the HTTP
+              request query:
+              <list style="symbols">
+                <t>
+                  callback (string, REQUIRED):
+                  callback function to pad the response with (see
+                  <xref target="padded.response">Padded Responses</xref>);
+                  MUST only contain alphanumeric characters (a-zA-Z0-9)
+                </t>
+                <t>
+                  scope (string, OPTIONAL):
+                  a list of
+                  <xref target="token.scopes">filter criteria</xref>
+                  delimited by the space character (UCS code point 32)
+                  for the messages the client is interested in.
+                </t>
+              </list>
+            </t>
+            <t hangText="Returns">
+              On success, a JSON object is returned similar to
+              <xref target="OAuth2">section 5.1</xref>
+              with the following fields:
+              <list style="symbols">
+                <t>
+                  token_type: MUST be "Bearer"
+                  <xref target="OAuth2.token.bearer"/>
+                </t>
+                <t>
+                  access_token: the issued bearer access token
+                </t>
+                <t>
+                  expires_in:
+                  the server MUST include the "expires_in" parameter
+                </t>
+                <t>
+                  backplane_channel: the generated channel name
+                </t>
+              </list>
+              The server MUST NOT include the "refresh_token" into the
+              response.
+            </t>
+          </list>
+          <figure>
+            <preamble>
+              Response example
+            </preamble>
+            <artwork type="code">
+              callback(
+                {
+                "access_token": "465203f03680f59b7ddd5e1e5d851461",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "backplane_channel": "0a92d76f54f7877a68abe19c5b3ffcf8"
+                }
+              )
+            </artwork>
+          </figure>
+        </t>
+
+        <t>
+          The client MAY specify a narrower scope for filtering
+          purposes, i.e. the client MUST NOT include any "bus" or
+          "channel" fields in the requested scope. The server MUST
+          NOT allow an anonymous client access to buses or channels
+          other than its own, even if the anonymous client requested
+          such a broader scope. (Note that requesting a narrower,
+          filtered scope for the first token obtained when the channel
+          name is generated will leave the anonymous client no way for
+          later obtaining a token scoped for all the messages of the
+          channel.)
+        </t>
+        <t>
+          In response to a anonymous access token request the
+          Backplane Server allocates a
+          <xref target="channels">new channel</xref> and issues a
+          <xref target="access.level.regular">regular access token</xref>
+          to the client (no message payloads) for the channel. New
+          channels are generated only for anonymous access token
+          requests. The channel is not bound to a bus until the first
+          message is posted to the channel (see
+          <xref target="server.api.messages.post">Post Messages</xref>).
+        </t>
+        <t>
+          Regular access tokens issued in response to anonymous access
+          token requests MUST expire. It is RECOMMENDED that such
+          tokens expire within 1 hour after having been issued.
+        </t>
+        <t>
+          As an operational note, this API call SHOULD NOT be
+          implemented in a way that makes it capable of blocking and
+          use of one of the mechanisms in section 7 of
+          <xref target="RFC4086">RFC 4086</xref> is RECOMMENDED.
+        </t>
       </section>
 
       <section anchor="server.api.messages.get" title="Get Messages">
@@ -1079,7 +1170,7 @@ bus:A bus:B type:C type:D
             <t hangText="Security">HTTPS</t>
             <t hangText="Authorization">
               The client MUST present the access token obtained from a
-              <xref target="server.api.token.post">Access Token Request</xref>
+              <xref target="server.api.token.authenticated">Access Token Request</xref>
               as described in
               <xref target="OAuth2.token.bearer">section 2.1</xref>.
               The server MUST retrieve the 
@@ -1173,7 +1264,7 @@ bus:A bus:B type:C type:D
             <t hangText="Security">HTTPS</t>
             <t hangText="Authorization">
               The client MUST present the access token obtained from a
-              <xref target="server.api.token.post">Access Token Request</xref>
+              <xref target="server.api.token.authenticated">Access Token Request</xref>
               as described in
               <xref target="OAuth2.token.bearer">section 2.1</xref>,
               to prove that it has access to the message.
@@ -1271,7 +1362,7 @@ bus:A bus:B type:C type:D
             <t hangText="Security">HTTPS</t>
             <t hangText="Authorization">
               The client MUST present the access token obtained from a
-              <xref target="server.api.token.post">Access Token Request</xref>
+              <xref target="server.api.token.authenticated">Access Token Request</xref>
               as described in
               <xref target="OAuth2.token.bearer">section 2.1</xref>.
               The server MUST retrieve the
@@ -1335,7 +1426,7 @@ bus:A bus:B type:C type:D
 
           The server MUST check that the channel in a message was
           previously allocated as a result of a
-          <xref target="server.api.token.post">Access Token Request</xref>.
+          <xref target="server.api.token.authenticated">Access Token Request</xref>.
           If the channel is not yet bound to a bus, the server MUST bind
           it to the bus specified in the same message object from the
           request.
@@ -1359,7 +1450,7 @@ bus:A bus:B type:C type:D
       },
     },
     {
-l      "type": "identity/ack",
+      "type": "identity/ack",
       "sticky": true,
       "bus": "organization.org",
       "channel": "d7a592b31fbbc2baf5f9476884b9acd5",
