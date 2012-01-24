@@ -835,8 +835,7 @@
           to the token endpoint when
           <xref target="server.api.token.post">requesting access tokens</xref>
           as a list of access scopes using the space character (UCS code
-          point 32) as the delimiter:
-          in the following format:
+          point 32) as the delimiter in the following format:
           <list style="hanging">
             <t hangText="Access Scope Format:">
               &lt;<spanx style="emph">message_field_name</spanx>&gt;:&lt;<spanx style="emph">message_field_value</spanx>&gt;
@@ -853,7 +852,7 @@
             <t>messageURL</t>
           </list>
 
-          <spanx style="emph">message_field_value</spanx> is the
+          and <spanx style="emph">message_field_value</spanx> is the
           expected field's value.
         </t>
         <t>
@@ -998,8 +997,19 @@ bus:A bus:B type:C type:D
             If the "grant_type" parameter is "client_credentials" and
             the "client_id" parameter is set to "anonymous", the
             request is an anonymous access token request. The client
-            MUST omit the "client_secret" parameter in this case. The
-            server MUST ignore the value of the "scope" parameter.
+            MUST omit the "client_secret" parameter in this case.
+          </t>
+          <t>
+            The client MAY specify a narrower scope for filtering
+            purposes, i.e. the client MUST NOT include any "bus" or
+            "channel" fields in the requested scope. The server MUST
+            NOT allow an anonymous client access to buses or channels
+            other than its own, even if the anonymous client requested
+            such a broader scope. (Note that requesting a narrower,
+            filtered scope for the first token obtained when the channel
+            name is generated will leave the anonymous client no way of
+            later obtaining a token scoped for all the messages of the
+            channel.)
           </t>
           <t>
             In response to a anonymous access token request the
