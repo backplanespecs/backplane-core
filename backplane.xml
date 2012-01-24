@@ -1340,7 +1340,6 @@ bus:A bus:B type:C type:D
 {
   "messages": [
     {
-      "source": "http://aboutecho.com",
       "type": "identity/ack",
       "sticky": true,
       "bus": "customer.com",
@@ -1350,8 +1349,7 @@ bus:A bus:B type:C type:D
       },
     },
     {
-      "source": "http://aboutecho.com",
-      "type": "identity/ack",
+l      "type": "identity/ack",
       "sticky": true,
       "bus": "organization.org",
       "channel": "d7a592b31fbbc2baf5f9476884b9acd5",
