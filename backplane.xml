@@ -330,10 +330,12 @@
           from the Bus owner:
           <list style="symbols">
             <t>
-              retrieve all Backplane Messages sent to the Bus [[[  xref ]]]
+              <xref target="server.api.messages.get">retrieve all Backplane Messages</xref>
+              sent to the Bus
             </t>
             <t>
-              post Backplane Messages to a Channel [[[ xref ]]]
+              <xref target="server.api.messages.post">post Backplane Messages</xref>
+              to a Channel
             </t>
           </list>
         </t>
