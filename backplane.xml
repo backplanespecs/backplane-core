@@ -826,9 +826,10 @@
         the messages that were already retrieved.
       </t>
       <t>
-        If a Message Identifier points to a message that is no longer
-        in the buffer, the associated filter criteria is evaluated
-        against the entire current buffer.
+        The server MUST NOT return messages older than the one pointed
+        to by the 'since' message id, even if that particular message
+        no longer exists in the buffer while older, sticky messages
+        may still exist.
       </t>
 
       <section anchor="token.scopes" title="Access Scopes">
