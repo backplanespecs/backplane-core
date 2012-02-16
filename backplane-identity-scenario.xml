@@ -90,8 +90,8 @@
     <abstract>
       <t>
         This document describes a Backplane application scenario
-        that allows widgets to exchange identity data and information
-        about authentication events.
+        that allows widgets to exchange identity information about
+        authentication events.
       </t>
     </abstract>
 
@@ -404,45 +404,128 @@
 
       <t>
         Identity Information communicated between Backplane
-        parties in this scenario is represented in
+        parties in this scenario is defined in this section
+        and is represented in
         <xref target="PortableContacts">Portable Contacts</xref>
         format with some restrictions and extensions.
       </t>
 
       <t>
-        Portable Contacts data is presented in the
+        Portable Contacts data MUST be presented in the
         <xref target="RFC4627">JSON</xref> format.
       </t>
 
       <t>
-        Since the scenario deals with a single user (the one performing
-        identity-related actions in the context of a concrete browsing
-        session), "entry" object in the Portable Contacts response node
-        MUST be an array with a single value.
+        The Backplane Identity Scenario deals with a single User -
+        the one performing identity-related actions in the context of
+        a concrete browsing session. The "entry" object in the Portable
+        Contacts response node MUST be an array with a single value
+        representing this User and having the Contact Schema defined
+        by Portable Contacts, with the restrictions and extensions
+        described in the following sub-sections.
       </t>
 
-      <t>
-        The "entry" object value MUST contain the "accounts" element
-        with at least one item. Each of the account items represents
-        an identity.
-      </t>
+      <section title="Account Identifier">
+        <t>
+          The Contact Schema applied to the single "entry" value is
+          extended with the following element:
 
-      <t>
-        An Account Identifier is represented by an "accountUri" element,
-        which can be either a plain <xref target="RFC1738">URL</xref>,
-        or normalized SGN <xref target="RFC3986">URI</xref> constructed
-        from domain/userid pair by putting these values together:
-        <spanx style="verb">sgn://&lt;DOMAIN&gt;/?ident=&lt;USERID&gt;</spanx>.
-        In the latter case SGN URI MUST be recognized by
-        <xref target="Google.SGNodeMapper">Google's SGNodeMapper</xref>.
-      </t>
+          <list style="hanging">
+            <t hangText="accountUri">
+              The User's
+              <xref target="definitions">Account Identifier</xref>.
+            </t>
+          </list>
+        </t>
+        <t>
+          The "accountUri" element MUST be present and it MUST have a
+          non-empty value.
+        </t>
+        <t>
+          Identity Providers may or may not send the same value for 
+          the "id" field required by Portable Contacts. 
+        </t>
+      </section>
+
+      <section title="User Profile">
+          <t>
+            Identity Providers SHOULD leverage as much as possible the
+            Contact Schema defined by Portable Contacts and applied to
+            the single "entry" in the response to supply or facilitate
+            the exchange of User Profile information.
+          </t>
+      </section>
+
+      <section title="Access Credentials">
+        <t>
+          The Contact Schema applied to the single "entry" value is
+          extended with the following element:
+
+          <list style="hanging">
+            <t hangText="accessCredentials">
+              OAuth2 Access Credentials associated with the Account
+              represented by the "accountUri" value, as a JSON object
+              representing an Access Token Response defined in
+              <xref target="OAuth2">Section 5.1</xref>.
+
+              <figure>
+                <preamble>
+                  Example:
+                </preamble>
+                <artwork type="example">
+"accessCredentials": {
+  "access_token":"2YotnFZFEjr1zCsicMWpAA",
+  "token_type":"example",
+  "expires_in":3600,
+  "refresh_token":"tGzv3JOkF0XG5Qx2TlKWIA",
+  "scope":"example_scope",
+  "example_parameter":"example_value"
+}
+                </artwork>
+              </figure>
+            </t>
+          </list>
+        </t>
+      </section>
+      <section title="Friends List">
+        <t>
+          The Contact Schema applied to the single "entry" value is
+          extended with the following element:
+
+          <list style="hanging">
+            <t hangText="friends">
+              A JSON object representing the User's friends. The
+              "friends" relationship semantics and JSON data format is
+              left to be defined by each Identity Provider.
+            </t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Linked Accounts">
+        <t>
+          The "accounts" element defined by the Contact Schema
+          is used to represent
+          <xref target="definitions">Linked Accounts</xref>.
+        </t>
+        <t>
+          In addition to the "domain", "userid" and "username" fields,
+          the "account" element's schema is extended to allow a entire
+          Contact Schema entry, including the extension elements
+          defined in the previous sections, but not additional, chained
+          linked accounts. [[[ TODO: do we want to allow chaining? ]]]
+        </t>
+        <t>
+          Each "account" entry MUST contain the "accountUri" element and
+          its value MUST NOT be empty.
+        </t>
+      </section>
 
       <figure>
         <preamble>
           Example of a Identity Information data set expressed as a
           Portable Contacts entry that may be transferred in a Backplane
           message:
-
         </preamble>
         <artwork type="example">
 
@@ -451,50 +534,63 @@
     "itemsPerPage": 1,
     "totalResults": 1,
     "entry": [
-        {
-        "accounts": [
+      {
+        "id": "https://facebook.com/johndoe",
+        "accountUri": "https://facebook.com/johndoe",
+          "emails": [{
+            "value": "username@email.com",
+            "primary": "true"
+          }],
+        "friends":{[
+          "https://facebook.com/friend1",
+          "https://facebook.com/friend2",
+          "https://facebook.com/friend3",
+          "https://facebook.com/friend4"
+         ]}
+        "photos": [
             {
-                "identityUrl" : "http://twitter.com/johndoe",
-                "username": "johndoe",
-                "emails": [{
-                    "value": "username@email.com",
-                    "primary": "true"
-                }],
-                "photos": [
-                  {
-                      "value": "http://img.twitter.com/johndoe1.jpg"
-                      "type": "original"
-                  },
-                  {
-                      "value": "http://img.twitter.com/johndoe2.jpg"
-                      "type": "thumbnail"
-                  },
-                  {
-                      "value": "http://img.twitter.com/johndoe3.jpg"
-                      "type": "small"
-                  },
-                  {
-                      "value": "http://img.twitter.com/johndoe4.jpg"
-                      "type": "normal"
-                  },
-                  {
-                      "value": "http://img.twitter.com/johndoe5.jpg"
-                      "type": "large"
-                  },
-                  {
-                      "value": "http://img.twitter.com/johndoe6.jpg"
-                      "type": "avatar"
-                  }
-                ]
+              "value": "http://img.twitter.com/johndoe1.jpg"
+              "type": "original"
             },
             {
-                "identityUrl": "http://example.com/user/johndoe"
+              "value": "http://img.twitter.com/johndoe2.jpg"
+              "type": "thumbnail"
             },
             {
-                "identityUrl": "sgn://livejournal.com/?ident=johndoe"
+              "value": "http://img.twitter.com/johndoe3.jpg"
+              "type": "small"
+            },
+            {
+              "value": "http://img.twitter.com/johndoe4.jpg"
+              "type": "normal"
+            },
+            {
+              "value": "http://img.twitter.com/johndoe5.jpg"
+              "type": "large"
+            },
+            {
+              "value": "http://img.twitter.com/johndoe6.jpg"
+              "type": "avatar"
             }
         ]
-        }
+        "accounts": [
+            {
+              "accountUri" : "http://twitter.com/johndoe",
+              "domain": "twitter.com",
+              "username": "johndoe"
+            },
+            {
+              "accountUri": "http://example.com/user/johndoe",
+              "domain": "example.com",
+              "username": "johndoe"
+            },
+            {
+              "accountUri": "sgn://livejournal.com/?ident=johndoe"
+              "domain": "livejournal.com",
+              "username": "johndoe"
+            }
+        ]
+      }
     ]
 }
       </artwork></figure>
@@ -527,7 +623,7 @@
         {
         "accounts": [
             {
-                "identityUrl" : "http://twitter.com/johndoe",
+                "accountUri" : "http://twitter.com/johndoe",
                 "photos": [
                   {
                       "value": "http://img.twitter.com/johndoe2-new.jpg"
@@ -877,6 +973,27 @@
             <organization>Google</organization>
           </author>
           <date year="2011" month="October" day="23"/>
+        </front>
+      </reference>
+
+      <reference
+          anchor="OAuth2"
+          target="http://tools.ietf.org/html/draft-ietf-oauth-v2">
+        <front>
+          <title>The OAuth 2.0 Authorization Protocol</title>
+          <author initials="E." surname="Habber-Lahav"
+                  fullname="E. Hammer-Lahav">
+            <organization>Yahoo!</organization>
+          </author>
+          <author initials="D." surname="Recordon"
+                  fullname="D. Recordon">
+            <organization>Facebook</organization>
+          </author>
+          <author initials="D." surname="Hardt"
+                  fullname="D. Hardt">
+            <organization/>
+          </author>
+          <date year="2011" month="May" />
         </front>
       </reference>
 
