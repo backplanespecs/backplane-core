@@ -117,22 +117,55 @@
 
           <list style="hanging">
 
+            <t hangText="User">
+              Human involved in online transactions that may involve
+              authentication and exchange of Identity Information.
+            </t>
+
             <t hangText="Identity Provider">
               Third party entity that performs user authentication and
               provides an assertion about the authentication result in
-              the form of a User Identifier being authenticated
-              (logged-in) or not authenticated (logged-out). Optionally
-              the Identity Provider can provide user profile data.
+              the form of a User's Account Identifier being
+              authenticated (logged-in) or not authenticated
+              (logged-out). Optionally the Identity Provider can provide
+              additional Identity Information about the User.
             </t>
 
-            <t hangText="User Identifier">
-              Identifier associated by an Identity Provider with a user
-              for whom it has an account and it can authenticate.
+            <t hangText="Account">
+              Entry maintained by an Identity Provider for a User.
             </t>
 
-            <t hangText="User Identity Information">
-              Data associated with a User Identifier such as profile
-              information or attributes.
+            <t hangText="Account Identifier">
+              Unique string identifier associated by an Identity
+              Provider with a User for whom it has an Account and it can
+              authenticate. Account Identifiers SHOULD be URIs; they MAY
+              be URLs or URIs using the
+              <xref target="Webfinger">"acct"</xref> scheme.
+            </t>
+            
+            <t hangText="Linked Account">
+              An Account with which another Account has a relationship,
+              usually in the form of some control that can be exercised
+              by the User controlling the former Account on the latter,
+              Linked Account. The relationship and degree of control MAY
+              be expressed through Access Credentials. The owner of the
+              two Accounts may or may not be the same User.
+            </t>
+
+            <t hangText="Access Credentials">
+              Credentials associated with a Linked Account that were
+              transferred to another Account. They MAY allow the User
+              or application acting on the User's behalf and controlling
+              the latter Account to perform operations on the Linked
+              Account, such as accessing APIs exposed by the Identity
+              Provider to retrieve data associated with the Linked
+              Account.
+            </t>
+
+            <t hangText="Identity Information">
+              Data about the User associated with a Account such as
+              profile information, attributes or Access Credentials for
+              Linked Accounts.
             </t>
 
             <t hangText="Login Widget">
@@ -142,21 +175,21 @@
             </t>
 
             <t hangText="Logged-in State">
-              A User Identifier is in a Logged-in State on a Channel
+              A Account Identifier is in a Logged-in State on a Channel
               if the last message posted by a Login Widget on that
-              Channel about that User Identifer asserts the
+              Channel about that Account Identifer asserts the
               authenticated state (i.e. is of type "identity/login",
               see <xref target="message.type.identity.login"/>).
             </t>
 
             <t hangText="Logged-out State">
-              A User Identifier is in a Logged-out State on a Channel
+              A Account Identifier is in a Logged-out State on a Channel
               if the last message posted by a Login Widget on that
-              Channel about that User Identifer asserts the not
+              Channel about that Account Identifer asserts the not
               authenticated state (i.e. is of type "identity/logout",
               see <xref target="message.type.identity.login"/>), or if
               there are no messages from any Login Widgets on the
-              Channel about the User Identifier asserting the
+              Channel about the Account Identifier asserting the
               authenticated state (i.e. no messages of type
               "identity/login", see see
               <xref target="message.type.identity.login"/>).
@@ -203,14 +236,14 @@
           <spanx style="emph">true</spanx>, in order for them them to
           be retained for a longer time by the Backplane Server and
           allow other parties to use them to reconstruct the Logged-in
-          or Logged-out States of the User Identifiers that are or were
+          or Logged-out States of the Account Identifiers that are or were
           present in a Channel.
         </t>
         <t>
           Note that multiple user login events can be initiated from a
           Web Page and the corresponding identity/login messages for
           each of them will be posted on the Channel; therefore multiple
-          User Identifiers MAY exist in the Logged-in State on a
+          Account Identifiers MAY exist in the Logged-in State on a
           Channel at a given time.
         </t>
       </section>
@@ -235,14 +268,14 @@
           <spanx style="emph">true</spanx>, in order for them them to
           be retained for a longer time by the Backplane Server and
           allow other parties to use them to reconstruct the Logged-in
-          or Logged-out States of the User Identifiers that are or were
+          or Logged-out States of the Account Identifiers that are or were
           present in a Channel.
         </t>
       </section>
 
-      <section anchor="user.data.update" title="User Identity Information Update">
+      <section anchor="user.data.update" title="Identity Information Update">
         <t>
-          When User Identity Information changes (either at the Identity
+          When Identity Information changes (either at the Identity
           Provider or at a different party that maintains it), a
           <xref target="message.type.identity.update">identity/update</xref>
           message SHOULD be posted on the Channel associated with the
@@ -256,8 +289,8 @@
         </t>
         <t>
           The identity/update message MUST only contain the pieces of
-          User Identity Information that have changed, not the complete
-          set of User Identity Information data, as described in
+          Identity Information that have changed, not the complete set
+          of Identity Information data, as described in
           <xref target="identity.information.update"/>.
         </t>
         <t>
@@ -269,15 +302,15 @@
       <section anchor="page.load" title="Page Load">
         <t>
           Whenever a Web Page containing a Login Widget is loaded the
-          Logged-in State of all User Identifiers that are or were
+          Logged-in State of all Account Identifiers that are or were
           present in the Channel MUST be advertised by having the last
-          identity/login messages for each User Identifier re-posted on
+          identity/login messages for each Account Identifier re-posted on
           the Channel.
         </t>
         <t>
           The parties responsible detecting a page load and posting the
-          identity/login messages relevant for each User Identifier are
-          the Login Widget's providers that facilitated the
+          identity/login messages relevant for each Account Identifier
+          are the Login Widget's providers that facilitated the
           authentication of the respective users. The manner in which
           the Login Widget's providers accomplish this task is outside
           the scope of this specification. They MAY use the
@@ -320,8 +353,8 @@
               the URL of the Web Page where the user login was initiated
             </t>
             <t hangText="identities">
-              a Portable Contacts object listing the authenticated User
-              Identifiers, in the format defined in
+              a Portable Contacts object listing the authenticated
+              Account Identifiers, in the format defined in
               <xref target="identity.information"/>
             </t>
           </list>
@@ -337,7 +370,7 @@
               the URL of the Web Page where the user logout was initiated
             </t>
             <t hangText="identities">
-              a Portable Contacts object listing the User Identifiers
+              a Portable Contacts object listing the Account Identifiers
               that are no longer authenticated, in the format defined in
               <xref target="identity.information"/>
             </t>
@@ -351,14 +384,14 @@
           which contains the following fields:
           <list style="hanging">
             <t hangText="context">
-              the URL of the Web Page to which the User Identity
-              Information update is addressed
+              the URL of the Web Page to which the Identity Information
+              update is addressed
             </t>
             <t hangText="identities">
-              a Portable Contacts object listing the User Identifiers
-              for which the User Identity Information has changed, with
-              the subset of User Identity Information data that has
-              actually changed, as described in
+              a Portable Contacts object listing the Account Identifiers
+              for which the Identity Information has changed, with the
+              subset of Identity Information data that has actually
+              changed, as described in
               <xref target="identity.information.update"/>
             </t>
           </list>
@@ -367,10 +400,10 @@
 
     </section>
 
-    <section anchor="identity.information" title="User Identity Information">
+    <section anchor="identity.information" title="Identity Information">
 
       <t>
-        User Identity Information communicated between Backplane
+        Identity Information communicated between Backplane
         parties in this scenario is represented in
         <xref target="PortableContacts">Portable Contacts</xref>
         format with some restrictions and extensions.
@@ -395,7 +428,7 @@
       </t>
 
       <t>
-        An User Identifier is represented by an "identityUrl" element,
+        An Account Identifier is represented by an "accountUri" element,
         which can be either a plain <xref target="RFC1738">URL</xref>,
         or normalized SGN <xref target="RFC3986">URI</xref> constructed
         from domain/userid pair by putting these values together:
@@ -406,7 +439,7 @@
 
       <figure>
         <preamble>
-          Example of a User Identity Information data set expressed as a
+          Example of a Identity Information data set expressed as a
           Portable Contacts entry that may be transferred in a Backplane
           message:
 
@@ -469,9 +502,9 @@
       <section anchor="identity.information.update" title="Update">
 
         <t>
-          A User Identity Information update is a subset of the complete
-          set of a User Identity Information, corresponding to a
-          <xref target="user.data.update">User Identity Information
+          An Identity Information update is a subset of the complete
+          Identity Information, corresponding to a
+          <xref target="user.data.update">Identity Information
           Update</xref> event.
         </t>
         <t>
@@ -481,7 +514,7 @@
 
         <figure>
           <preamble>
-            Example of a User Identity Information update expressed as a
+            Example of a Identity Information update expressed as a
             Portable Contacts entry that may be transferred in a Backplane
             message:
           </preamble>
@@ -609,7 +642,7 @@
               identity/* messages types
             </t>
             <t>
-              A User Identifier in the Logged-in State exists on the
+              A Account Identifier in the Logged-in State exists on the
               Channel from a previous interaction
             </t>
             <t>
@@ -675,7 +708,7 @@
               identity/* messages types
             </t>
             <t>
-              A User Identifier in the Logged-in State exists on the
+              A Account Identifier in the Logged-in State exists on the
               Channel from a previous interaction
             </t>
             <t>
@@ -727,7 +760,7 @@
             </t>
             <t>
               The Login Widget's provider is responsible for and
-              re-posts all identity/login messages for all User
+              re-posts all identity/login messages for all Account
               Identifiers that are in the Logged-in State in the Channel
               (that have previously logged in in the Channel, likely on
               a different Web Page on the same domain)
@@ -740,7 +773,7 @@
             <t>
               Widgets interested in user login events consume the
               message and react to the login event as they see fit:
-              they effectively discover all User Identifiers that are in
+              they effectively discover all Account Identifiers that are in
               the Logged-in State in the Channel
             </t>
 
@@ -827,6 +860,23 @@
             <organization>Plaxo</organization>
           </author>
           <date year="2008" month="August" day="5"/>
+        </front>
+      </reference>
+
+      <reference anchor="Webfinger"
+        target="http://tools.ietf.org/html/draft-jones-appsawg-webfinger-00#section-4.1">
+        <front>
+          <title>Webfinger</title>
+          <author initials="P.E." surname="Jones" fullname="Paul E. Jones">
+            <organization>Cisco Systems, Inc.</organization>
+          </author>
+          <author initials="G" surname="Salgueiro" fullname="Gonzalo Salgueiro">
+            <organization>Cisco Systems, Inc.</organization>
+          </author>
+          <author initials="J." surname="Smarr" fullname="Joseph Smarr">
+            <organization>Google</organization>
+          </author>
+          <date year="2011" month="October" day="23"/>
         </front>
       </reference>
 
