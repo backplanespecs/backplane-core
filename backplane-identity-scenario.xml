@@ -111,7 +111,8 @@
       <section anchor="definitions" title="Definitions">
 
         <t>
-          In addition to the terms defined by <xref target="Backplane1.2"/>,
+          [[[ TODO: remove draft reference ]]]
+          In addition to the terms defined by <xref target="Backplane2.0"/>,
           the following are also defined:
 
           <list style="hanging">
@@ -754,7 +755,7 @@
   <back><!-- [[[ -->
     <references title="Normative References"><!-- [[[ -->
 
-      <reference anchor="Backplane1.2" target="https://sites.google.com/site/backplanespec/documentation/backplane1-2">
+      <reference anchor="Backplane2.0" target="https://sites.google.com/site/backplanespec/documentation/backplane2-0-draft08">
         <front>
           <title>Backplane 1.2</title>
           <author fullname="Chris Saad" initials="C." surname="Saad">
