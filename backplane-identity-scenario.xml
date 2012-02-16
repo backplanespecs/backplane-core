@@ -19,7 +19,7 @@
 <?rfc private="Backplane Identity Scenario Working Group"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="BackplaneIdentityScenario">Backplane Identity Scenario 2.0 - draft 01</title>
+    <title abbrev="BackplaneIdentityScenario">Backplane Identity Scenario 2.0 - draft 02</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad">
       <organization>Echo</organization>
@@ -85,7 +85,7 @@
       </address>
     </author>
 
-    <date day="12" month="January" year="2012" />
+    <date day="16" month="February" year="2012" />
 
     <abstract>
       <t>
