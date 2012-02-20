@@ -513,6 +513,18 @@
         </t>
       </section>
 
+      <section title="Extensibility">
+
+        <t>
+          The Contact Schema applied to the single "entry" value is
+          extended to allow at the top level any custom fields that
+          Identity Providers may wish to add. See the non-Portable
+          Contacts custom field in the example at the end of the section
+          for a generic use of this extensibility feature.
+        </t>
+
+      </section>
+
       <figure>
         <preamble>
           Example of a Identity Information data set expressed as a
@@ -529,7 +541,7 @@
       {
         "id": "https://facebook.com/johndoe",
         "accountUri": "https://facebook.com/johndoe",
-          "emails": [{
+        "emails": [{
             "value": "username@email.com",
             "primary": "true"
           }],
@@ -558,7 +570,7 @@
               "value": "http://img.twitter.com/johndoe6.jpg"
               "type": "avatar"
             }
-        ]
+        ],
         "accounts": [
             {
               "accountUri" : "http://twitter.com/johndoe",
@@ -575,7 +587,15 @@
               "domain": "livejournal.com",
               "username": "johndoe"
             }
-        ]
+        ],
+        "capture": {
+            "id": "johndoe",
+            "uuid": "d0bb5379-848b-4ec6-b14e-05ec88095730",
+            "created": "2012-01-22",
+            "lastUpdated": "2012-01-31",
+            "currentLocation": "Moon",
+            "emailVerified": "johndoe@moon.example.com"
+        }
       }
     ]
 }
