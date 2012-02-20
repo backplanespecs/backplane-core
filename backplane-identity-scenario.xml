@@ -493,20 +493,6 @@
           </list>
         </t>
       </section>
-      <section title="Friends List">
-        <t>
-          The Contact Schema applied to the single "entry" value is
-          extended with the following element:
-
-          <list style="hanging">
-            <t hangText="friends">
-              A JSON object representing the User's friends. The
-              "friends" relationship semantics and JSON data format is
-              left to be defined by each Identity Provider.
-            </t>
-          </list>
-        </t>
-      </section>
 
       <section title="Linked Accounts">
         <t>
@@ -547,12 +533,6 @@
             "value": "username@email.com",
             "primary": "true"
           }],
-        "friends":{[
-          "https://facebook.com/friend1",
-          "https://facebook.com/friend2",
-          "https://facebook.com/friend3",
-          "https://facebook.com/friend4"
-         ]}
         "photos": [
             {
               "value": "http://img.twitter.com/johndoe1.jpg"
