@@ -138,9 +138,9 @@
             <t hangText="Account Identifier">
               Unique string identifier associated by an Identity
               Provider with a User for whom it has an Account and it can
-              authenticate. Account Identifiers SHOULD be URIs; they MAY
-              be URLs or URIs using the
-              <xref target="Webfinger">"acct"</xref> scheme.
+              authenticate. Account Identifiers SHOULD be URIs. It is
+              RECOMMENDED however to limit account identifiers to URLs
+              or URIs of <xref target="Webfinger">"acct"</xref> scheme.
             </t>
             
             <t hangText="Linked Account">
