@@ -442,6 +442,12 @@
           non-empty value.
         </t>
         <t>
+          The "accountUri" JSON field name is case-insensitive, for
+          better interoperability. Consumers of messages containing
+          this field MUST accept all case-insensitive spellings of
+          the field's name.
+        </t>
+        <t>
           Identity Providers may or may not send the same value for 
           the "id" field required by Portable Contacts. 
         </t>
