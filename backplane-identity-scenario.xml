@@ -519,7 +519,7 @@
           the "account" element's schema is extended to allow a entire
           Contact Schema entry, including the extension elements
           defined in the previous sections, but not additional, chained
-          linked accounts. [[[ TODO: do we want to allow chaining? ]]]
+          linked accounts.
         </t>
         <t>
           Each "account" entry MUST contain the "accountUri" element and
