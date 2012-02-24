@@ -936,11 +936,17 @@ bus:A bus:B type:C type:D
               The parameters constitute an access token request as
               defined in either
               <xref target="OAuth2">section 4.1.3</xref>
-              ( "code" grant type) or
+              ( "authorization_code" grant type) or
               <xref target="OAuth2">section 4.4.2 </xref>
               ("client credentials" grant type).
-              The parameters MUST be passed in the request body using 
-              the "application/x-www-form-urlencoded" format:
+
+              The parameters MUST be presented as prescribed by OAuth2.
+              Furthermore, credentials ("client_id" and "client_secret"
+              MUST always be sent using
+              <xref target="RFC2617">HTTP Basic Authentication</xref>.
+              The rest of the parameters MUST be sent
+              "application/x-www-form-urlencoded" in the HTTP POST
+              request body.
               <list style="symbols">
                 <t>client_id (string, REQUIRED)</t>
                 <t>client_secret (string, REQUIRED)</t>
