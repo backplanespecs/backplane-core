@@ -1106,7 +1106,10 @@ bus:A bus:B type:C type:D
                   the server MUST include the "expires_in" parameter
                 </t>
                 <t>
-                  backplane_channel: the generated channel name
+                  scope: the generated channel name prefixed by
+                  "channel:", along with the other filter criteria
+                  requested by the client in the "scope" request
+                  parameter and successfully processed by the server
                 </t>
               </list>
               The server MUST NOT include the "refresh_token" into the
@@ -1123,7 +1126,7 @@ bus:A bus:B type:C type:D
                 "access_token": "465203f03680f59b7ddd5e1e5d851461",
                 "token_type": "Bearer",
                 "expires_in": 3600,
-                "backplane_channel": "0a92d76f54f7877a68abe19c5b3ffcf8"
+                "scope": "channel:0a92d76f54f7877a68abe19c5b3ffcf8"
                 }
               )
             </artwork>
