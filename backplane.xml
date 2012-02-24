@@ -765,9 +765,9 @@
           Support for such scenarios is accomplished by flagging
           messages as "sticky" when they are posted (see
           <xref target="server.api.messages.post">Post Messages To A Channel</xref>).
-          Backplane Servers MUST retain sticky messages for at least X
+          Backplane Servers MUST retain sticky messages for at least 5
           minutes. It is RECOMMENDED that Backplane Servers retain
-          sticky messages for Y minutes.
+          sticky messages for 8 hours.
         </t>
 
         <t>
