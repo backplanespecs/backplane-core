@@ -285,8 +285,12 @@
         by presenting either a regular or a privileged access token
         obtained from the
         <xref target="server.api.token.authenticated">token</xref> endpoint.
+
+
         The access token MUST be presented as described
-        in <xref target="OAuth2.token.bearer">section 2.1</xref>.
+        in <xref target="OAuth2.token.bearer">section 2</xref>.
+
+
       </t>
 
       <t>
@@ -309,6 +313,16 @@
           to Backplane Clients running in the web browser.
         </t>
         <t>
+          Even though
+          <xref target="OAuth2.token.bearer">section 2</xref> specifies
+          that access tokens SHOULD NOT be sent in HTTP request query
+          parameters, for Backplane clients deployed in the browser
+          (specifically, Javascript loaded from &lt;script&gt; tags)
+          it may be the only option. Backplane Servers SHOULD accept
+          regular access tokens sent in HTTP request query
+          parameters.
+        </t>
+        <t>
           Backplane Servers MUST only make Backplane Message Headers
           (not full Backplane Messages) available to Clients having
           Regular access level.
@@ -322,6 +336,10 @@
           server-side components) and are obtained through authenticated
           calls to the
           <xref target="server.api.token.authenticated">token</xref> endpoint.
+        </t>
+        <t>
+          Backplane Servers MUST NOT accept privileged access level tokens
+          sent in HTTP request query parameters.
         </t>
         <t>
           Backplane Clients having Privileged access level can perform
@@ -1182,8 +1200,11 @@ bus:A bus:B type:C type:D
               The client MUST present the access token obtained from a
               <xref target="server.api.token.authenticated">Access Token Request</xref>
               as described in
-              <xref target="OAuth2.token.bearer">section 2.1</xref>.
-              The server MUST retrieve the 
+              <xref target="OAuth2.token.bearer">section 2</xref>.
+              Backplane Servers SHOULD accept regular access tokens sent
+              in the HTTP request query parameters and they MUST NOT
+              accept privileged access level tokens sent in HTTP
+              request query parameters. The server MUST retrieve the
               <xref target="token.scopes">Access Scopes</xref>
               associated with the presented access token, determine the
               <xref target="message.sequence.retrieval">Message Sequence</xref>
