@@ -969,13 +969,20 @@ bus:A bus:B type:C type:D
                 <t>client_id (string, REQUIRED)</t>
                 <t>client_secret (string, REQUIRED)</t>
                 <t>grant_type:
-                  MUST be "client_credentials" or "code"
+                  MUST be "client_credentials", "code",
+                  or "refresh_token"
                 </t>
                 <t>code (string):
                   REQUIRED if and only if grant_type is "code"
                 </t>
                 <t>redirect_uri (string):
                   REQUIRED if and only if grant_type is "code"
+                </t>
+                <t>
+                  refresh_token (string):
+                  REQUIRED if and only if grant_type is
+                  "refresh_token"; a refresh token previously
+                  issued for a privileged access level token
                 </t>
                 <t>scope (string, OPTIONAL):
                   a list of
@@ -999,9 +1006,15 @@ bus:A bus:B type:C type:D
                   the server MUST include the "expires_in" parameter
                   if and only if the issued token is set to expire.
                 </t>
+                <t>
+                  scope: the scope of the issued access token as
+                  specified by OAuth2
+                </t>
+                <t>
+                  refresh_token: the server MAY issue a refresh token
+                  as specified by OAuth2
+                </t>
               </list>
-              The server MUST NOT include the "refresh_token" into the
-              response.
             </t>
           </list>
           <figure>
@@ -1047,6 +1060,27 @@ bus:A bus:B type:C type:D
           validated authorization grants, with a scope possibly spawning
           across multiple authorization grants received from different
           bus owners.
+        </t>
+        
+        <t>
+          If the "grant_type" parameter is "refresh_token" the server
+          MUST:
+          <list style="symbols">
+            <t>
+              verify that the presented refresh token was issued to the
+              same client_id;
+            </t>
+            <t>
+              invalidate the access token issued with the refresh token;
+            </t>
+            <t>
+              issue a new access token with the same capabilities as
+              the previous one, or with a different but authorized
+              scope if a scope parameter was also included in the
+              request.
+            </t>
+          </list>
+
         </t>
 
         <t>
@@ -1105,6 +1139,10 @@ bus:A bus:B type:C type:D
                   delimited by the space character (UCS code point 32)
                   for the messages the client is interested in.
                 </t>
+                <t>
+                  refresh_token (string, OPTIONAL): a refresh token
+                  previously issued for a regular access level token
+                </t>
               </list>
             </t>
             <t hangText="Returns">
@@ -1129,9 +1167,11 @@ bus:A bus:B type:C type:D
                   requested by the client in the "scope" request
                   parameter and successfully processed by the server
                 </t>
+                <t>
+                  refresh_token: the server MAY issue a refresh token
+                  as specified by OAuth2
+                </t>
               </list>
-              The server MUST NOT include the "refresh_token" into the
-              response.
             </t>
           </list>
           <figure>
@@ -1139,14 +1179,15 @@ bus:A bus:B type:C type:D
               Response example
             </preamble>
             <artwork type="code">
-              callback(
-                {
-                "access_token": "465203f03680f59b7ddd5e1e5d851461",
-                "token_type": "Bearer",
-                "expires_in": 3600,
-                "scope": "channel:0a92d76f54f7877a68abe19c5b3ffcf8"
-                }
-              )
+callback(
+  {
+    "access_token": "465203f03680f59b7ddd5e1e5d851461",
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "scope": "channel:0a92d76f54f7877a68abe19c5b3ffcf8",
+    "refresh_token": "fBHoOLdOxH4BC4eLJ8cBqkYYR2hRcoiK"
+  }
+)
             </artwork>
           </figure>
         </t>
@@ -1184,6 +1225,13 @@ bus:A bus:B type:C type:D
           implemented in a way that makes it capable of blocking and
           use of one of the mechanisms in section 7 of
           <xref target="RFC4086">RFC 4086</xref> is RECOMMENDED.
+        </t>
+        <t>
+          If the "refresh_token" parameter is included in the request,
+          the server must issue a new regular access level access token
+          with the scope not exceeding the channel of the initial access
+          token, and possibly narrower if so requested through the use
+          of the "scope" request parameter.
         </t>
       </section>
 
