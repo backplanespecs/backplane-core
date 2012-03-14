@@ -20,7 +20,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front>
-    <title abbrev="Backplane">Backplane 2.0 - implementer's draft 10</title>
+    <title abbrev="Backplane">Backplane 2.0 - Implementer's Draft 10</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -505,8 +505,8 @@
                 issued.
               </t>
               <t>
-                The client_id is present and is different than
-                "anonymous" or any other already registered client_id.
+                The client_id is present with a value that is neither
+                empty nor already registered.
               </t>
             </list>
           </t>
