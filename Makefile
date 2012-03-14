@@ -1,4 +1,4 @@
-XML=backplane.xml backplane-identity-scenario.xml
+XML=backplane.xml backplane-identity-scenario.xml backplane-activitystreams-scenario.xml
 TXT=${XML:.xml=.txt}
 HTML=${XML:.xml=.html}
 PDF=${XML:.xml=.pdf}
