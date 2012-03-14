@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="./lib/xslt/rfc2629.xslt" ?>
+<!DOCTYPE rfc SYSTEM "./lib/xslt/rfc2629.dtd" [
+  <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+  <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
+]>
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<?rfc private="Backplane Activity Streams Scenario Working Group"?>
+<rfc>
+  <front><!-- [[[ -->
+    <title abbrev="BackplaneActivityStreamsScenario">Backplane Activity Streams Scenario 1.0 - Draft 01</title>
+
+    <author fullname="Johnny Bufu" initials="J." surname="Bufu">
+      <organization>Janrain</organization>
+      <address>
+        <email>jbufu@janrain.com</email>
+        <uri>http://www.janrain.com/</uri>
+      </address>
+    </author>
+
+    <date day="14" month="March" year="2012" />
+
+    <abstract>
+      <t>
+        This document describes a Backplane application scenario
+        that allows widgets to exchange messages that represent
+        Activity Streams.
+      </t>
+    </abstract>
+
+  </front><!-- ]]] -->
+
+  <middle><!-- [[[ -->
+    <section anchor="introduction" title="Introduction"><!-- [[[ -->
+
+      <t>
+        Widgets that generate or consume Activity Streams can exchange
+        the associated messages using a Backplane framework. A
+        serialized Activity Stream MUST constitute the full payload of a
+        Backplane Message. This document defines two Backplane Message
+        types to identify such payloads as Activity Streams messages
+        using one of the two encoding formats defined by the Activity
+        Streams specifications suite.
+      </t>
+
+      <section anchor="definitions" title="Definitions">
+
+      </section>
+
+      <section title="Requirements Language">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+          NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described
+          in <xref target="RFC2119">RFC 2119</xref>.</t>
+      </section>
+    </section><!-- ]]] -->
+
+    <section anchor="message.types" title="Message Types">
+
+      <t>
+        Following are definitions of the Backplane message types
+        employed by the Activity Streams Scenario.
+      </t>
+
+      <t>
+        Note that message payloads are sent only to server-side
+        Backplane clients. Widgets only receive message headers: no
+        payloads, acting as event notifications. They must contact
+        their corresponding server-side components for the details
+        on how to fully react to each event.
+      </t>
+
+      <section anchor="message.type.activity.json" title="activity/json">
+        <t>
+          The payload of Backplane Message having the 'activity/json'
+          type MUST be a JSON object which contains a message
+          conforming to the
+          <xref target="ActivityStreamsSchema">Activity Streams schema</xref>
+          using
+          <xref target="ActivityStreamsJson">JSON serialization</xref>.
+        </t>
+      </section>
+
+      <section anchor="message.type.activity.atom" title="activity/atom">
+        <t>
+          The payload of Backplane Message having the 'activity/atom'
+          type MUST be a XML object which contains a message
+          conforming to the
+          <xref target="ActivityStreamsSchema">Activity Streams schema</xref>
+          using
+          <xref target="ActivityStreamsAtom">Atom serialization</xref>.
+        </t>
+      </section>
+
+    </section>
+
+    <section anchor="examples" title="Examples"><!-- [[[ -->
+
+      <figure>
+        <preamble>
+          Example downstream Activity Stream Backplane Message
+          containing a single activity:
+        </preamble>
+        <artwork type="code">
+{
+    "bus": "customer.com",
+    "channel": "67dc880cc265b0dbc755ea959b257118",
+    "messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
+    "source": "http://aboutecho.com",
+    "payload": {
+      "published": "2011-02-10T15:04:55Z",
+      "actor": {
+        "url": "http://example.org/martin",
+        "objectType" : "person",
+        "id": "tag:example.org,2011:martin",
+        "image": {
+          "url": "http://example.org/martin/image",
+          "width": 250,
+          "height": 250
+        },
+        "displayName": "Martin Smith"
+      },
+      "verb": "post",
+      "object" : {
+        "url": "http://example.org/blog/2011/02/entry",
+        "id": "tag:example.org,2011:abc123/xyz"
+      },
+      "target" : {
+        "url": "http://example.org/blog/",
+        "objectType": "blog",
+        "id": "tag:example.org,2011:abc123",
+        "displayName": "Martin's Blog"
+      }
+    },
+    "type": "activity/json",
+    "sticky": false
+}
+        </artwork>
+      </figure>
+
+      <figure>
+        <preamble>
+          Example downstream Activity Stream Backplane Message
+          containing an Activity Streams array with one activity
+          entry:
+        </preamble>
+        <artwork type="code">
+{
+    "bus": "customer.com",
+    "channel": "67dc880cc265b0dbc755ea959b257118",
+    "messageURL": "https://bp.example.com/v2/message/097a5cc401001f95b45d37aca32a3bd2",
+    "source": "http://aboutecho.com",
+    "payload": {
+        "items" : [
+          {
+            "published": "2011-02-10T15:04:55Z",
+            "foo": "some extension property",
+            "generator": {
+              "url": "http://example.org/activities-app"
+            },
+            "provider": {
+              "url": "http://example.org/activity-stream"
+            },
+            "title": "Martin posted a new video to his album.",
+            "actor": {
+              "url": "http://example.org/martin",
+              "objectType": "person",
+              "id": "tag:example.org,2011:martin",
+              "foo2": "some other extension property",
+              "image": {
+                "url": "http://example.org/martin/image",
+                "width": 250,
+                "height": 250
+              },
+              "displayName": "Martin Smith"
+            },
+            "verb": "post",
+            "object" : {
+              "url": "http://example.org/album/my_fluffy_cat.jpg",
+              "objectType": "photo",
+              "id": "tag:example.org,2011:my_fluffy_cat",
+              "image": {
+                "url": "http://example.org/album/my_fluffy_cat_thumb.jpg",
+                "width": 250,
+                "height": 250
+              }
+            },
+            "target": {
+              "url": "http://example.org/album/",
+              "objectType": "photo-album",
+              "id": "tag:example.org,2011:abc123",
+              "displayName": "Martin's Photo Album",
+              "image": {
+                "url": "http://example.org/album/thumbnail.jpg",
+                "width": 250,
+                "height": 250
+              }
+            }
+          }
+        ]
+    },
+    "type": "activity/json",
+    "sticky": false
+}
+        </artwork>
+      </figure>
+
+    </section><!-- ]]] -->
+  </middle><!-- ]]] -->
+
+  <back><!-- [[[ -->
+    <references title="Normative References"><!-- [[[ -->
+
+      <reference anchor="Backplane2.0" target="https://sites.google.com/site/backplanespec/documentation/backplane2-0-draft08">
+        <front>
+          <title>Backplane 1.2</title>
+          <author fullname="Chris Saad" initials="C." surname="Saad">
+            <organization>Echo</organization>
+            <address>
+              <email>chris@aboutecho.com</email>
+              <uri>http://aboutecho.com</uri>
+            </address>
+          </author>
+          <author fullname="Vlad Skvortsov" initials="V." surname="Skvortsov">
+            <organization>Echo</organization>
+            <address>
+              <email>vss@aboutecho.com</email>
+              <uri>http://aboutecho.com</uri>
+            </address>
+          </author>
+          <author fullname="Yuri Lukyanov" initials="Y." surname="Lukyanov">
+            <organization>Echo</organization>
+            <address>
+              <email>snaky@aboutecho.com</email>
+              <uri>http://aboutecho.com</uri>
+            </address>
+          </author>
+          <author fullname="Alexander Zhuravlev" initials="A." surname="Zhuravlev">
+            <organization>Echo</organization>
+            <address>
+              <email>zaa@aboutecho.com</email>
+              <uri>http://aboutecho.com</uri>
+            </address>
+          </author>
+          <author fullname="Ivan Glushkov" initials="I." surname="Glushkov">
+            <organization>Echo</organization>
+            <address>
+              <email>gli@aboutecho.com</email>
+              <uri>http://aboutecho.com</uri>
+            </address>
+          </author>
+          <author fullname="Carl Howells" initials="C." surname="Howells">
+            <organization>Janrain</organization>
+            <address>
+              <email>chowells@janrain.com</email>
+              <uri>http://www.janrain.com/</uri>
+            </address>
+          </author>
+          <author fullname="Johnny Bufu" initials="J." surname="Bufu">
+            <organization>Janrain</organization>
+            <address>
+              <email>jbufu@janrain.com</email>
+              <uri>http://www.janrain.com/</uri>
+            </address>
+          </author>
+          <date day="23" month="June" year="2011" />
+        </front>
+      </reference>
+
+      &RFC2119;
+
+      &RFC4627;
+
+      <reference anchor="ActivityStreamsSchema"
+        target="http://activitystrea.ms/head/activity-schema.html">
+        <front>
+          <title>Activity Base Schema (Draft)</title>
+          <author initials="J." surname="Snell" fullname="James M Snell">
+            <organization>IBM</organization>
+          </author>
+          <author initials="M." surname="Atkins" fullname="Martin Atkins">
+            <organization>SAY Media</organization>
+          </author>
+          <author initials="D." surname="Recordon" fullname="David Recordon">
+            <organization>Six Apart, Facebook</organization>
+          </author>
+          <author initials="M." surname="Messina" fullname="Chris Messina">
+            <organization>Citizen Agency, Google</organization>
+          </author>
+          <author initials="M." surname="Keller" fullname="Monica Keller">
+            <organization>MySpace, Facebook</organization>
+          </author>
+          <author initials="A." surname="Steinberg" fullname="Ari Steinberg">
+            <organization>Facebook</organization>
+          </author>
+          <author initials="R." surname="Dolin" fullname="Rob Dolin">
+            <organization>Microsoft</organization>
+          </author>
+          <date year="2011" month="May" day="11"/>
+        </front>
+      </reference>
+
+      <reference anchor="ActivityStreamsJson"
+        target="http://activitystrea.ms/specs/json/1.0/">
+        <front>
+          <title>JSON Activity Streams 1.0</title>
+          <author initials="J." surname="Snell" fullname="James M Snell">
+            <organization>IBM</organization>
+          </author>
+          <author initials="M." surname="Atkins" fullname="Martin Atkins">
+            <organization>SAY Media</organization>
+          </author>
+          <author initials="W." surname="Norris" fullname="Will Norris">
+            <organization>Google</organization>
+          </author>
+          <author initials="M." surname="Messina" fullname="Chris Messina">
+            <organization>Citizen Agency, Google</organization>
+          </author>
+          <author initials="M." surname="Wilkinson" fullname="Monica Wilkinson">
+            <organization>MySpace, Facebook, Socialcast</organization>
+          </author>
+          <author initials="R." surname="Dolin" fullname="Rob Dolin">
+            <organization>Microsoft</organization>
+          </author>
+          <date year="2011" month="May"/>
+        </front>
+      </reference>
+
+      <reference anchor="ActivityStreamsAtom"
+        target="http://activitystrea.ms/specs/atom/1.0/">
+        <front>
+          <title>Atom Activity Streams 1.0</title>
+          <author initials="M." surname="Atkins" fullname="Martin Atkins">
+            <organization>SAY Media</organization>
+          </author>
+          <author initials="W." surname="Norris" fullname="Will Norris">
+            <organization>Google</organization>
+          </author>
+          <author initials="M." surname="Messina" fullname="Chris Messina">
+            <organization>Citizen Agency, Google</organization>
+          </author>
+          <author initials="M." surname="Wilkinson" fullname="Monica Wilkinson">
+            <organization>MySpace, Facebook, Socialcast</organization>
+          </author>
+          <author initials="R." surname="Dolin" fullname="Rob Dolin">
+            <organization>Microsoft</organization>
+          </author>
+          <date year="2011" month="February" day="13"/>
+        </front>
+      </reference>
+    </references><!-- ]]] -->
+  </back><!-- ]]] -->
+</rfc>
