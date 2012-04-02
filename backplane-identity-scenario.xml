@@ -16,10 +16,10 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<?rfc private="Backplane Identity Scenario Working Group"?>
+<?rfc private="Backplane Exchange Identity Scenario Working Group"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="BackplaneIdentityScenario">Backplane Identity Scenario 2.0 - Implementer's Draft 03</title>
+    <title abbrev="BackplaneIdentityScenario">Backplane Exchange Identity Scenario 2.0 - Draft 04</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad">
       <organization>Echo</organization>
@@ -89,9 +89,9 @@
 
     <abstract>
       <t>
-        This document describes a Backplane application scenario
-        that allows widgets to exchange identity information about
-        authentication events.
+        This document describes a Backplane Exchange application
+        scenario that allows widgets to exchange identity information
+        about authentication events.
       </t>
     </abstract>
 
@@ -102,17 +102,17 @@
 
       <t>
         Login widgets can facilitate user authentication against
-        third-party identity providers and then use Backplane to publish
-        the authenticated identifiers, details about the authentication
-        event and user profile data for the other widgets on the page to
-        consume.
+        third-party identity providers and then use Backplane Exchange
+        to publish the authenticated identifiers, details about the
+        authentication event and user profile data for the other widgets
+        on the page to consume.
       </t>
 
       <section anchor="definitions" title="Definitions">
 
         <t>
           [[[ TODO: remove draft reference ]]]
-          In addition to the terms defined by <xref target="Backplane2.0"/>,
+          In addition to the terms defined by <xref target="BackplaneExchange2.0"/>,
           the following are also defined:
 
           <list style="hanging">
@@ -170,8 +170,9 @@
 
             <t hangText="Login Widget">
               A Widget that facilitates user authentication against an
-              Identity Provider and uses Backplane to publish related
-              information for the other Widgets on the same Web Page.
+              Identity Provider and uses Backplane Exchange to publish
+              related information for the other Widgets on the same
+              Web Page.
             </t>
 
             <t hangText="Logged-in State">
@@ -332,13 +333,13 @@
     <section anchor="message.types" title="Message Types">
 
       <t>
-        Following are definitions of the Backplane message types
+        Following are definitions of the Backplane Message types
         employed by the Identity Scenario.
       </t>
 
       <t>
         Note that message payloads are sent only to server-side
-        Backplane clients. Widgets only receive message headers: no
+        Backplane Clients. Widgets only receive message headers: no
         payloads, acting as event notifications. They must contact
         their corresponding server-side components for the details
         on how to fully react to each event.
@@ -403,9 +404,9 @@
     <section anchor="identity.information" title="Identity Information">
 
       <t>
-        Identity Information communicated between Backplane
-        parties in this scenario is defined in this section
-        and is represented in
+        Identity Information communicated between Backplane Exchange
+        parties in this scenario is defined in this section and is
+        represented in
         <xref target="PortableContacts">Portable Contacts</xref>
         format with some restrictions and extensions.
       </t>
@@ -416,13 +417,13 @@
       </t>
 
       <t>
-        The Backplane Identity Scenario deals with a single User -
-        the one performing identity-related actions in the context of
-        a concrete browsing session. The "entry" object in the Portable
-        Contacts response node MUST be an array with a single value
-        representing this User and having the Contact Schema defined
-        by Portable Contacts, with the restrictions and extensions
-        described in the following sub-sections.
+        The Backplane Exchange Identity Scenario deals with a single
+        User - the one performing identity-related actions in the
+        context of a concrete browsing session. The "entry" object in
+        the Portable Contacts response node MUST be an array with a
+        single value representing this User and having the Contact
+        Schema defined by Portable Contacts, with the restrictions and
+        extensions described in the following sub-sections.
       </t>
 
       <section title="Account Identifier">
@@ -684,7 +685,7 @@
             </t>
             <t>
               Widgets on the page subscribe to receive notifications for
-              all Backplane messages, or for specific message types that
+              all Backplane Messages, or for specific message types that
               they are interested in; for Identity Scenario, presumably
               identity/* messages types
             </t>
@@ -715,7 +716,7 @@
         <t>
           If the user logs out from the Identity Provider a
           identity/logout message SHOULD (and ideally MUST) be
-          published on the Backplane channel. Widgets can react to this
+          published on the Backplane Channel. Widgets can react to this
           state change and update the session they have with the user to
           reflect the new logged-out state.
         </t>
@@ -739,7 +740,7 @@
             </t>
             <t>
               Widgets on the page subscribe to receive notifications for
-              all Backplane messages, or for specific message types that
+              all Backplane Messages, or for specific message types that
               they are interested in; for Identity Scenario, presumably
               identity/* messages types
             </t>
@@ -781,7 +782,7 @@
         </t>
 
         <t>
-          In this case the widget must reset the Backplane channel in
+          In this case the widget must reset the Backplane Channel in
           order to ensure the current session and logged-in state is
           ended.
         </t>
@@ -805,7 +806,7 @@
             </t>
             <t>
               Widgets on the page subscribe to receive notifications for
-              all Backplane messages, or for specific message types that
+              all Backplane Messages, or for specific message types that
               they are interested in; for Identity Scenario, presumably
               identity/* messages types
             </t>
@@ -818,7 +819,7 @@
               link or button provided by the local website
             </t>
             <t>
-              The site resets the Backplane channel and terminates the
+              The site resets the Backplane Channel and terminates the
               local session it has for the user
             </t>
           </list>
@@ -852,7 +853,7 @@
             </t>
             <t>
               Widgets on the page subscribe to receive notifications for
-              all Backplane messages, or for specific message types that
+              all Backplane Messages, or for specific message types that
               they are interested in; for Identity Scenario, presumably
               identity/* messages types
             </t>
@@ -890,7 +891,7 @@
   <back><!-- [[[ -->
     <references title="Normative References"><!-- [[[ -->
 
-      <reference anchor="Backplane2.0" target="https://sites.google.com/site/backplanespec/documentation/backplane2-0-draft08">
+      <reference anchor="BackplaneExchange2.0" target="http://backplanex.com/documentation/backplane-2-0-implementers-draft-11/">
         <front>
           <title>Backplane 1.2</title>
           <author fullname="Chris Saad" initials="C." surname="Saad">
