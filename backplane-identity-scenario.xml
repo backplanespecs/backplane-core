@@ -891,7 +891,7 @@
   <back><!-- [[[ -->
     <references title="Normative References"><!-- [[[ -->
 
-      <reference anchor="BackplaneExchange2.0" target="http://backplanex.com/documentation/backplane-2-0-implementers-draft-11/">
+      <reference anchor="BackplaneExchange2.0" target="http://backplanex.com/documentation/backplane-2-0-draft-11/">
         <front>
           <title>Backplane 1.2</title>
           <author fullname="Chris Saad" initials="C." surname="Saad">
