@@ -20,7 +20,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front>
-    <title abbrev="Backplane">Backplane Exchange 2.0 - Draft 11</title>
+    <title abbrev="Backplane">Backplane Protocol 2.0 - Draft 11</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -84,7 +84,7 @@
 
     <abstract>
       <t>
-        Backplane Exchange is a framework that facilitates message
+        Backplane Protocol is a framework that facilitates message
         exchanges and event notifications between third-party
         JavaScript components within a web page.
       </t>
@@ -108,7 +108,7 @@
           when all parties involved can exchange information with each
           other, and can do it in a standardized way.</t>
 
-      <t>The Backplane Exchange framework facilitates such interactions
+      <t>The Backplane framework facilitates such interactions
           by providing an open standard API that is secure in the
           context of the assumed trust relationships between the parties
           involved. Messages are delivered reliably and in order. The
@@ -134,7 +134,7 @@
           </t>
 
           <t hangText="Backplane Client">
-            Entity that uses the Backplane Exchange framework to
+            Entity that uses the Backplane framework to
             exchange information.
           </t>
 
@@ -207,7 +207,7 @@
 
     <section anchor="overview" title="Overview">
       <t>
-        An operational Backplane Exchange framework consists of the
+        An operational Backplane framework consists of the
         following components:
         <list style="symbols">
           <t>A Backplane Server</t>
@@ -221,7 +221,7 @@
         message interchange between Backplane Clients and may serve
         multiple independent Buses.</t>
 
-      <t>A Backplane Exchange framework instance needs to be configured
+      <t>A Backplane framework instance needs to be configured
         prior to use: all Backplane Clients and the Server have to share
         the same Bus. Backplane Clients operating at the
         <xref target="access.level.privileged">Privileged Access Level</xref>
@@ -231,7 +231,7 @@
 
     <section anchor="trust" title="Trust">
       <t>
-        The Backplane Exchange framework is intended to be used and
+        The Backplane framework is intended to be used and
         operate under the following trust relationships. Any number
         of security issues can arise if any of these assumptions do
         not hold.</t>
@@ -245,7 +245,7 @@
           <t>
             The Web Page owner (and indirectly the end user) trusts all
             Widget owners that the Widgets will not abuse the Backplane
-            Exchange framework by trying to impersonate other Widgets'
+            framework by trying to impersonate other Widgets'
             behavior in order to obtain and access information that is
             not directed to them, such as end user account information
             addressed to other Widgets.
@@ -259,7 +259,7 @@
           <t>
             The Web Page owner (and indirectly the end user) trusts
             all content on the Web Page to not attack the widgets or
-            the Backplane Exchange framework. This must explicitly
+            the Backplane framework. This must explicitly
             include all JavaScript loaded for any purpose, including
             JavaScript that is not part of any of the Widgets on the
             Web Page.
@@ -684,7 +684,7 @@
             <xref target="client.registration">registration</xref>
           </t>
           <t hangText="type (string)">
-            opaque to the core Backplane Exchange specification; value,
+            opaque to the core Backplane Protocol specification; value,
             semantic and associated payload format is defined in
             application scenario specifications
           </t>
@@ -778,7 +778,7 @@
 
       <section anchor="server.retention.sticky" title="Sticky Messages">
         <t>
-          Some Backplane Exchange application scenarios may require
+          Some Backplane Protocol application scenarios may require
           longer lived Backplane Messages, such as for keeping a shared
           state about a end user's logged-in identity or profile data.
         </t>
@@ -1449,7 +1449,7 @@ callback(
 
       <section anchor="server.api.messages.post" title="Post Messages">
         <t>
-          Publish messages to a Backplane Exchange framework.
+          Publish messages to a Backplane framework.
         </t>
         <t>
           <list style="hanging">
@@ -1624,7 +1624,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
 
       <section anchor="client.side.library.init"
         title="Initialization">
-        <t>A Backplane Exchange framework is initialized using the
+        <t>A Backplane framework is initialized using the
           <spanx style="verb">Backplane.init</spanx> method.</t>
 
         <t>During initialization the library generates a random
@@ -1687,7 +1687,7 @@ Backplane.expectMessagesWithin(TimeInterval, MessageTypes);
           title="Hints">
         <t>For performance reasons the Backplane JavaScript Library
           polls the Backplane Server with a low frequency (e.g once a
-          minute). Since Backplane Exchange events usually are initiated
+          minute). Since Backplane events usually are initiated
           on the client side (e.g. the user clicking a button), Widgets
           on the page are in a position to hint the library that a
           Backplane Message may be soon delivered. Upon the receipt of
