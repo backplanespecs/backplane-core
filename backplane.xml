@@ -594,16 +594,26 @@
 
     <section anchor="padded.response" title="Padded Responses">
       <t>
-        For API requests made by the Javascript Library, the response
-        is formatted specially.
+        For API requests made by the Javascript clients (such as the
+        Backplane Javascript Library), the response MUST be formatted
+        specially, as described in this section. Such requests are
+        identified by the presence of a
+        <spanx style="emph">callback</spanx> parameter.
       </t>
       <t>
-        The response body begins with the value of
+        The body of a successful response begins with the value of
         the <spanx style="emph">callback</spanx> parameter from the
-        request.  That value is followed by a &quot;(&quot; (opening
+        request. That value is followed by a &quot;(&quot; (opening
         parenthesis), then the JSON-encoded result value, then a
         &quot;)&quot; (closing parenthesis).
       </t>
+      <t>
+        Error responses MUST be returned with HTTP status code 200
+        and MUST also be in the format described above for successful
+        responses. In addition, the JSON payload of error responses
+        MUST contain at least a field named "error".
+      </t>
+      
     </section>
 
     <section anchor="buses" title="Buses">
