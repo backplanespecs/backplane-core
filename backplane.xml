@@ -928,6 +928,19 @@ bus:A bus:B type:C type:D
           for all "<spanx style="emph">bus:</spanx>" access scopes.
         </t>
         <t>
+          Backplane servers maintain configuration that defines which
+          buses are available to clients presenting certain
+          client_id's. When fulfilling access token requests the server
+          grants the client access to the set of buses mentioned in the
+          'scope' parameter provided it is equal to or a subset of what
+          is defined in the server's configuration. In case of a
+          successful request the client is allowed to both post and
+          listen to the specified set of buses. If no buses are
+          requested through the value of the scope parameter, the issued
+          token's scope will consist of all buses as per the server
+          configuration for the presented client_id.
+        </t>
+        <t>
           Application scenario protocol extensions MAY define
           additional authorization requirements against other scope
           type and Backplane Message fields.
