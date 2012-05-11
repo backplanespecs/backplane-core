@@ -6,6 +6,8 @@
   <!ENTITY RFC2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
   <!ENTITY RFC4086 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4086.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
+  <!ENTITY RFC5785 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5785.xml">
+  <!ENTITY RFC6415 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6415.xml">
 ]>
 <?rfc toc="yes"?>
 <?rfc tocompact="yes"?>
@@ -416,11 +418,11 @@
       <section anchor="server.discovery" title="Backplane Server Discovery">
         <section anchor="server.discovery.dynamic" title="Dynamic Discovery">
           <t>
-            It is RECOMMENDED that Backplane Servers support dynamic
-            discovery, as described in
-            <xref target="OAuth.Dynamic.Client.Registration"/> section
-            5.  Discovery of Server's Client Registration Endpoint.
-            [[[ doesn't cover authorization/token endpoints, it probably should ]]]
+            It is RECOMMENDED that Backplane Servers advertise their
+            endpoints through the
+            <xref target="RFC5785">well-known</xref> and
+            <xref target="RFC6415">host-meta</xref> protocols.
+            [[[ define backplane-endpoint-type-uris ]]]
           </t>
         </section>
         <section anchor="server.discovery.static" title="Static Discovery">
@@ -961,6 +963,42 @@ bus:A bus:B type:C type:D
     </section>
 
     <section anchor="server.api" title="Backplane Server API">
+      
+      <t>
+        Backplane Server API methods use OAuth2 for authorization.
+        <xref target="server.api.token.authenticated">Authenticated Access Token Request</xref>
+        is an OAuth2 token endpoint.
+        <xref target="server.api.token.anonymous">Anonymous Access Token Request</xref>
+        achieves the same goal and uses some of the same conventions,
+        but uses HTTP GET and is tailored for Javascript clients running 
+        in the browser.
+        <xref target="server.api.message.post">Post Message</xref>,
+        <xref target="server.api.messages.get">Get Messages</xref>, and
+        <xref target="server.api.message.get">Get Message</xref>
+        constitute OAuth2 protected resources.
+      </t>
+      <t>
+        It is RECOMMENDED that Bakcplane Servers also implement
+        an OAuth2 authorization endpoint.
+      </t>
+      <t>
+        Backplane Server API request and response formats adhere to 
+        the OAuth2 standard wherever possible and with a few additional 
+        restrictions, as detailed in the following sections.
+      </t>
+      <t>
+        Error responses returned by Backplane Servers SHOULD also follow
+        OAuth2 recommendations, with special formatting for Javascript
+        clients as described in
+        <xref target="padded.response">Padded Responses</xref>.
+      </t>
+      <t>
+        It is RECOMMENDED that Backplane Servers advertise their
+        endpoints through the
+        <xref target="RFC5785">well-known</xref> and
+        <xref target="RFC6415">host-meta</xref> protocols.
+        [[[ define backplane-endpoint-type-uris ]]]
+      </t>
 
       <section anchor="server.api.token.authenticated" title="Authenticated Access Token Request">
         <t>
@@ -1808,6 +1846,10 @@ Backplane.getChannelID();
 
       &RFC2119;
 
+      &RFC5785;
+
+      &RFC6415;
+
       <reference
         anchor="RFC4648.section5"
         target="http://tools.ietf.org/html/rfc4648#section-5">
@@ -1887,7 +1929,6 @@ Backplane.getChannelID();
           <date year="2011" month="Oct" />
         </front>
       </reference>
-
 
     </references>
   </back>
