@@ -649,8 +649,6 @@
         <list style="symbols">
           <t>allocated within Buses</t>
           <t>referenced by unique, unguessable identifiers</t>
-          <t>created implicitly once a Backplane Message gets
-            posted to a channel that doesn't yet exist</t>
           <t>non-persistent and expire after being inactive (no
             messages posted) for specific amount of time (e.g. 30
             minutes)</t>
@@ -1140,9 +1138,9 @@ bus:A bus:B type:C type:D
             </t>
             <t>
               issue a new access token with the same capabilities as
-              the previous one, or with a different but authorized
-              scope if a scope parameter was also included in the
-              request.
+              the previous one, or with a different but previously
+              authorized scope if a scope parameter was also included
+              in the request.
             </t>
           </list>
 
@@ -1196,6 +1194,12 @@ bus:A bus:B type:C type:D
                   callback function to pad the response with (see
                   <xref target="padded.response">Padded Responses</xref>);
                   MUST only contain alphanumeric characters (a-zA-Z0-9)
+                </t>
+                <t>
+                  bus (string, REQUIRED if and only if refresh_token
+                  is not present):
+                  the Bus to which the Backplane Server should bind the
+                  newly generated Channel
                 </t>
                 <t>
                   scope (string, OPTIONAL):
@@ -1270,15 +1274,18 @@ callback(
           channel.)
         </t>
         <t>
-          In response to a anonymous access token request the
-          Backplane Server allocates a
-          <xref target="channels">new channel</xref> and issues a
+          If a "refresh_token" parameter was not provided by the client,
+          the Backplane Server allocates a
+          <xref target="channels">new channel</xref> in response to a
+          anonymous access token request and issues a
           <xref target="access.level.regular">regular access token</xref>
           to the client (no message payloads) for the channel. New
           channels are generated only for anonymous access token
-          requests. The channel is not bound to a bus until the first
-          message is posted to the channel (see
-          <xref target="server.api.message.post">Post Message</xref>).
+          requests. The channel is bound to the bus specified by the
+          value of the "bus" request parameter. The Backplane Server
+          MAY also issue a refresh token which the client can use to
+          obtain a new access token (for the purpose of extending the
+          life of a Channel that is still in use).
         </t>
         <t>
           Regular access tokens issued in response to anonymous access
@@ -1292,11 +1299,15 @@ callback(
           <xref target="RFC4086">RFC 4086</xref> is RECOMMENDED.
         </t>
         <t>
-          If the "refresh_token" parameter is included in the request,
-          the server must issue a new regular access level access token
-          with the scope not exceeding the channel of the initial access
-          token, and possibly narrower if so requested through the use
-          of the "scope" request parameter.
+          If the "refresh_token" parameter is included in the request
+          and its value is a still valid, previously issued refresh
+          token, the server must issue a new regular access level access
+          token with the scope not exceeding the channel of the initial
+          access token, and possibly narrower if so requested through
+          the use of the "scope" request parameter. The Backplane Server
+          MAY issue a new refresh token; if a new refresh token is
+          issued the the Client MUST discard the previous refresh token
+          and the Backplane Server MAY invalidate it.
         </t>
       </section>
 
@@ -1521,7 +1532,7 @@ callback(
               structure:
               <list style="symbols">
                 <t>message:
-                  a JSON object representing the Backplane message
+                  a JSON object representing the Backplane Message
                   to be posted, with the following structure:
                   <list style="symbols">
                     <t>
@@ -1566,17 +1577,14 @@ callback(
               </list>
             </t>
           </list>
-
-
           The server MUST check that the channel in a message was
           previously allocated as a result of a
-          <xref target="server.api.token.authenticated">Access Token Request</xref>.
-          If the channel is not yet bound to a bus, the server MUST bind
-          it to the bus specified in the same message object from the
-          request.
-          If the channel is already bound to a different bus than the
-          one specified in the same message object in the request, the
-          entire request is considered invalid and is aborted.
+          <xref target="server.api.token.authenticated">Access Token Request</xref>
+          and that it was bound to the bus specified by the value of
+          the "bus" message field. If the channel was bound to a
+          different bus than the one specified in the same message
+          object in the request, the entire request is considered
+          invalid and is aborted.
           <figure>
             <preamble>
               Request example:
