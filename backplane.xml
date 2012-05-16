@@ -1237,6 +1237,13 @@ bus:A bus:B type:C type:D
                   parameter and successfully processed by the server
                 </t>
                 <t>
+                  bus: the bus to which the newly generated channel was
+                  bound by the Backplane Server (note that this is
+                  different than a "bus:..." scope of a privileged
+                  access token which would mean access to all channels
+                  in the specified bus)
+                </t>
+                <t>
                   refresh_token: the server MAY issue a refresh token
                   as specified by OAuth2
                 </t>
