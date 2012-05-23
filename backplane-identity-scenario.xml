@@ -454,6 +454,26 @@
         </t>
       </section>
 
+      <section title="Account Domain">
+        <t>
+          The Contact Schema applied to the single "entry" value is
+          extended with the following element:
+
+          <list style="hanging">
+            <t hangText="domain">
+              The top-most authoritative domain for User's Account.
+              Similar to the 'domain' field defined for the 'accounts'
+              entries by Portable Contacts, but applicable to the User's
+              main Account.
+            </t>
+          </list>
+        </t>
+        <t>
+          The "domain" element MUST be present and it MUST have a
+          non-empty value.
+        </t>
+      </section>
+
       <section title="User Profile">
           <t>
             Identity Providers SHOULD leverage as much as possible the
