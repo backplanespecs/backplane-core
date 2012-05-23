@@ -16,10 +16,10 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<?rfc private="Backplane Exchange Identity Scenario Working Group"?>
+<?rfc private="Backplane Identity Scenario Working Group"?>
 <rfc>
   <front><!-- [[[ -->
-    <title abbrev="BackplaneIdentityScenario">Backplane Exchange Identity Scenario 2.0 - Draft 04</title>
+    <title abbrev="BackplaneIdentityScenario">Backplane Identity Scenario 2.0 - Draft 04</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad">
       <organization>Echo</organization>
@@ -89,7 +89,7 @@
 
     <abstract>
       <t>
-        This document describes a Backplane Exchange application
+        This document describes a Backplane Protocol application
         scenario that allows widgets to exchange identity information
         about authentication events.
       </t>
@@ -102,17 +102,17 @@
 
       <t>
         Login widgets can facilitate user authentication against
-        third-party identity providers and then use Backplane Exchange
-        to publish the authenticated identifiers, details about the
-        authentication event and user profile data for the other widgets
-        on the page to consume.
+        third-party identity providers and then use the Backplane
+        Protocol to publish the authenticated identifiers, details about
+        the authentication event and user profile data for the other
+        widgets on the page to consume.
       </t>
 
       <section anchor="definitions" title="Definitions">
 
         <t>
           [[[ TODO: remove draft reference ]]]
-          In addition to the terms defined by <xref target="BackplaneExchange2.0"/>,
+          In addition to the terms defined by <xref target="Backplane2.0"/>,
           the following are also defined:
 
           <list style="hanging">
@@ -170,7 +170,7 @@
 
             <t hangText="Login Widget">
               A Widget that facilitates user authentication against an
-              Identity Provider and uses Backplane Exchange to publish
+              Identity Provider and uses Backplane Protocol to publish
               related information for the other Widgets on the same
               Web Page.
             </t>
@@ -404,9 +404,9 @@
     <section anchor="identity.information" title="Identity Information">
 
       <t>
-        Identity Information communicated between Backplane Exchange
-        parties in this scenario is defined in this section and is
-        represented in
+        Identity Information communicated between parties interacting
+        using the Backplane Protocol in this scenario is defined in this
+        section and is represented in
         <xref target="PortableContacts">Portable Contacts</xref>
         format with some restrictions and extensions.
       </t>
@@ -417,7 +417,7 @@
       </t>
 
       <t>
-        The Backplane Exchange Identity Scenario deals with a single
+        The Backplane Identity Scenario deals with a single
         User - the one performing identity-related actions in the
         context of a concrete browsing session. The "entry" object in
         the Portable Contacts response node MUST be an array with a
@@ -891,9 +891,9 @@
   <back><!-- [[[ -->
     <references title="Normative References"><!-- [[[ -->
 
-      <reference anchor="BackplaneExchange2.0" target="http://backplanex.com/documentation/backplane-2-0-draft-11/">
+      <reference anchor="Backplane2.0" target="http://backplanex.com/documentation/backplane-2-0-draft-11/">
         <front>
-          <title>Backplane Exchange 2.0</title>
+          <title>Backplane Protocol 2.0</title>
           <author fullname="Chris Saad" initials="C." surname="Saad">
             <organization>Echo</organization>
             <address>
