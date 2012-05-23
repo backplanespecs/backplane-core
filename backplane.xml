@@ -499,7 +499,7 @@
             of the following:
             <list style="symbols">
               <t>
-                The grant_type is "code".
+                The grant_type is "authorization_code".
               </t>
               <t>
                 The code is present and the value is recognized as a
@@ -1032,14 +1032,15 @@ bus:A bus:B type:C type:D
                 <t>client_id (string, REQUIRED)</t>
                 <t>client_secret (string, REQUIRED)</t>
                 <t>grant_type:
-                  MUST be "client_credentials", "code",
+                  MUST be "client_credentials", "authorization_code",
                   or "refresh_token"
                 </t>
                 <t>code (string):
-                  REQUIRED if and only if grant_type is "code"
+                  REQUIRED if and only if grant_type is
+                  "authorization_code"
                 </t>
                 <t>redirect_uri (string):
-                  REQUIRED if and only if grant_type is "code"
+                  REQUIRED if and only if grant_type is "authorization_code"
                 </t>
                 <t>
                   refresh_token (string):
@@ -1094,7 +1095,7 @@ bus:A bus:B type:C type:D
         </t>
 
         <t>
-          If the "grant_type" parameter is "code":
+          If the "grant_type" parameter is "authorization_code":
           <list style="symbols">
             <t>
               the server MAY attempt
