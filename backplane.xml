@@ -1232,17 +1232,13 @@ bus:A bus:B type:C type:D
                   the server MUST include the "expires_in" parameter
                 </t>
                 <t>
-                  scope: the generated channel name prefixed by
-                  "channel:", along with the other filter criteria
-                  requested by the client in the "scope" request
-                  parameter and successfully processed by the server
-                </t>
-                <t>
-                  bus: the bus to which the newly generated channel was
-                  bound by the Backplane Server (note that this is
-                  different than a "bus:..." scope of a privileged
-                  access token which would mean access to all channels
-                  in the specified bus)
+                  scope:
+                  an <xref target="token.scopes">Access Scopes</xref>
+                  formatted string containing the newly generated
+                  channel and the bus it was bound to, along with the
+                  other filter criteria requested by the client in the
+                  "scope" request parameter and successfully processed
+                  by the server
                 </t>
                 <t>
                   refresh_token: the server MAY issue a refresh token
@@ -1261,7 +1257,7 @@ callback(
     "access_token": "465203f03680f59b7ddd5e1e5d851461",
     "token_type": "Bearer",
     "expires_in": 3600,
-    "scope": "channel:0a92d76f54f7877a68abe19c5b3ffcf8",
+    "scope": "bus:&lt;request_bus&gt; channel:0a92d76f54f7877a68abe19c5b3ffcf8",
     "refresh_token": "fBHoOLdOxH4BC4eLJ8cBqkYYR2hRcoiK"
   }
 )
