@@ -22,7 +22,7 @@
 <?rfc private="Echo"?>
 <rfc>
   <front>
-    <title abbrev="Backplane">Backplane Protocol 2.0 - Draft 13</title>
+    <title abbrev="Backplane">Backplane Protocol 2.0 - Draft 14</title>
 
     <author fullname="Chris Saad" initials="C." surname="Saad"> 
       <organization>Echo</organization>
@@ -80,7 +80,7 @@
       </address>
     </author>
 
-    <date day="16" month="May" year="2012" />
+    <date day="16" month="Aug" year="2012" />
 
     <keyword>Internet-Draft</keyword>
 
