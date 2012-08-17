@@ -254,7 +254,7 @@
           post an
           <xref target="message.type.identity.loginrequest">identity/loginrequest</xref>
           message. This offers the chance for other Identity Providers
-          to respond with a 'identity/login' message if:
+          to respond with a 'identity/loginrequest' message if:
           <list style="symbols">
             <t>
               the User already has an active, authenticated session
@@ -278,7 +278,7 @@
         </t>
         <t>
           In order to be effective, in addition to the two conditions
-          detailed above concerning the User's authenticaiton session
+          detailed above concerning the User's authentication session
           and preconfigured authorization with their Identity
           Providers, the streamlining also relies on all of the
           following conditions being met:
