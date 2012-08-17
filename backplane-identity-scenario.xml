@@ -192,7 +192,7 @@
               there are no messages from any Login Widgets on the
               Channel about the Account Identifier asserting the
               authenticated state (i.e. no messages of type
-              "identity/login", see see
+              "identity/login", see
               <xref target="message.type.identity.login"/>).
             </t>
 
@@ -246,6 +246,57 @@
           each of them will be posted on the Channel; therefore multiple
           Account Identifiers MAY exist in the Logged-in State on a
           Channel at a given time.
+        </t>
+      </section>
+      <section anchor="user.login.multi" title="Multiple Account Login">
+        <t>
+          Upon initiating a user login flow, a Login Widget should also
+          post an
+          <xref target="message.type.identity.loginrequest">identity/loginrequest</xref>
+          message. This offers the chance for other Identity Providers
+          to respond with a 'identity/login' message if:
+          <list style="symbols">
+            <t>
+              the User already has an active, authenticated session
+              with the other Identity Provider(s), and
+            </t>
+            <t>
+              the User has previously given consent to the other
+              Identity Provider(s) to share their authentication
+              status with the Web Page requesting it, without further
+              interactive authorization or re-authentication prompts.
+            </t>
+          </list>
+        </t>
+        <t>
+          This facilitates and streamlines scenarios in which a User
+          already has more than one active authenticated session with
+          multiple Identity Providers, and eliminates the need for
+          the User to (1) specifically initiate a login interaction
+          with each of them on the Web Page, and (2) be prompted for
+          authentication and authorization by each Identity Provider.
+        </t>
+        <t>
+          In order to be effective, in addition to the two conditions
+          detailed above concerning the User's authenticaiton session
+          and preconfigured authorization with their Identity
+          Providers, the streamlining also relies on all of the
+          following conditions being met:
+          <list style="symbols">
+            <t>
+              the Login Widget initiating the login must publish an
+              'identity/loginrequest' message
+            </t>
+            <t>
+              the other Login Widgets on the page must react as
+              prescribed above to the 'identity/loginrequest' message
+            </t>
+            <t>
+              the Identity Providers must support non-interactive
+              authentication checks (such as OpenID2's
+              'checkid_immediate' or OpenID Connect's 'prompt=none')
+            </t>
+          </list>
         </t>
       </section>
 
@@ -345,7 +396,31 @@
         on how to fully react to each event.
       </t>
 
+      <section anchor="message.type.identity.loginrequest" title="identity/loginrequest">
+        <t>
+          The 'identity/loginrequest' message type is used to
+          communicate that a User has requested and initiated a
+          login flow on the Web Page, and allows the User to login
+          with multiple accounts without additional interactions.
+          See <xref target="user.login.multi"/>.
+        </t>
+        <t>
+          The payload of the 'identity/login' message is a JSON object
+          which contains the following fields:
+          <list style="hanging">
+            <t hangText="context">
+              the URL of the Web Page where the user login was initiated
+            </t>
+          </list>
+        </t>
+      </section>
+
       <section anchor="message.type.identity.login" title="identity/login">
+        <t>
+          The 'identity/login' message type is used to communicate that
+          an authentication event took place for an an Account.
+          See <xref target="user.login"/>.
+        </t>
         <t>
           The payload of the 'identity/login' message is a JSON object
           which contains the following fields:
@@ -354,8 +429,9 @@
               the URL of the Web Page where the user login was initiated
             </t>
             <t hangText="identities">
-              a Portable Contacts object listing the authenticated
-              Account Identifiers, in the format defined in
+              a Portable Contacts object representing the authenticated
+              Account, identified by its Account Identifier, in the
+              format defined in
               <xref target="identity.information"/>
             </t>
           </list>
@@ -363,6 +439,12 @@
       </section>
 
       <section anchor="message.type.identity.logout" title="identity/logout">
+        <t>
+          The 'identity/logout' message type is used to communicate that
+          an Account no longer has an authenticated session with its
+          authoritative Identity Provider.
+          See <xref target="user.logout"/>.
+        </t>
         <t>
           The payload of the 'identity/logout' message is a JSON object
           which contains the following fields:
@@ -380,6 +462,11 @@
       </section>
 
       <section anchor="message.type.identity.update" title="identity/update">
+        <t>
+          The 'identity/update' message type is used to communicate a
+          change of some piece of information associated with an Account.
+          See <xref target="user.data.update"/>.
+        </t>
         <t>
           The payload of the 'identity/update' message is a JSON object
           which contains the following fields:
