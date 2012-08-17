@@ -173,9 +173,18 @@
             Backplane Server API implementation.
           </t>
 
+          <t hangText="Bus Owner">
+            Owner of one or more Web Pages, typically an organization,
+            that uses Backplane to enable the Widgets on its pages to
+            exchange messages.
+          </t>
+
           <t hangText="Bus">
-            Logical grouping of Backplane Clients that need to interact
-            with each other, typically belonging to one organization.
+            A trust domain within the Backplane Server belonging to a
+            Bus Owner. Backplane Clients are authorized by Bus
+            Owners to access their Buses and thus interact with each
+            other within the context of the Web Pages that belong to a
+            Bus Owner.
           </t>
 
           <t hangText="Channel">
@@ -267,8 +276,8 @@
             Web Page.
           </t>
           <t>
-            Backplane Clients trust the Bus owner and the authenticity
-            of Backplane Messages received through a Bus, i.e all
+            Backplane Clients trust the Bus Owner and the authenticity
+            of Backplane Messages received through a Bus, i.e. all
             Backplane Clients that were granted permission to post on
             the Bus by its owner.
           </t>
@@ -314,7 +323,7 @@
           <xref target="server.api.token.authenticated">token</xref> endpoint.
         </t>
         <t>
-          Bus owners and Backplane Servers acting on their behalf MUST
+          Bus Owners and Backplane Servers acting on their behalf MUST
           NOT give authorization credentials for Privileged access level
           to Backplane Clients running in the web browser.
         </t>
@@ -351,7 +360,7 @@
           Backplane Clients having Privileged access level can perform
           the following operations on a Bus for which they have obtained
           <xref target="authorization">authorization</xref> credentials
-          from the Bus owner:
+          from the Bus Owner:
           <list style="symbols">
             <t>
               <xref target="server.api.messages.get">retrieve all Backplane Messages</xref>
@@ -620,14 +629,12 @@
 
     <section anchor="buses" title="Buses">
       <t>
-        A Bus is a logical grouping of Backplane Clients that need to
-        interact with each other, typically belonging to one
-        organization. Buses allow a Backplane Server to service
-        multiple customers. Bus names are short strings
-        referencing the Bus owner's name (e.g. "customer.com",
-        "organization.org").
-        Backplane Clients must know the identifiers for the Buses through
-        which they wish to exchange Backplane Messages.
+        A Bus is a trust domain within the Backplane Server belonging
+        to a Bus Owner. Buses allow a Backplane Server to service
+        multiple customers. Bus names are short strings referencing
+        the Bus Owner's name (e.g. "customer.com", "organization.org").
+        Backplane Clients must know the identifiers for the Buses
+        through which they wish to exchange Backplane Messages.
       </t>
       <t>
         It is assumed that a relationship of trust exists between all
@@ -1123,7 +1130,7 @@ bus:A bus:B type:C type:D
           client is requesting a token based on previously issued and
           validated authorization grants, with a scope possibly spawning
           across multiple authorization grants received from different
-          bus owners.
+          Bus Owners.
         </t>
         
         <t>
