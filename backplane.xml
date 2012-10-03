@@ -1638,11 +1638,7 @@ callback(
                 </t>
                 <t>
                   HTTP status code 403 ("Forbidden") if the client is
-                  not authorized to post messages to any of the
-                  referenced Buses. The server processes the messages
-                  in the request one by one; if a message can't be
-                  posted for any reason, the whole request fails and
-                  none of the messages get posted.
+                  not authorized to post message to the referenced Bus.
                 </t>
               </list>
             </t>
