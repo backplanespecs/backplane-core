@@ -805,7 +805,7 @@
               <spanx style="vstrong">requested</spanx> time; if the
               requested retention time is greater than the configured
               maxium for its bus the server MUST return a
-              <spanx style="vstrong">5xx error response</spanx>.
+              <spanx style="vstrong">403 error response</spanx>.
             </t>
             <t>
               If the client has not specified a desired retention time
