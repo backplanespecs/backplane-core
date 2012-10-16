@@ -857,7 +857,7 @@
           messages as "sticky" when they are posted (see
           <xref target="server.api.message.post">Post Message To A Channel</xref>).
           Backplane Servers MUST retain sticky messages for the
-          configured maximum retention time bus for their buses.
+          configured maximum retention time for their buses.
         </t>
 
         <t>
