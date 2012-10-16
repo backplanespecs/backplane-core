@@ -4,6 +4,7 @@
   <!ENTITY RFC2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
   <!ENTITY RFC2616 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2616.xml">
   <!ENTITY RFC2617 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2617.xml">
+  <!ENTITY RFC3339 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3339.xml">
   <!ENTITY RFC4086 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4086.xml">
   <!ENTITY RFC4627 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4627.xml">
 ]>
@@ -446,6 +447,17 @@
           <t hangText="type">
             message type, string
           </t>
+          <t hangText="expire (string)">
+            string representing a date when the message
+            expires and is no longer retained by the Backplane Server,
+            in Internet Date/Time Format as described in section 5.6 of
+            <xref target="RFC3339"/> profile of ISO8601, with the
+            following extra two restrictions:
+            <list style="symbols">
+                <t>All times must be in the UTC timezone, indicated with a "Z"</t>
+                <t>No fractional seconds are allowed</t>
+            </list>
+          </t>
           <t hangText="sticky">
             sticky flag, boolean. See
             <xref target="backplane.server.retention.sticky">Sticky Messages</xref>
@@ -495,16 +507,56 @@
     <section anchor="backplane.server.retention" title="Message Retention">
 
       <t>
-        Backplane Servers MUST maintain a window of most recent
-        messages for each of the existing Channels. The window
-        size MUST be at least 1 minute. It is RECOMMENDED that
-        Backplane Servers maintain a window of at least 5 minutes.
+        Backplane Servers MUST keep the following configuration items
+        for each bus:
+        <list style="symbols">
+            <t>default retention time</t>
+            <t>maximum retention time</t>
+        </list>
+
+        Backplane Servers MUST maintain a buffer of messages received
+        from all their clients, as follows:
+        <list style="symbols">
+            <t>
+              If the client has specified a desired retention time for
+              a posted message (through the "expire" message field) and
+              the requested time is less than the maximum retention
+              time for its bus, the message MUST be retained for the
+              <spanx style="vstrong">requested</spanx> time; if the
+              requested retention time is greater than the configured
+              maxium for its bus the server MUST return an error
+              response.
+            </t>
+            <t>
+              If the client has not specified a desired retention time
+              for a message (the "expire" message field is missing) and
+              the "sticky" message field is
+              <spanx style="vbare">true</spanx>, the message MUST be
+              retained for the <spanx style="vstrong">maximum</spanx>
+              retention time configured for its bus.
+            </t>
+            <t>
+              If the client has not specified a desired retention time
+              and the "sticky" message field is either missing or set
+              to <spanx style="vbare">false</spanx>, the message MUST
+              be retained for the <spanx style="vstrong">default</spanx>
+              retention time configured for its bus.
+            </t>
+        </list>
+      </t>
+      <t>
+        Default retention times MUST be longer than 1 minute. It is
+        RECOMMENDED that default retention times are at least 5 minutes.
       </t>
 
       <t>
-        It is RECOMMENDED that it is an operational priority for
-        Backplane Servers to make messages available for retrieval
-        as soon as possible after they are posted.
+        Maximum retention times MUST be longer than 5 minutes. It is
+        RECOMMENDED that maximum retention times are at least 8 hours.
+      </t>
+
+      <t>
+        It is RECOMMENDED that Backplane Servers make messages available
+        for retrieval as soon as possible after they are posted.
       </t>
 
       <t>
@@ -524,9 +576,8 @@
           Support for such scenarios is accomplished by flagging
           messages as "sticky" when they are posted (see
           <xref target="backplane.server.api.channel.post">Post Messages To A Channel</xref>).
-          Backplane Servers MUST retain sticky messages for at least X
-          minutes. It is RECOMMENDED that Backplane Servers retain
-          sticky messages for Y minutes.
+          Backplane Servers MUST retain sticky messages for the
+          configured maximum retention time for their buses.
         </t>
 
         <t>
@@ -973,6 +1024,8 @@ Backplane.getChannelID();
       &RFC2616;
 
       &RFC2617;
+
+      &RFC3339;
 
       &RFC4627;
 
